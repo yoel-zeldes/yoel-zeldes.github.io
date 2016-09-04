@@ -9,6 +9,8 @@ SITEURL = ''
 PATH = 'content'
 
 TIMEZONE = 'Israel'
+DEFAULT_DATE_FORMAT = '%d %B %Y'
+LOCALE = 'en'
 
 DEFAULT_LANG = 'en'
 
