@@ -1,42 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-        <meta charset="utf-8" />
-        <title>Who wants to be a coder</title>
-        <link rel="stylesheet" href="/theme/css/main.css" />
 
-        <!--[if IE]>
-            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Who wants to be a coder</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="http://localhost:8000/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://localhost:8000/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://localhost:8000/theme/css/code_blocks/darkly.css" rel="stylesheet">
+
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+
+
+
+        <meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} }); Who wants to be a coder¶While wandering around at kaggle.com, ...">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="statistics data-science">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://localhost:8000/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://localhost:8000/who-wants-to-be-a-coder.html">
+	<meta property="og:title" content="Who wants to be a coder">
+	<meta property="article:published_time" content="2016-09-09 21:00:00+03:00">
+            <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]} }); Who wants to be a coder¶While wandering around at kaggle.com, ...">
+
+            <meta property="og:image" content="http://localhost:8000/theme/images/post-bg.jpg">
 </head>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="/">Another Datum </a></h1>
-                <nav><ul>
-                    <li class="active"><a href="/category/posts.html">posts</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="/who-wants-to-be-a-coder.html" rel="bookmark"
-           title="Permalink to Who wants to be a coder">Who wants to be a coder</a></h1>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://localhost:8000/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('http://localhost:8000/theme/images/post-bg.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Who wants to be a coder</h1>
+                        <span class="meta">Posted on 09 September 2016</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-09-03T20:00:00+03:00">
-                Published: שבת 03 ספטמבר 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="/author/yoel-zeldes.html">Yoel Zeldes</a>
-        </address>
-<p>In <a href="/category/posts.html">posts</a>.</p>
-<p>tags: <a href="/tag/statistics-data-science.html">statistics data-science</a> </p>
-</footer><!-- /.post-info -->      <style type="text/css">/*!
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <style type="text/css">/*!
 *
 * IPython notebook
 *
@@ -1019,9 +1083,9 @@ MathJax.Hub.Config({
 });
 </script></p>
 <p><script async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script></p>
-<h1 id="Who-wants-to-be-a-coder">Who wants to be a coder<a class="anchor-link" href="#Who-wants-to-be-a-coder">¶</a></h1><p>While wandering around at <a href="https://www.kaggle.com/">kaggle</a>, I encountered the <a href="https://www.kaggle.com/freecodecamp/2016-new-coder-survey-">2016 New Coder Survey</a> dataset. It's a survey targeted at people learning to code.</p>
-<p>The survey included a question asking the participants what's the job role they're interested in. I was curious to know whether there's a relationship between a new coder's age and the job role he dreams of.</p>
-<p>In this post I'll try to answer this question. I'll walk you through data exploration, how to approach our research question, and what statistical tests can be used in order to find the answer.</p>
+<h1 id="Who-wants-to-be-a-coder">Who wants to be a coder<a class="anchor-link" href="#Who-wants-to-be-a-coder">¶</a></h1><p>While wandering around at <a href="https://www.kaggle.com/">kaggle.com</a>, I encountered the <a href="https://www.kaggle.com/freecodecamp/2016-new-coder-survey-">2016 New Coder Survey</a> dataset. It's a survey targeted at people learning to code.</p>
+<p>The survey included a question asking the participants what's the job role they're interested in. I was curious to know whether there's an association between a new coder's age and the job role he dreams of.</p>
+<p>In this post I'll try to answer this question. The post will be a technical post, in which I'll walk you through data exploration, how to approach our research question, and what statistical tests can be used in order to find the answer.</p>
 <p>First, let's import some stuff:</p>
 </div>
 </div>
@@ -1093,7 +1157,7 @@ MathJax.Hub.Config({
 <div class="output">
 <div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre><matplotlib.axes._subplots.axessubplot at 0xd777cf8></pre>
+<pre><matplotlib.axes._subplots.axessubplot at 0xda7b550></pre>
 </div>
 </div>
 <div class="output_area"><div class="prompt"></div>
@@ -1318,7 +1382,7 @@ ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
 <div class="output">
 <div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre><matplotlib.axes._subplots.axessubplot at 0xcf72438></pre>
+<pre><matplotlib.axes._subplots.axessubplot at 0xd9a1b38></pre>
 </div>
 </div>
 <div class="output_area"><div class="prompt"></div>
@@ -1685,7 +1749,7 @@ gg==
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Each group has a bar with a length equal to the group's mean age. The bigger the group is, the lighter the color of the bar gets.</p>
 <p>I chose to focus on the Quality Assurance engineers group. They have a mean age bigger than the rest of the groups, of about 32 years. It's interesting to see if this effect is due to chance, or maybe the desire to be a QA engineer is more likely to be associated with older people on average.</p>
-<p>Let me explain what "due to chance" means: remember that we have limited data. It tells the story of only a fraction of the population of new coders. Specifically, we only have data of 91 QA engineers. In reality there are more new coders who want to be QA engineers: there are those who didn't participate in the survey, and there are the future new coders who haven't even started to learn how to code yet. 32 years is the new coders QA engineers <strong>sample mean</strong>. We're interested to know if the new coders QA <strong>population mean</strong> is bigger than other new coders <strong>population mean</strong>. We don't have data of the entire population, so the best we can do is to estimate their mean. We do this by using the sample mean. The sample mean is a random variable; it depends on the sample we got. We may have gotten some other sample of QA engineers, and the sample mean might have been different. The population mean on the other hand is a non random quantity.</p>
+<p>Let me explain what "due to chance" means: remember that we have limited data. It tells the story of only a fraction of the population of new coders. Specifically, we only have data of 91 QA engineers. In reality there are more new coders who want to be QA engineers: there are those who didn't participate in the survey, and there are the future new coders who haven't even started to learn how to code yet. 32 years is the new coders QA engineers <strong>sample mean</strong>. We're interested to know if the new coders QA <strong>population mean</strong> is bigger than other new coders <strong>population mean</strong>. We don't have data of the entire population, so the best we can do is to estimate their mean. We do this by using the sample mean. The sample mean is a random variable; it depends on the sample we’ve got. We could have gotten some other sample of QA engineers, and the sample mean would have been different. The population mean on the other hand is a non random parameter of the distribution.</p>
 <p>Given the new coders sample we have, there are two complementary possibilities:</p>
 <ol>
 <li>The QA population's mean age equals to general new coders population's mean age.</li>
@@ -1700,7 +1764,7 @@ gg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option which can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
+<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option that can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
 </div>
 </div>
 </div>
@@ -1797,7 +1861,7 @@ gg==
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">¶</a></h1><p>Statisticians like statistical tests. They are powerful, but they have two big disadvantages:</p>
 <ol>
-<li>They impose assumptions on the data. In our case, the sample mean age isn't really normal. It's approximately normal, so the T test result is an approximation (although quite good one).</li>
+<li>They impose assumptions on the data. In our case, the sample mean age isn't really normal. It's approximately normal, so the T test result is an approximation (although quite a good one).</li>
 <li>Sometimes they make you test something that is similar but not exactly what you wish for. In our case it's not true: we were interested in the mean difference, and that's exactly what the T test provides. If we wanted to test something more complicated with no classical statistical test for the use case, we'd be in trouble.</li>
 </ol>
 <p>To solve both problems, we can use simulations. We first calculate some statistic of the observed data (as was done before). Instead of calculating the probability to observe that statistic value, we simulate many experiments (assuming the null hypothesis is true), and we count the fraction of the experiments that yielded a statistic which is at least as extreme as the one we calculated before.</p>
@@ -1808,7 +1872,7 @@ gg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [8]:</div>
+<div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
 <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">observed_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">qa</span><span class="p">[</span><span class="s1">'average age'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
@@ -1825,7 +1889,7 @@ gg==
 <div class="output">
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>The p-value is 0.00096
+<pre>The p-value is 0.0007
 </pre>
 </div>
 </div>
@@ -1838,7 +1902,7 @@ gg==
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We got a similar result, but a little bit different. Note that the more simulations we run, the more exact the result will be (it'll tend to the true p-value).</p>
-<p>Why does it differ than the T test approach? Because the T test assumes the data is normal, while it's only approximately normal.</p>
+<p>Why does it differ from the T test approach? Because the T test assumes the data is normal, while it's only approximately normal.</p>
 <p>In the old days where computers were slow and computing power was expensive, it didn't make a lot of sense to run simulations. Nowadays however, it does make sense (in some situations, anyway). It's a nice approach which should be kept in the back of our head in case of need. I've recently read a great <a href="http://allendowney.blogspot.co.il/2011/05/there-is-only-one-test.html">post</a> which further discusses the simulations approach.</p>
 </div>
 </div>
@@ -1848,7 +1912,7 @@ gg==
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that some group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
+<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that one group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
 </div>
 </div>
 </div>
@@ -1889,37 +1953,84 @@ gg==
 }
 </script>
 
-    </div><!-- /.entry-content -->
+    </article>
 
-  </article>
-</section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
+        <div class="tags">
+            <p>tags: <a href="http://localhost:8000/tag/statistics-data-science.html">statistics data-science</a></p>
+        </div>
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+    <hr>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'who-wants-to-be-a-coder.html';
+                var disqus_url = 'http://localhost:8000/who-wants-to-be-a-coder.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
+    <hr>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="#">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-you can add links in your config file fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-another social link fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://localhost:8000/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://localhost:8000/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://localhost:8000/theme/js/clean-blog.min.js"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
 </body>
+
 </html>
