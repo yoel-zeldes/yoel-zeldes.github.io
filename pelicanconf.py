@@ -51,4 +51,5 @@ CSS_OVERRIDE = 'overrides.css'
 HEADER_COVER = 'images/home-bg.jpg'
 
 SUMMARY = True
+STATIC_PATHS = ['pages']
 
