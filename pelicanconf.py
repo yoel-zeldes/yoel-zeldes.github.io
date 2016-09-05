@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = 'Yoel Zeldes'
 SITENAME = 'Another Datum'
+SITESUBTITLE = 'A blog by Yoel Zeldes'
 SITEURL = 'http://localhost:8000'
 
 PATH = 'content'
@@ -41,7 +42,8 @@ MARKUP = ('md', 'ipynb')
 PLUGIN_PATH = './plugins'
 PLUGINS = ['ipynb.markup']
 
+DISQUS_SITENAME = 'anotherdatum'
+
 THEME = './theme'
-DISQUS_SITENAME = "anotherdatum"
-SITESUBTITLE = 'A blog by Yoel Zeldes'
+COLOR_SCHEME_CSS = 'tomorrow.css'
 CSS_OVERRIDE = 'overrides.css'
