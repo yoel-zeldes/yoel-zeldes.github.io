@@ -48,6 +48,7 @@ DISQUS_SITENAME = 'anotherdatum'
 THEME = './theme'
 COLOR_SCHEME_CSS = 'tomorrow.css'
 CSS_OVERRIDE = 'overrides.css'
+HEADER_COVER = 'home-bg.jpg'
 
 SUMMARY = True
 
