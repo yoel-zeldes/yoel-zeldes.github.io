@@ -48,3 +48,6 @@ DISQUS_SITENAME = 'anotherdatum'
 THEME = './theme'
 COLOR_SCHEME_CSS = 'tomorrow.css'
 CSS_OVERRIDE = 'overrides.css'
+
+SUMMARY = True
+
