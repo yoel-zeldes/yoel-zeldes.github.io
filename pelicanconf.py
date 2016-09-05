@@ -44,3 +44,4 @@ PLUGINS = ['ipynb.markup']
 THEME = './theme'
 DISQUS_SITENAME = "anotherdatum"
 SITESUBTITLE = 'A blog by Yoel Zeldes'
+CSS_OVERRIDE = 'overrides.css'
