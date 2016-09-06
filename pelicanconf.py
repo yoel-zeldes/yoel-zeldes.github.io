@@ -47,10 +47,11 @@ DISQUS_SITENAME = 'anotherdatum'
 
 THEME = './theme'
 COLOR_SCHEME_CSS = 'tomorrow.css'
-CSS_OVERRIDE = 'overrides.css'
+CSS_OVERRIDE = 'css/overrides.css'
 HEADER_COVER = 'images/home-bg.jpg'
 
 SUMMARY = True
 STATIC_PATHS = ['pages']
 MENUITEMS = (('Posts', SITEURL),)
+STATIC_PATHS = ['css']
 
