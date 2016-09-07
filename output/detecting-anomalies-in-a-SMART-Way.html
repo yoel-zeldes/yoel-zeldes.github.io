@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Detecting Anomalies in a SMART Way</title>
+
+        <!-- Bootstrap Core CSS -->
+        <link href="http://localhost:8000/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://localhost:8000/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://localhost:8000/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://localhost:8000/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="statistics">
+        <meta name="tags" content="data-science">
+        <meta name="tags" content="anomalies">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://localhost:8000/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://localhost:8000/detecting-anomalies-in-a-SMART-Way.html">
+	<meta property="og:title" content="Detecting Anomalies in a SMART Way">
+	<meta property="article:published_time" content="2016-09-10 21:00:00+03:00">
+            <meta property="og:description" content="Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable.">
+
+            <meta property="og:image" content="http://localhost:8000/images/detecting-anomalies-in-a-SMART-Way-cover.png">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://localhost:8000/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://localhost:8000">Posts</a></li>
+
+                            <li><a href="http://localhost:8000/pages/about.html">about me</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/detecting-anomalies-in-a-SMART-Way-cover.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Detecting Anomalies in a SMART Way</h1>
+                        <span class="meta">Posted on 10 September 2016</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p><em>This post was originally published by me on the <a href="https://insider.fortscale.com/detecting-anomalies-smart-way/">Fortscale blog</a>.</em><br />
+<em>Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.</em></p>
+<hr />
+<p>Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable. Our data science team has developed a set of self tuning machine learning based algorithms that aim at doing exactly that. Although the algorithms may be complicated to comprehend, their basic mechanism is easy to understand.</p>
+<p>The fortscale product contains many models, each capturing  a different user behavioral aspect such as typical working hours, machines a user usually connects to, cities he’s connected from, etc.. If a user performs an anomalous activity in some aspects, the relevant models will trigger a high risk score for this activity. These risk scores are used as the basis of creating high-level alerts indicating suspicious activity.</p>
+<p>Naively, we could say that an alert is created for a specific activity if the sum of the risk scores triggered throughout  this activity is high enough. But what is “enough”? A risk score of 80? 90? If we set the threshold too low, too many alerts will come up, and most of them will be false positives. On the other hand, if the threshold is too high, we’ll miss the true anomalous activity lurking in the organization. This threshold effect is known as the <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">ROC curve</a>.</p>
+<p>We could make an effort to estimate what the threshold should be, yet, it’s hopeless; as each organization has a different suitable threshold depending on level of activity taking place.</p>
+<p>Moreover,  even if we knew what a given organization’s “best” threshold is, we would face a problem: there are users who tend to change their behaviour more often than others. So every time one changes something (and crosses the threshold) an alert will come up. Unfortunately, the security  analyst won’t give the proper attention to <a href="https://www.storyarts.org/library/aesops/stories/boy.html">the user who cried wolf</a>. You see the problem? We’d like the threshold to automatically adapt for each user, so that users who tend to do suspicious activities will bring up an alert only when doing something that is <strong>actually</strong> anomalous.</p>
+<hr />
+<p>In order to tackle this problem, we decided to create a second layer of learning and use machine learning aspects to identify these thresholds dynamically, automatically and transparently. Specifically, we take the sum of these individual scores and give it a name – SMART value (Significant Multiple Anomalies useR Threats). The SMART value is mapped into a high score if it crosses the learnt threshold, which in response triggers an alert.</p>
+<p>The only hole in the story is how to automatically come up with a user’s threshold? I will leave the technical details for a future post and for now will just give a teaser.</p>
+<p>Let’s say Jerrard from the sales department has performed some anomalous activities in the past, or in other words, he had high SMART values for several activity timeframes. We can visualize Jerrard's past SMART values with an histogram:</p>
+<p><img alt="Jerrard's past SMART values" src="images/user-curve.png" /></p>
+<p>On the horizontal axis we see the SMART values, while the vertical axis shows their count. Jerrard’s threshold is created by fitting the green curve to the histogram. It’s easy to see that because Jerrard has performed suspicious activities in the past, his curve stretches to the right. A new SMART value will trigger an alert only if it’s far enough to the right of the graph so it’s not under his green curve.
+For most users this personalized adaptive threshold works pretty well, but there are also problematic users. Let’s consider Joe from the marketing department. Joe is a really boring guy. He comes to the office every day in the same hour and performs the same activity... Well, his SMART values histogram looks like this:</p>
+<p><img alt="Joe's past SMART values" src="images/degenerated-user-curve.png" /></p>
+<p>Pretty boring, right? But today is Sunday, and Joe has a really big campaign he has to finish by tomorrow. So he decides to connect to the company’s VPN so he can finish it. Since it’s Sunday (not typical for boring Joe), one of the models gives a high score, which results with a higher SMART value. This SMART value will be to the right of the green curve, so an alert will be triggered.</p>
+<p>One could argue if it’s really a suspicious activity and if it should be reported to the analyst. In small boring organizations it might be worthwhile to trigger an alert. In organizations with spicier activity going on, we’d like the analyst to invest his precious time investigating the users with the highest risk, and not boring Joe.</p>
+<p>We can conclude that the personal adaptive threshold should also adapt to the organization’s overall amount of anomalous activity: if there are many anomalous activities Joe’s threshold should increase in such a way that he’ll trigger an alert only if he performs a radical anomalous activity. If there are not that many alerts in the organization, Joe might be worth the time of the analyst (it’s either that or playing <a href="http://worldofsolitaire.com/">Solitaire</a>). So how do we do it?</p>
+<hr />
+<p>Let’s inspect the organization’s past SMART values:</p>
+<p><img alt="the organization's past SMART values" src="images/organization-curve.png" /></p>
+<p>We can see many interesting things have occurred in the organization...</p>
+<p>So Joe’s working on Sunday should clearly be considered as non-alert. It’s done by combining the organization’s blue curve with Joe’s green curve:</p>
+<p><img alt="combined curvs" src="images/combined-curve.png" /></p>
+<p>Joe’s green curve turned into the yellow one (so his sensitivity threshold has increased), which is exactly what we wanted.</p>
+<hr />
+<p>In future posts I’ll continue and discuss the technical details of how this adaptive threshold is implemented; how the user’s curve is fitted to his SMART values; how the organization’s curve is fitted to the organization’s behaviour; and how they are combined into one curve.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://localhost:8000/tag/statistics.html">statistics</a>, <a href="http://localhost:8000/tag/data-science.html">data-science</a>, <a href="http://localhost:8000/tag/anomalies.html">anomalies</a></p>
+        </div>
+
+    <hr>
+
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'detecting-anomalies-in-a-SMART-Way.html';
+                var disqus_url = 'http://localhost:8000/detecting-anomalies-in-a-SMART-Way.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://localhost:8000/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://localhost:8000/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://localhost:8000/theme/js/clean-blog.min.js"></script>
+
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>
