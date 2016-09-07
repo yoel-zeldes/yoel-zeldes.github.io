@@ -51,7 +51,6 @@ CSS_OVERRIDE = 'css/overrides.css'
 HEADER_COVER = 'images/home-bg.jpg'
 
 SUMMARY = True
-STATIC_PATHS = ['pages']
+STATIC_PATHS = ['pages', 'images', 'css']
 MENUITEMS = (('Posts', SITEURL),)
-STATIC_PATHS = ['css']
 
