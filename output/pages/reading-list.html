@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-        <title>Another Datum - Tag statistics</title>
+        <title>Reading List</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="http://localhost:8000/theme/css/bootstrap.min.css" rel="stylesheet">
@@ -59,7 +59,7 @@
                         <li><a href="http://localhost:8000">Posts</a></li>
 
                             <li><a href="http://localhost:8000/pages/about.html">about me</a></li>
-                            <li><a href="http://localhost:8000/pages/resources.html">Resources</a></li>
+                            <li class="active"><a href="http://localhost:8000/pages/reading-list.html">Reading List</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -67,12 +67,13 @@
         <!-- /.container -->
     </nav>
 
-        <header class="intro-header" style="background-image: url('images/home-bg.jpg')">
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/reading_list_cover.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="page-heading">
-                        <h1>Tag statistics</h1>
+                    <div class="post-heading">
+                        <h1>Reading List</h1>
                     </div>
                 </div>
             </div>
@@ -83,29 +84,32 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="post-preview">
-            <a href="http://localhost:8000/detecting-anomalies-in-a-SMART-Way.html" rel="bookmark" title="Permalink to Detecting Anomalies in a SMART Way">
-                <h2 class="post-title">
-                    Detecting Anomalies in a SMART Way
-                </h2>
-            </a>
-                <p class="article-summary">
-                    Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable.
-                </p>
-            <p class="post-meta">Posted on 10 September 2016</p>
-<p>There are <a data-disqus-identifier="detecting-anomalies-in-a-SMART-Way.html" href="http://localhost:8000/detecting-anomalies-in-a-SMART-Way.html#disqus_thread">comments</a>.</p>        </div>
-        <div class="post-preview">
-            <a href="http://localhost:8000/who-wants-to-be-a-coder.html" rel="bookmark" title="Permalink to Who wants to be a coder">
-                <h2 class="post-title">
-                    Who wants to be a coder
-                </h2>
-            </a>
-                <p class="article-summary">
-                    Learn how to use statistical tests to find out if a difference of means is significant, using the Coder Survey dataset as a case study.
-                </p>
-            <p class="post-meta">Posted on 09 September 2016</p>
-<p>There are <a data-disqus-identifier="who-wants-to-be-a-coder.html" href="http://localhost:8000/who-wants-to-be-a-coder.html#disqus_thread">comments</a>.</p>        </div>
-
+    <article>
+        <p>Every good blog should have references to other good blogs. It's the way of nature.<br />
+Following is a list to blogs, videos and other ressources I've consumed during my progress as a data scientist.<br />
+Some of them are more basic (good for beginners), and others are more suitable for advanced readers (those who know their statistics and such).</p>
+<ul>
+<li><a href="http://varianceexplained.org">varianceexplained</a> is a great blog by David Robinson, a data scientist at stackoverflow.
+  It contains many great case studies.</li>
+<li><a href="https://www.youtube.com/user/mathematicalmonk/playlists">mathematicalmonk</a> contains several lectures series.
+  I saw two of them: the <em>probability primer</em> (which is a comprehensive series about probability, building the material from the ground up.
+  Suitable for those who want to freshen up their probability knoweledge), and the <em>machine learning</em> series which I can't recommend highly enough
+  (it covers many algorithms with detailed mathematical explanations, but not too detailed so you won't be overwhelemed).</li>
+<li><a href="http://www.jbstatistics.com">jbstatistics</a> contains introductory statistics videos with basic examples of real data.
+  Great to learn how to properly perform hypothesis tests and calculate confidence intervals.</li>
+<li><a href="http://colah.github.io">Christopher Olah</a> has a nice neural networks blog.
+  Spepcifically, I highly recommend the post about <a href="http://colah.github.io/posts/2015-09-NN-Types-FP/">http://colah.github.io/</a>.</li>
+<li><a href="http://allendowney.blogspot.co.il">Probably Overthinking It</a> is yet another great statistics blog.
+  Take <a href="http://allendowney.blogspot.co.il/2011/05/there-is-only-one-test.html">there is only one test</a> for example.</li>
+<li><a href="http://greenteapress.com/thinkstats2">Think Stats</a> is a nice online book about probability and statistics.
+  It delivers all its ideas using python. It covers basic material, but way too long and time consuming.
+  I recommend it to tose who want to get a better practical grasp of the material and have plenty of time (and for that I envy them).</li>
+<li><a href="http://www.unofficialgoogledatascience.com">unofficialgoogledatascience.com</a> is written by google employees - enough said...
+  It contains more theoretical than practical material.</li>
+<li><a href="http://nerds.airbnb.com/data">Airbnb</a> has a great data science team, and it shows.</li>
+<li></li>
+</ul>
+    </article>
             </div>
         </div>
     </div>
