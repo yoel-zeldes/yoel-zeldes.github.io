@@ -1,6 +1,6 @@
 Title: about me
 Slug: about
-header_cover: images/about.jpg
+header_cover: images/about_cover.jpg
 
 My name is Yoel Zeldes. I am a data scientist at [Fortscale](https://fortscale.com/).
 
