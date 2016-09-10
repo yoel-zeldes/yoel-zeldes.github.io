@@ -4,9 +4,9 @@ header_cover: images/about_cover.jpg
 
 My name is Yoel Zeldes. I am a data scientist at [Fortscale](https://fortscale.com/).
 
-I completed my M.Sc. and B.Sc in computer science in the Hebrew University of Jerusalem.
+I completed my M.Sc. and B.Sc in computer science at the Hebrew University of Jerusalem.
 
-I made my living participating in projects related to cyber, computer vision, machine learning, web, mobile and distributed computing.
+I made a living participating in projects related to cyber, computer vision, machine learning, web, mobile and distributed computing.
 
 My main interests are:
 
