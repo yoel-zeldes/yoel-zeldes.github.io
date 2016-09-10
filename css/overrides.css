@@ -1,0 +1,11 @@
+.cell .inner_cell {
+	overflow-x: auto;
+}
+
+.output_subarea {
+	max-width: 100% !important;
+}
+
+.prompt {
+	min-width: 10ex !important;
+}
