@@ -9,6 +9,7 @@ import os
 import sys
 sys.path.append(os.curdir)
 from pelicanconf import *
+import pelicanconf
 
 SITEURL = 'http://anotherdatum.com'
 RELATIVE_URLS = False
@@ -22,3 +23,5 @@ DELETE_OUTPUT_DIRECTORY = True
 
 DISQUS_SITENAME = "anotherdatum"
 GOOGLE_ANALYTICS = "UA-83684090-1"
+
+[item for item in MENUITEMS if item[1] == pelicanconf.SITEURL][0][1] = SITEURL

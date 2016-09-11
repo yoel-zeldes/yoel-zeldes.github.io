@@ -52,5 +52,5 @@ HEADER_COVER = 'images/home-bg.jpg'
 
 SUMMARY = True
 STATIC_PATHS = ['pages', 'images', 'css']
-MENUITEMS = (('Posts', SITEURL),)
+MENUITEMS = [['Posts', SITEURL]]
 
