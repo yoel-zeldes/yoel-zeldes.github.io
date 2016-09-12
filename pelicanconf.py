@@ -9,6 +9,7 @@ SITEURL = 'http://localhost:8000'
 
 PATH = 'content'
 IGNORE_FILES = ['.ipynb_checkpoints']
+DELETE_OUTPUT_DIRECTORY = True
 
 TIMEZONE = 'Israel'
 DEFAULT_DATE_FORMAT = '%d %B %Y'
