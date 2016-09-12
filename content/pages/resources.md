@@ -29,4 +29,4 @@ Some of them are more basic (good for beginners), while others are more suitable
 * If you're into reading mathematical books, [All of Statistics](http://www.bioinfo.org.cn/~wangchao/maa/w.statistic.pdf)
   is a great one for building the formal theory of statistical concepts.
 
-Is your favorite resource not listed here? Drop me a [mail](mailto:yoel.zeldes@gmail.com?Subject=another%20great%20resource) with a link!
+Is your favorite resource not listed here? Drop me a [mail](mailto:yoel.zeldes+anotherdatum@gmail.com?Subject=another%20great%20resource) with a link!
