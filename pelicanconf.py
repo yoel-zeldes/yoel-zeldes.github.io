@@ -8,6 +8,7 @@ SITESUBTITLE = 'A blog by Yoel Zeldes'
 SITEURL = 'http://localhost:8000'
 
 PATH = 'content'
+IGNORE_FILES = ['.ipynb_checkpoints']
 
 TIMEZONE = 'Israel'
 DEFAULT_DATE_FORMAT = '%d %B %Y'
