@@ -55,4 +55,5 @@ HEADER_COVER = 'images/home-bg.jpg'
 SUMMARY = True
 STATIC_PATHS = ['pages', 'images', 'css']
 MENUITEMS = [['Posts', SITEURL]]
+MATH_JAX = {'latex_preview': 'Loading awesomeness...'}
 
