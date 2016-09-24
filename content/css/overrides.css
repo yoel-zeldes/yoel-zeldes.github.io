@@ -9,3 +9,8 @@
 .prompt {
 	min-width: 10ex !important;
 }
+
+.MathJax_Display {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
