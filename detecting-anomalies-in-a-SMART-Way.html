@@ -54,7 +54,7 @@
 	<meta property="article:published_time" content="2016-09-10 21:00:00+03:00">
             <meta property="og:description" content="Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable.">
 
-            <meta property="og:image" content="http://anotherdatum.com/images/detecting-anomalies-in-a-SMART-Way-cover.png">
+            <meta property="og:image" content="http://anotherdatum.com/images/detecting-anomalies-in-a-SMART-Way/cover.png">
 </head>
 
 <body>
@@ -88,7 +88,7 @@
     </nav>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('images/detecting-anomalies-in-a-SMART-Way-cover.png')">
+        <header class="intro-header" style="background-image: url('images/detecting-anomalies-in-a-SMART-Way/cover.png')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -120,19 +120,19 @@
 <p>In order to tackle this problem, we decided to create a second layer of learning and use machine learning aspects to identify these thresholds dynamically, automatically and transparently. Specifically, we take the sum of these individual scores and give it a name – SMART value (Significant Multiple Anomalies useR Threats). The SMART value is mapped into a high score if it crosses the learnt threshold, which in response triggers an alert.</p>
 <p>The only hole in the story is how to automatically come up with a user’s threshold? I will leave the technical details for a future post and for now will just give a teaser.</p>
 <p>Let’s say Jerrard from the sales department has performed some anomalous activities in the past, or in other words, he had high SMART values for several activity timeframes. We can visualize Jerrard's past SMART values with an histogram:</p>
-<p><img alt="Jerrard's past SMART values" src="images/user-curve.png" /></p>
+<p><img alt="Jerrard's past SMART values" src="images/detecting-anomalies-in-a-SMART-Way/user-curve.png" /></p>
 <p>On the horizontal axis we see the SMART values, while the vertical axis shows their count. Jerrard’s threshold is created by fitting the green curve to the histogram. It’s easy to see that because Jerrard has performed suspicious activities in the past, his curve stretches to the right. A new SMART value will trigger an alert only if it’s far enough to the right of the graph so it’s not under his green curve.
 For most users this personalized adaptive threshold works pretty well, but there are also problematic users. Let’s consider Joe from the marketing department. Joe is a really boring guy. He comes to the office every day in the same hour and performs the same activity... Well, his SMART values histogram looks like this:</p>
-<p><img alt="Joe's past SMART values" src="images/degenerated-user-curve.png" /></p>
+<p><img alt="Joe's past SMART values" src="images/detecting-anomalies-in-a-SMART-Way/degenerated-user-curve.png" /></p>
 <p>Pretty boring, right? But today is Sunday, and Joe has a really big campaign he has to finish by tomorrow. So he decides to connect to the company’s VPN so he can finish it. Since it’s Sunday (not typical for boring Joe), one of the models gives a high score, which results with a higher SMART value. This SMART value will be to the right of the green curve, so an alert will be triggered.</p>
 <p>One could argue if it’s really a suspicious activity and if it should be reported to the analyst. In small boring organizations it might be worthwhile to trigger an alert. In organizations with spicier activity going on, we’d like the analyst to invest his precious time investigating the users with the highest risk, and not boring Joe.</p>
 <p>We can conclude that the personal adaptive threshold should also adapt to the organization’s overall amount of anomalous activity: if there are many anomalous activities Joe’s threshold should increase in such a way that he’ll trigger an alert only if he performs a radical anomalous activity. If there are not that many alerts in the organization, Joe might be worth the time of the analyst (it’s either that or playing <a href="http://worldofsolitaire.com/">Solitaire</a>). So how do we do it?</p>
 <hr />
 <p>Let’s inspect the organization’s past SMART values:</p>
-<p><img alt="the organization's past SMART values" src="images/organization-curve.png" /></p>
+<p><img alt="the organization's past SMART values" src="images/detecting-anomalies-in-a-SMART-Way/organization-curve.png" /></p>
 <p>We can see many interesting things have occurred in the organization...</p>
 <p>So Joe’s working on Sunday should clearly be considered as non-alert. It’s done by combining the organization’s blue curve with Joe’s green curve:</p>
-<p><img alt="combined curvs" src="images/combined-curve.png" /></p>
+<p><img alt="combined curvs" src="images/detecting-anomalies-in-a-SMART-Way/combined-curve.png" /></p>
 <p>Joe’s green curve turned into the yellow one (so his sensitivity threshold has increased), which is exactly what we wanted.</p>
 <hr />
 <p>In future posts I’ll continue and discuss the technical details of how this adaptive threshold is implemented; how the user’s curve is fitted to his SMART values; how the organization’s curve is fitted to the organization’s behaviour; and how they are combined into one curve.</p>
