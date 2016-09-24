@@ -3,7 +3,7 @@ Slug: detecting-anomalies-in-a-SMART-Way-part-two
 Date: 2016-09-24 21:00
 Tags: statistics, data-science, anomalies
 Summary: Second part of a posts series about finding anomalous users.
-header_cover: images/detecting-anomalies-in-a-SMART-Way-cover.png
+header_cover: images/detecting-anomalies-in-a-SMART-Way/cover.png
 
 *This post was originally published by me on the [Fortscale blog](https://insider.fortscale.com/detecting-anomalies-in-a-smart-way-part-2).*  
 *Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.*
@@ -25,11 +25,11 @@ Let’s take Joe for example. Joe has never performed any drastic anomalous acti
 
 In order to calculate the probability we first need to model our data. Let’s visualize SMART values collected across all the organization users at one of our customers:
 
-![organization SMART values histogram](images/organization-SMART-values.png)
+![organization SMART values histogram](images/detecting-anomalies-in-a-SMART-Way-part-two/organization-SMART-values.png)
 
 Since the majority of the SMART values are zero, which makes sense as most of the time users don’t do anomalous activities, this histogram is hard to interpret... Let’s inspect the same data after discarding all the zeros:
 
-![organization positive SMART values histogram](images/organization-positive-SMART-values.png)
+![organization positive SMART values histogram](images/detecting-anomalies-in-a-SMART-Way-part-two/organization-positive-SMART-values.png)
 
 That’s better. Now we can see two patterns in the data:
 
@@ -107,7 +107,7 @@ At this point, we have a nice formula for the probability of seeing a SMART valu
 
 Here’s an example of a concrete user’s past SMART values histogram:
 
-![user's scoring function](images/score-function.png)
+![user's scoring function](images/detecting-anomalies-in-a-SMART-Way-part-two/score-function.png)
 
 The user had many near zero SMART values, and a few high ones. The highest one is quite exceptional, about 0.28. The red curve is the scoring function (being one minus the aforementioned probability, multiplied by 100). The light red area is the area where scores are greater than 95. In this area alerts will be triggered. We can see that the 0.28 SMART value indeed triggers an alert.
 
