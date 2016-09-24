@@ -110,7 +110,7 @@ $$&lt;/div&gt;
         "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
         "        displayMath: [ ['$$','$$'] ]," +
         "        processEscapes: true," +
-        "        preview: 'TeX'," +
+        "        preview: 'Loading awesomeness...'," +
         "    }, " +
         "    'HTML-CSS': { " +
         "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
