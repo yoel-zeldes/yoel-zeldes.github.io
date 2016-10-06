@@ -14,3 +14,12 @@
 	overflow-x: auto;
 	overflow-y: hidden;
 }
+
+table.dataframe th, table.dataframe td {
+	padding: 4px;
+}
+
+.output_png {
+	text-align: center;
+}
+	
