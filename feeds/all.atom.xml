@@ -1,5 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2016-09-24T21:00:00+03:00</updated><entry><title>Detecting Anomalies in a SMART Way (Part Two)</title><link href="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-two.html" rel="alternate"></link><published>2016-09-24T21:00:00+03:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-09-24:detecting-anomalies-in-a-SMART-Way-part-two.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me on the &lt;a href="https://insider.fortscale.com/detecting-anomalies-in-a-smart-way-part-2"&gt;Fortscale blog&lt;/a&gt;.&lt;/em&gt;&lt;br /&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2016-10-20T21:00:00+03:00</updated><entry><title>Detecting Anomalies in a SMART Way (Part Three)</title><link href="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-three.html" rel="alternate"></link><published>2016-10-20T21:00:00+03:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-10-20:detecting-anomalies-in-a-SMART-Way-part-three.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me on the &lt;a href="https://insider.fortscale.com/detecting-anomalies-in-a-smart-way-part-3"&gt;Fortscale blog&lt;/a&gt;.&lt;/em&gt;&lt;br /&gt;
+&lt;em&gt;Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;In the &lt;a href="detecting-anomalies-in-a-SMART-Way.html"&gt;first post&lt;/a&gt; of this series I described how we at Fortscale use a personalized adaptive threshold
+for triggering alerts. Each user’s activity is assigned a risk score (known as the SMART value) that triggers a SMART alert when crosses the user’s
+threshold. We explained how the more anomalous activities a user performs through time, the higher his threshold gets.&lt;/p&gt;
+&lt;p&gt;In the &lt;a href="detecting-anomalies-in-a-SMART-Way-part-two.html"&gt;second post&lt;/a&gt; I dived into technical details, explaining how we use the Bayesian inference
+framework in order to calculate a score for a SMART value. We developed a formula for the probability of seeing a SMART value of at least &lt;span class="math"&gt;\(v\)&lt;/span&gt; for a
+user with past SMART values &lt;span class="math"&gt;\(v_1, ... , v_n\)&lt;/span&gt;:
+&lt;/p&gt;
+&lt;div class="math"&gt;$$\left(\dfrac{\beta_{prior} + \sum_{i=1}^{n} v_i}{\beta_{prior} + \sum_{i=1}^{n} v_i + v}\right)^{\alpha_{prior} + n}$$&lt;/div&gt;
+&lt;p&gt;
+Where &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; and &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; are hyper-parameters of the model. In this post we will uncover how we calculate these values.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;The prior is a very powerful attribute of the Bayesian inference framework; it allows one to incorporate her prior knowledge when calculating the probability.
+This attribute is one of the reasons we like Bayesian inference so much. Recall from the first post of the series that we had some challenges with users who
+never acted anomalously, and hence their past SMART values are all zeros. Such users will surely trigger an alert for any positive SMART value. We can make
+use of the prior to prevent this from happening.&lt;/p&gt;
+&lt;p&gt;First, let’s understand how the prior and posterior work together. The prior is the probability function over &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt; given no data. Once we observe some
+data (user generated SMART values), we update our prior and get the posterior, which is again a probability function over &lt;span class="math"&gt;\(\lambda\)&lt;/span&gt;. Since we chose a
+&lt;a href="https://en.wikipedia.org/wiki/Conjugate_prior"&gt;conjugate prior&lt;/a&gt; (which is the Gamma distribution in the case of the exponential model), we gain the desired
+property that the update is simply a matter of updating the Gamma distribution’s parameters. If more data is collected, we can update the posterior’s
+parameters once again. It’s an ongoing process of updating the Gamma distribution’s parameters.&lt;/p&gt;
+&lt;p&gt;The Gamma distribution’s parameters are &lt;span class="math"&gt;\(\alpha\)&lt;/span&gt; and &lt;span class="math"&gt;\(\beta\)&lt;/span&gt; (or &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; and &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt;, since we use the Gamma as a prior). If you’re
+not familiar with this parameterization, you’re encouraged to read about it
+&lt;a href="https://en.wikipedia.org/wiki/Gamma_distribution#Characterization_using_shape_.CE.B1_and_rate_.CE.B2"&gt;here&lt;/a&gt;.
+&lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; can be interpreted as being the number of SMART values virtually observed by a user, while &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; is their sum.
+The user’s real observed data is essentially merged with the virtual data represented by the prior. So if we take the previous example of a user
+with only zeros as his data, and give a prior with high &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; to &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; ratio, we get the same effect as if the user had some
+high values, which results in a higher threshold. This is exactly what we wanted to accomplish.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Following the above, we should choose high &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; to &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; ratio. But what should this ratio be? Our goal is to do what an analyst
+would do when inspecting user activity. The analyst is familiar with the organization and knows which activities could be more interesting, since he has
+the prior knowledge of how many anomalous activities are going on in the organization. If there’s no anomalous activity at all, any suspicious user
+activity should be investigated. If anomalous activities is a matter of routine in the organization, the analyst’s interest threshold is higher.&lt;/p&gt;
+&lt;p&gt;We should simulate this effect using the prior. If we choose &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; to be the number of SMART values in the organization and &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt;
+to be their sum we’ll get the desired effect. Using this method, the prior represents the knowledge of the amount of anomalous activities taking place
+in the organization.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;There is one downside to this approach, namely, it causes &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; to be pretty big, which leads to a prior that is too influential. In turn,
+this will cause that the user’s data will only slightly affect the result probability, i.e. using the posterior will get almost the same results as
+using the prior. This is not what we aimed for. We wanted the threshold to be personal, which means that the user’s data should affect his threshold.&lt;/p&gt;
+&lt;p&gt;The reason the prior is too influential is because it simulates SMART values for the user. If there are 10,000 SMART values in the organization
+&lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; will be 10,000. If the user had only 100 SMART values, they will be outweighed by the simulated 10,000 SMART values.&lt;/p&gt;
+&lt;p&gt;If we want to decrease the prior influence, we should decrease &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; while preserving the &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; to &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; ratio.
+The heuristic we chose after experimenting with real life data is to use some reasonable small number, e.g. 20, and to update &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; to
+be &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; times the average of the organization’s SMART values.&lt;/p&gt;
+&lt;p&gt;The math behind our choice of the number 20 is simple. The mean of the prior Gamma distribution is &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; divided by &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt;.
+The choice of 20 doesn’t affect the mean since we scale &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; accordingly. The variance however, is &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt; divided by
+&lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt; squared. Reducing the prior’s “influence” to 20 causes the variance to increase. The intuition behind the prior’s variance
+is that small variance is analogous to an old stubborn prior that thinks it knows best; when it tells you the expected value is &lt;span class="math"&gt;\(\alpha_{prior}\)&lt;/span&gt;
+divided by &lt;span class="math"&gt;\(\beta_{prior}\)&lt;/span&gt;, it means exactly that. Big variance on the other hand is like an educated young prior. Such prior knows what the
+expected value is, but it is not that stubborn and can be “convinced”. Such prior knows there are surprises down the road and consequently
+allows some uncertainty. &lt;/p&gt;
+&lt;p&gt;The above is what I meant by the prior’s “influence”: more influence means you should listen to it, and less influence means it gives you some hint,
+but you should give more weight to the actual user’s data. Choosing the right prior allows us to enjoy both worlds. We get a reasonable prior which
+takes into account the amount of anomalous activities going on in the organization, while not compromising the desired influence of the user’s data.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="statistics"></category><category term="data-science"></category><category term="anomalies"></category></entry><entry><title>Detecting Anomalies in a SMART Way (Part Two)</title><link href="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-two.html" rel="alternate"></link><published>2016-09-24T21:00:00+03:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-09-24:detecting-anomalies-in-a-SMART-Way-part-two.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me on the &lt;a href="https://insider.fortscale.com/detecting-anomalies-in-a-smart-way-part-2"&gt;Fortscale blog&lt;/a&gt;.&lt;/em&gt;&lt;br /&gt;
 &lt;em&gt;Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;In the &lt;a href="detecting-anomalies-in-a-SMART-Way.html"&gt;previous post&lt;/a&gt; of this series I described how we at Fortscale use a personalized adaptive threshold for triggering alerts. Each user’s activity is assigned a risk score (known as the SMART value) that triggers a SMART Alert when crosses the user’s threshold. We explained how the more anomalous activities a user performs through time, the higher his threshold gets. This creates the desired effect that the analyst will be notified of a user only when that user performs a truly anomalous activity, even for him.&lt;/p&gt;
