@@ -1,5 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2016-11-08T21:00:00+02:00</updated><entry><title>Pelican and GitHub Pages workflow</title><link href="http://anotherdatum.com/pelican-and-github-pages-workflow.html" rel="alternate"></link><published>2016-11-08T21:00:00+02:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-11-08:pelican-and-github-pages-workflow.html</id><summary type="html">&lt;p&gt;This blog is powered by &lt;a href="http://docs.getpelican.com/en/stable"&gt;Pelican&lt;/a&gt; and hosted using &lt;a href="https://pages.github.com/"&gt;GitHub Pages&lt;/a&gt;.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2016-11-10T21:00:00+02:00</updated><entry><title>Avoid committing junk</title><link href="http://anotherdatum.com/avoid-committing-junk.html" rel="alternate"></link><published>2016-11-10T21:00:00+02:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-11-10:avoid-committing-junk.html</id><summary type="html">&lt;p&gt;In the development process every developer writes stuff he doesn't intend to commit and push to the remote server,
+e.g. debug prints. It happens to all of us every now and then: we forget to remove this temporary stuff before committing...&lt;/p&gt;
+&lt;p&gt;I solved this somewhat embarrassing situation using a simple approach: to every line I don't want to accidentally commit
+I add the magic characters sequence &lt;em&gt;xxx&lt;/em&gt;. This sequence can be in any part of the line: inside a comment, as a variable name,
+as a function name, you name it. A few usage examples:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Debug print: &lt;code&gt;print 'xxx reached this line'&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Variable used for debugging: &lt;code&gt;xxxCounter = 0&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Temporary function: &lt;code&gt;def xxxPrintDebugInfo():&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;TODO which must be attended before committing: &lt;code&gt;# TODO: don't forget to refactor this function xxx&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The way I implemented it is using git hooks, which is git's mechanism to fire off custom scripts when certain important actions occur.
+I used the pre-commit hook for validating the commit's content.&lt;/p&gt;
+&lt;p&gt;Just create a file with the name &lt;code&gt;.git/hooks/pre-commit&lt;/code&gt; with the following content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="nv"&gt;marks&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;xxx,aaa,asd
+&lt;span class="nv"&gt;marksRegex&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;(&lt;/span&gt;&lt;span class="nv"&gt;$marks&lt;/span&gt;&lt;span class="s2"&gt;)&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -r &lt;span class="s1"&gt;&amp;#39;s/,/|/g&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nv"&gt;marksMessage&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$marks&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -r &lt;span class="s1"&gt;&amp;#39;s/,/ or /g&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; git diff --staged &lt;span class="p"&gt;|&lt;/span&gt; egrep -q &lt;span class="s2"&gt;&amp;quot;^\+.*&lt;/span&gt;&lt;span class="nv"&gt;$marksRegex&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;You forgot to remove a line containing &lt;/span&gt;&lt;span class="nv"&gt;$marksMessage&lt;/span&gt;&lt;span class="s2"&gt;. You can forecully commit using \&amp;quot;commit -n\&amp;quot;&amp;quot;&lt;/span&gt;
+        &lt;span class="nb"&gt;exit&lt;/span&gt; 1
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;marks&lt;/code&gt; contains the characters sequences which are not allowed to be committed.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git diff --staged&lt;/code&gt; shows the changes which will be committed. The changes pass through a regular expression
+   that searches for any forbidden mark (using &lt;code&gt;egrep&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;If a forbidden mark is found, the script exits with an error code, causing the commit to fail. &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you want to bypass the hook (e.g. you want to commit a binary file such as an image, which may contain a forbidden mark), you can &lt;code&gt;commit -n&lt;/code&gt;.&lt;/p&gt;</summary><category term="git"></category></entry><entry><title>Pelican and GitHub Pages workflow</title><link href="http://anotherdatum.com/pelican-and-github-pages-workflow.html" rel="alternate"></link><published>2016-11-08T21:00:00+02:00</published><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-11-08:pelican-and-github-pages-workflow.html</id><summary type="html">&lt;p&gt;This blog is powered by &lt;a href="http://docs.getpelican.com/en/stable"&gt;Pelican&lt;/a&gt; and hosted using &lt;a href="https://pages.github.com/"&gt;GitHub Pages&lt;/a&gt;.
 In this post I'll describe the workflow I'm using when deploying new posts.&lt;/p&gt;
 &lt;p&gt;For those of you not familiar with these technologies, Pelican is a static site generator (meaning you can write your content in a format such
 as &lt;a href="http://daringfireball.net/projects/markdown"&gt;Markdown&lt;/a&gt;, and Pelican will automatically generate the HTML files for you), and GitHub Pages is

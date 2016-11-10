@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-        <meta charset="utf-8">
+            <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-        <title>Another Datum - Tag git</title>
+        <title>Avoid committing junk</title>
 
             <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
@@ -34,8 +34,25 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-                <meta property="og:locale" content="en">
+
+
+        <meta name="description" content="Have you ever accidentaly pushed temporary stuff to the remote git server? Then keep reading.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="git">
+
+	                <meta property="og:locale" content="en">
 		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/avoid-committing-junk.html">
+	<meta property="og:title" content="Avoid committing junk">
+	<meta property="article:published_time" content="2016-11-10 21:00:00+02:00">
+            <meta property="og:description" content="Have you ever accidentaly pushed temporary stuff to the remote git server? Then keep reading.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/avoid-committing-junk/cover.png">
 </head>
 
 <body>
@@ -68,12 +85,15 @@
         <!-- /.container -->
     </nav>
 
-        <header class="intro-header" style="background-image: url('images/home-bg.jpg')">
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/avoid-committing-junk/cover.png')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="page-heading">
-                        <h1>Tag git</h1>
+                    <div class="post-heading">
+                        <h1>Avoid committing junk</h1>
+                        <span class="meta">Posted on 10 November 2016</span>
+                        
                     </div>
                 </div>
             </div>
@@ -84,61 +104,64 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-<p>Hi there, and welcome to my blog.</p>
-<p>Here you'll find resources about data science, software engineering, and life. Well, maybe not life...</p>
-<p>Hope you enjoy.</p>
-<hr />
+    <!-- Post Content -->
+    <article>
+        <p>In the development process every developer writes stuff he doesn't intend to commit and push to the remote server,
+e.g. debug prints. It happens to all of us every now and then: we forget to remove this temporary stuff before committing...</p>
+<p>I solved this somewhat embarrassing situation using a simple approach: to every line I don't want to accidentally commit
+I add the magic characters sequence <em>xxx</em>. This sequence can be in any part of the line: inside a comment, as a variable name,
+as a function name, you name it. A few usage examples:</p>
+<ul>
+<li>Debug print: <code>print 'xxx reached this line'</code>.</li>
+<li>Variable used for debugging: <code>xxxCounter = 0</code>.</li>
+<li>Temporary function: <code>def xxxPrintDebugInfo():</code>.</li>
+<li>TODO which must be attended before committing: <code># TODO: don't forget to refactor this function xxx</code>.</li>
+</ul>
+<p>The way I implemented it is using git hooks, which is git's mechanism to fire off custom scripts when certain important actions occur.
+I used the pre-commit hook for validating the commit's content.</p>
+<p>Just create a file with the name <code>.git/hooks/pre-commit</code> with the following content:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 
-<!-- Begin MailChimp Signup Form -->
-<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:300px;}
-	#mc_embed_signup form{padding: 0;}
-	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-</style>
-<div id="mc_embed_signup">
-<form action="//anotherdatum.us14.list-manage.com/subscribe/post?u=6894d7badcfb253606fa3fb54&amp;id=c6f34ad6b7" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-    <div id="mc_embed_signup_scroll">
-	<h2>Get updated of new posts</h2>
-<div class="mc-field-group">
-	<label for="mce-EMAIL">Email Address </label>
-	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-</div>
-	<div id="mce-responses" class="clear">
-		<div class="response" id="mce-error-response" style="display:none"></div>
-		<div class="response" id="mce-success-response" style="display:none"></div>
-	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6894d7badcfb253606fa3fb54_c6f34ad6b7" tabindex="-1" value=""></div>
-    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-    </div>
-</form>
-</div>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
-<!--End mc_embed_signup-->
-<hr />        <div class="post-preview">
-            <a href="http://anotherdatum.com/avoid-committing-junk.html" rel="bookmark" title="Permalink to Avoid committing junk">
-                <h2 class="post-title">
-                    Avoid committing junk
-                </h2>
-            </a>
-                <p class="article-summary">
-                    Have you ever accidentaly pushed temporary stuff to the remote git server? Then keep reading.
-                </p>
-            <p class="post-meta">Posted on 10 November 2016</p>
-<p>There are <a data-disqus-identifier="avoid-committing-junk.html" href="http://anotherdatum.com/avoid-committing-junk.html#disqus_thread">comments</a>.</p>        </div>
-        <div class="post-preview">
-            <a href="http://anotherdatum.com/pelican-and-github-pages-workflow.html" rel="bookmark" title="Permalink to Pelican and GitHub Pages workflow">
-                <h2 class="post-title">
-                    Pelican and GitHub Pages workflow
-                </h2>
-            </a>
-                <p class="article-summary">
-                    A simple worflow for writing posts using Pelican and GitHub Pages.
-                </p>
-            <p class="post-meta">Posted on 08 November 2016</p>
-<p>There are <a data-disqus-identifier="pelican-and-github-pages-workflow.html" href="http://anotherdatum.com/pelican-and-github-pages-workflow.html#disqus_thread">comments</a>.</p>        </div>
+<span class="nv">marks</span><span class="o">=</span>xxx,aaa,asd
+<span class="nv">marksRegex</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="s2">&quot;(</span><span class="nv">$marks</span><span class="s2">)&quot;</span> <span class="p">|</span> sed -r <span class="s1">&#39;s/,/|/g&#39;</span><span class="sb">`</span>
+<span class="nv">marksMessage</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$marks</span><span class="s2">&quot;</span> <span class="p">|</span> sed -r <span class="s1">&#39;s/,/ or /g&#39;</span><span class="sb">`</span>
+<span class="k">if</span> git diff --staged <span class="p">|</span> egrep -q <span class="s2">&quot;^\+.*</span><span class="nv">$marksRegex</span><span class="s2">&quot;</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">echo</span> <span class="s2">&quot;You forgot to remove a line containing </span><span class="nv">$marksMessage</span><span class="s2">. You can forecully commit using \&quot;commit -n\&quot;&quot;</span>
+        <span class="nb">exit</span> 1
+<span class="k">fi</span>
+</pre></div>
 
+
+<ol>
+<li><code>marks</code> contains the characters sequences which are not allowed to be committed.</li>
+<li><code>git diff --staged</code> shows the changes which will be committed. The changes pass through a regular expression
+   that searches for any forbidden mark (using <code>egrep</code>).</li>
+<li>If a forbidden mark is found, the script exits with an error code, causing the commit to fail. </li>
+</ol>
+<p>If you want to bypass the hook (e.g. you want to commit a binary file such as an image, which may contain a forbidden mark), you can <code>commit -n</code>.</p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/git.html">git</a></p>
+        </div>
+
+    <hr>
+
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'avoid-committing-junk.html';
+                var disqus_url = 'http://anotherdatum.com/avoid-committing-junk.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
             </div>
         </div>
     </div>
