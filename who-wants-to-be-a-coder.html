@@ -264,6 +264,7 @@ div.cell.selected.jupyter-soft-selected {
   }
 }
 div.inner_cell {
+  min-width: 0;
   /* Old browsers */
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -284,11 +285,6 @@ div.inner_cell {
   box-flex: 1;
   /* Modern browsers */
   flex: 1;
-}
-@-moz-document url-prefix() {
-  div.inner_cell {
-    overflow-x: hidden;
-  }
 }
 /* input_area and input_prompt must match in top border and margin for alignment */
 div.input_area {
@@ -1026,8 +1022,10 @@ h6:hover .anchor-link {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -1038,9 +1036,11 @@ h6:hover .anchor-link {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
 <style type="text/css">
 /* Temporary definitions which will become obsolete with Notebook release 5.0 */
@@ -1079,8 +1079,7 @@ h6:hover .anchor-link {
 
 .ansi-bold { font-weight: bold; }
 </style>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1118,8 +1117,7 @@ While wandering around at <a href="https://www.kaggle.com/">kaggle.com</a>, I en
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1140,8 +1138,7 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1162,12 +1159,14 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0xda7b550></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYkAAAEKCAYAAADn+anLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X2cVnWd//HXMIKBczE1dkGlJkH60dq00HQxE2zzhq0k
@@ -1345,22 +1344,21 @@ pEuBxxhknA01uqnMecB1ZjYaWEs4APV2AfBi4AtmdjFhhMa5wNdzFucPgevN7B7C/4FzCNXmhTmL
 s1we/+aLCMdyJeGK90zCVXuujqW732ZmbzazXxOaRc4CNpCzOCMGxOf0zuPf/WvA4ugKfTTwecJV
 et6O5zrgEjO7iND3+FFC7SH18dS0HCIikqiRm5tERCRjShIiIpJISUJERBIpSYiISCIlCRERSaQk
 ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can see the data looks almost normal. The mean is greater than the median, which according to <a href="https://en.wikipedia.org/wiki/Nonparametric_skew">nonparametric skewness</a> definition implies the distribution has right skewness. It means there are more older people learning to code than younger people (compared to the mean age of about 29).</p>
 <p>An interesting thing to note is that my wife is also learning to code as I'm writing this post; and she's the age of 29, as the mean age. I guess it'll help me remember that...</p>
-<hr>
-<h1 id="Drilling-down">Drilling down<a class="anchor-link" href="#Drilling-down">¶</a></h1><p>Let's explore the average age within the groups of respondents, where each group is defined by the job role of interest.</p>
-</hr></div>
+<hr/>
+<h1 id="Drilling-down">Drilling down<a class="anchor-link" href="#Drilling-down">Â¶</a></h1><p>Let's explore the average age within the groups of respondents, where each group is defined by the job role of interest.</p>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -1380,12 +1378,14 @@ ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0xd9a1b38></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAf8AAAEMCAYAAADK978JAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XucTtX+wPHPjMFgBpFrbt18k6RSUiR0Vc6pTvo5qSSE
@@ -1736,14 +1736,13 @@ gEG232nlegcAbWz/MQ/tPwr0KH3zYAnL7AQcbvvXeftcYJLtCxdxzpeAm2xvu6T1hmVT9PxDCMuy
 I4FjC6j3aeC4PAHvPuDEz5L4AfIFzKqS/pFHRTow/6z+ao4jtUEI84mefwghhNBgoucfQgghNJhI
 /iGEEEKDieQfQgghNJhI/iGEEEKDieQfQgghNJhI/iGEEEKD+Tc+iDbQeqMcuQAAAABJRU5ErkJg
 gg==
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1756,24 +1755,24 @@ gg==
 <li>They are different.</li>
 </ol>
 <p>The sample supports the second option, but it could be due to chance (especially because of the small QA sample size). Next, we'll use statistical tests to quantify how likely it is to observe such a difference due to chance.</p>
-<hr>
-<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option that can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
-<hr>
-<h1 id="Z-Test">Z-Test<a class="anchor-link" href="#Z-Test">¶</a></h1><p>Assuming the ages are normally distributed, we can use the Z-Test (note that even if they're not normally distributed, we can harness the central limit theorem and use the fact that the mean age is approximately normally distributed).</p>
+<hr/>
+<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">Â¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option that can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
+<hr/>
+<h1 id="Z-Test">Z-Test<a class="anchor-link" href="#Z-Test">Â¶</a></h1><p>Assuming the ages are normally distributed, we can use the Z-Test (note that even if they're not normally distributed, we can harness the central limit theorem and use the fact that the mean age is approximately normally distributed).</p>
 <p>If we knew the mean age's standard deviation, we could normalize the mean age in the following way:</p>
 <p>$Z = \frac{\bar{X} - \mu}{\sigma}$</p>
 <p>$\bar{X}$ is the observed mean age. $\mu$ is the expected mean age given the null hypothesis is true. In our case, we choose the general new coders sample mean age of 29.18 to be $\mu$. Note there are better ways of estimating $\mu$ (and more suitable statistical tests, e.g. - two-sample T-Test, which I choose not to describe in this post to keep it simple), but for the sake of simplicity I'll stick to 29.18; since I have a lot of data I think it's a good enough estimator.</p>
 <p>$Z$ is a normalized normal random variable: $Z \sim Norm(0, 1)$. As such, given the observed value of the $\bar{X}$, we can calculate its probability, and see if it's below a reasonable threshold. If it does - we'll reject the null hypothesis.</p>
 <p>Z-Test assumes we know $\sigma$. Well, we don't. Despair not, T-Test for the rescue!</p>
-<hr>
-<h1 id="T-Test">T-Test<a class="anchor-link" href="#T-Test">¶</a></h1><p>T-Test is the same as Z-test, with the difference of not knowing $\sigma$. It works as follows:</p>
+<hr/>
+<h1 id="T-Test">T-Test<a class="anchor-link" href="#T-Test">Â¶</a></h1><p>T-Test is the same as Z-test, with the difference of not knowing $\sigma$. It works as follows:</p>
 <p>$T = \frac{\bar{X} - \mu}{\left.s \, \middle/ \sqrt{N} \right.}$</p>
 <p>$s$ is the sample standard deviation of the age. $\left.s \, \middle/ \sqrt{N} \right.$ is the sample standard deviation of the mean age (where $N$ is the number of samples). You can read how it's derived <a href="https://en.wikipedia.org/wiki/Variance#Sum_of_uncorrelated_variables_.28Bienaym.C3.A9_formula.29">here</a>.</p>
 <p>You can see this statistic is very similar to the one calculated at the Z-Test... The T statistic is distributed according to the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">T distribution</a>. The T distribution arises whenever the variance of a normally distributed random variable is unknown.</p>
 <p>It has one parameter called the degrees of freedom. I won't go into details about that, but intuitively it captures the amount of data used for estimating the parameter. In our case, where $\sigma$ is the parameter being estimated, the degrees of freedom is $N - 1$.</p>
 <p>The T distribution approaches the normal distribution as the degrees of freedom approaches infinity.</p>
 <p>We'll use <code>scipy</code> in order to calculate this probability:</p>
-</hr></hr></hr></div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -1792,7 +1791,8 @@ gg==
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The p-value is 0.000551459304572
 </pre>
@@ -1801,8 +1801,7 @@ gg==
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1823,7 +1822,8 @@ gg==
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The two sided test's p-value is 0.00110291860914
 </pre>
@@ -1832,14 +1832,13 @@ gg==
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Still significant...</p>
-<hr>
-<h1 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">¶</a></h1><p>Statisticians like statistical tests. They are powerful, but they have two big disadvantages:</p>
+<hr/>
+<h1 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">Â¶</a></h1><p>Statisticians like statistical tests. They are powerful, but they have two big disadvantages:</p>
 <ol>
 <li>They impose assumptions on the data. In our case, the sample mean age isn't really normal. It's approximately normal, so the T test result is an approximation (although quite a good one).</li>
 <li>Sometimes they make you test something that is similar but not exactly what you wish for. In our case it's not true: we were interested in the mean difference, and that's exactly what the T test provides. If we wanted to test something more complicated with no classical statistical test for the use case, we'd be in trouble.</li>
@@ -1847,7 +1846,7 @@ gg==
 <p>To solve both problems, we can use simulations. We first calculate some statistic of the observed data (as was done before). Instead of calculating the probability to observe that statistic value, we simulate many experiments (assuming the null hypothesis is true), and we count the fraction of the experiments that yielded a statistic which is at least as extreme as the one we calculated before.</p>
 <p>Let me explain why simulations work: if one chooses to use a statistical test whose assumptions are met, the calculated p-value is the true probability of observing a statistic at least as extreme as the one calculated from the actual data (assuming the null hypothesis is true). We can treat it as a Bernoulli trial, where the p-value is the probability of success. Performing simulations is like running the Bernoulli trial many times. The goal of running the simulations is to estimate the probability of success, which is the p-value. Using the MLE method, we simply estimate this probability to be the fraction of successes. This estimator approaches the true p-value as the number of simulations approaches infinity.</p>
 <p>Let's try this approach in our case: the null hypothesis states that there's no difference between the QA engineers mean age and the general new coders mean age. It means that the mean age observed by the group of QA engineers might as well be observed by any random subgroup of new coders. So that's exactly what we'll do; we'll randomly sample a group of the same size as the QA engineers group and calculate the difference between their mean age and the general new coders mean age:</p>
-</hr></div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -1867,7 +1866,8 @@ gg==
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>The p-value is 0.0007
 </pre>
@@ -1876,21 +1876,21 @@ gg==
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We got a similar result, but a little bit different. Note that the more simulations we run, the more exact the result will be (it'll tend to the true p-value).</p>
 <p>Why does it differ from the T test approach? Because the T test assumes the data is normal, while it's only approximately normal.</p>
 <p>In the old days where computers were slow and computing power was expensive, it didn't make a lot of sense to run simulations. Nowadays however, it does make sense (in some situations, anyway). It's a nice approach which should be kept in the back of our head in case of need. <a href="http://allendowney.blogspot.co.il/2011/05/there-is-only-one-test.html">Here</a> is a great post which further discusses the simulations approach.</p>
-<hr>
-<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that one group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
-<hr>
-<h1 id="Implications">Implications<a class="anchor-link" href="#Implications">¶</a></h1><p>Are there any implications to this analysis? First, we should distinguish statistical significance from practical significance. It might be the case that there's a statistical significance, meaning that the observed data isn't just a result of chance, a difference truly exists. Practical significance means that the difference we observed has practical implications: one can act accordingly. Practical significance depends on the problem at hand. In our case I think there's not much to do with the observed mean age difference... If general new coders were 20 years old on average while QA were 40, we could have suggested, for example, that schools for new coders should alter the timetable for the QA track because the QA students probably have kids waiting for them back home.</p>
-</hr></hr></div>
+<hr/>
+<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">Â¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that one group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
+<hr/>
+<h1 id="Implications">Implications<a class="anchor-link" href="#Implications">Â¶</a></h1><p>Are there any implications to this analysis? First, we should distinguish statistical significance from practical significance. It might be the case that there's a statistical significance, meaning that the observed data isn't just a result of chance, a difference truly exists. Practical significance means that the difference we observed has practical implications: one can act accordingly. Practical significance depends on the problem at hand. In our case I think there's not much to do with the observed mean age difference... If general new coders were 20 years old on average while QA were 40, we could have suggested, for example, that schools for new coders should alter the timetable for the QA track because the QA students probably have kids waiting for them back home.</p>
 </div>
 </div>
+</div>
+
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';

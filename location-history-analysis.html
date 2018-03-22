@@ -266,6 +266,7 @@ div.cell.selected.jupyter-soft-selected {
   }
 }
 div.inner_cell {
+  min-width: 0;
   /* Old browsers */
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -286,11 +287,6 @@ div.inner_cell {
   box-flex: 1;
   /* Modern browsers */
   flex: 1;
-}
-@-moz-document url-prefix() {
-  div.inner_cell {
-    overflow-x: hidden;
-  }
 }
 /* input_area and input_prompt must match in top border and margin for alignment */
 div.input_area {
@@ -1028,8 +1024,10 @@ h6:hover .anchor-link {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -1040,9 +1038,11 @@ h6:hover .anchor-link {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
 <style type="text/css">
 /* Temporary definitions which will become obsolete with Notebook release 5.0 */
@@ -1081,8 +1081,7 @@ h6:hover .anchor-link {
 
 .ansi-bold { font-weight: bold; }
 </style>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1117,8 +1116,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1139,7 +1137,8 @@ h6:hover .anchor-link {
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[2]:</div>
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <table border="1" class="dataframe">
@@ -1239,7 +1238,8 @@ h6:hover .anchor-link {
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>available data: 2013-02-18 to 2016-10-03
 </pre>
@@ -1261,8 +1261,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1299,7 +1298,8 @@ h6:hover .anchor-link {
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAAEQCAYAAAC0ia5KAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnWd4FFUXgN/Z9N57A9IIvfduABFEQVCxIGBBiohdUAEV
@@ -3081,14 +3081,13 @@ QaqmphZzFv9EhlyHjHLM8TL4bdtOQkNDaduhE8PHjFO516On/hZ+TpdmCRmks2fP4t69q+CEPvCb
 8RhW0Vz51IVgGjZrIczv+qFSB6nt95vQNXp9HuheV15Yw/MKr0VEREREREREpEpUyktLRERERERE
 RORtQLSWEBEREREREXnrEQMeERERERERkbceMeAREREREREReesRAx4RERERERGRtx4x4BERERER
 ERF56/l/8d71NzpZoPgAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -3114,7 +3113,8 @@ ERF56/l/8d71NzpZoPgAAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAToAAAJLCAYAAAB31FqlAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnXl8VNXZx79nJpnJTGaSyb6QlQQCgYQQEGRXUHFBxRX3
@@ -4167,24 +4167,23 @@ ooEUXYSVlZXhbA3/0le1m35PeryGG264IexjCaF28q5rhG3bvhOdMbwPB5q//JSeQ1t5/90/yeY3
 QiBXdBF1+PBhXnhhFYXX/G3YxvB5XBzd+CIvPPc/im1EIoTanPOKrr7LFYkco4I+JZu5l1yGvfYr
 TNMWh2UMW90+Lrr0ChKyxsvvToi/OudS6hHMIoQQIzKsDayFECIWyD06IUTMk6ITQsQ8KTohRMyT
 ohNCxDwpOiFEzPv/io0WTLLIi70AAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In order to find my country data I just used the median location (using the mean won't do good here, since other countries I've visited are outliers and will influence it).</p>
 <p>Choosing <code>radius</code> to be 3 was done empirically so we can get the whole country in the plot.</p>
 <p>In case you don't recognize, that's Israel. Most of my locations mass is in Tel-Aviv and Jerusalem. That's pretty reasonable, since I used to live in Jerusalem before I moved to Tel Aviv. Additionally, my parents live in Jerusalem, so it's expected that I'll visit them occasionally.</p>
-<hr>
+<hr/>
 <p>An interesting question to ask is how often do I visit my parents. Since I moved out of Jerusalem, it isn't reasonable to expect me to visit them more frequently than once a week. But let's be realistic: once a week might be too much. Once a month however will make me look like a bad son...</p>
 <p>Let's analyze that! First, we'll mark the samples located inside Jerusalem.</p>
-</hr></div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -4206,7 +4205,8 @@ ohNCxDwpOiFEzPv/io0WTLLIi70AAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAAIdCAYAAAA5/6cJAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XlclNXiP/DPYUd2VEBQQcV9R3PDfcur5ppr1yy3zG51
@@ -4934,14 +4934,13 @@ YwgV6PV6NFo7nD2NL3jSDn3FoIGDTJhKCCGsk/3tPpCa15j2j2iZNGUmm77/ipb9p6odhrLrWbjZ
 Gej28OBG9nUQAPZeQYRHtaMsLwM3/xZGjaEty6fvY8/I3x8hRKOnuVVjTY1GYx1dN4UQQgghAEVR
 NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 2YcTIUVeF9EAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -4964,7 +4963,8 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <table border="1" class="dataframe">
@@ -5063,8 +5063,7 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -5086,12 +5085,14 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[9]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0x2005dcf8></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABH4AAADeCAYAAABL5sfkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X/QZXddH/D3J7vJZoKBlp8tkB+jQH4tRkBDtGofpGMi
@@ -5246,14 +5247,13 @@ Rt+Zzknyl1tXAQEAnBH81AsAOJscS3Lh1vOaVXBSa+1Yko9X1fePt1XVNy6xbwAASyfxAwCcNVpr
 X0jyv6vqw0n+Y06+x89JRXu2vyTJP6qqD1bVHUm+bwXdBABYGn/OHQAAAGCgXPEDAAAAMFASPwAA
 AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
 1UoAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -5305,12 +5305,14 @@ AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0x5cb6e1d0></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABIEAAADtCAYAAAAoT2XzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XecVOX1x/HPUUBRxB6NvddoYqJG84u6MVHEBnbFKHYj
@@ -5732,14 +5734,13 @@ YK3Ax8EAAEBX9YmkjfO3o62Cq7P9iaRXImJ8YVlE7FHBvgEAAFQcSSAAANAl2X5f0v9GxDxJM9T8
 O4GaFW1leb2kUyLimYiYL+moKnQTAACgYviJeAAAAAAAgC6AK4EAAAAAAAC6AJJAAAAAAAAAXQBJ
 IAAAAAAAgC6AJBAAAAAAAEAXQBIIAAAAAACgCyAJBAAAAAAA0AWQBAIAAAAAAOgCSAIBAAAAAAB0
 Af8PU7yJJ7b7aEoAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -5762,12 +5763,14 @@ Af8PU7yJJ7b7aEoAAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0x3bc5b198></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABIEAAADtCAYAAAAoT2XzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XucXeO9+PHPN0lRIm51OUrFpRSHllZ/1VPMoUcSSqIu
@@ -6045,14 +6048,13 @@ QJySJEntZhJIkiTpgxY0u52a/b2EfP3UC5hV7h0kSZLULVgOJkmSeqq5wOrl27GsDVtKKc0FXoiI
 AxqXRcT2FYxNkiSp4kwCSZKkHimlNBOYFBFPAxex9JhAS23axvKvAkdFxFMR8QywbxXClCRJqhin
 iJckSZIkSeoB7AkkSZIkSZLUA5gEkiRJkiRJ6gFMAkmSJEmSJPUAJoEkSZIkSZJ6AJNAkiRJkiRJ
 PYBJIEmSJEmSpB7AJJAkSZIkSVIPYBJIkiRJkiSpB/j/o5esOMZ8QvMAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -6078,12 +6080,14 @@ I'll define short periods to be periods of less than a week:</p>
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[12]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[12]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0x5177fa20></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABH4AAADtCAYAAADJCLLnAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XvUZFV55/Hfr2kaogjeEhGwYSEKI4hgYkvG24smcnGW
@@ -6264,14 +6268,13 @@ pQ4cFBE/l3SL7VfOP2f7wBG2DQAAYOQI/AAAgM6IiJ9K+hfb35H0t3r4PX4edugiz79a0n+xfa3t
 6yS9PEMzAQAARobt3AEAAAAAAApFxQ8AAAAAAEChCPwAAAAAAAAUisAPAAAAAABAoQj8AAAAAAAA
 FIrADwAAAAAAQKEI/AAAAAAAABSKwA8AAAAAAEChCPwAAAAAAAAU6v8D6DmA2Y5zRrkAAAAASUVO
 RK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -6294,7 +6297,8 @@ RK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[13]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre>time
 2013-10-01    True
@@ -6308,8 +6312,7 @@ dtype: bool</pre>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -6342,12 +6345,14 @@ dtype: bool</pre>
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[14]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.collections.LineCollection at 0x5f1cbba8></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHsAAADtCAYAAAAvIXmjAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3Xe4FeW1P/DvAhELRWxYULEX7L1zVKzYYkEFrBFvNIm5
@@ -6851,14 +6856,13 @@ wHoROdu+JiJHpVg2IiIiotQx2ENERERNzRjzJoDfi8hKAP+F8jl7yj4a8vo4ABeLyHIRWQ3gjAYU
 k4iIiCg1fPQ6EREREREREVETYWYPEREREREREVETYbCHiIiIiIiIiKiJMNhDRERERERERNREGOwh
 IiIiIiIiImoiDPYQERERERERETURBnuIiIiIiIiIiJoIgz1ERERERERERE2EwR4iIiIiIiIioiby
 /8yZrUyx66ibAAAAAElFTkSuQmCC
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -6883,12 +6887,14 @@ IiIiIiIiImoiDPYQERERERERETURBnuIiIiIiIiIiJoIgz1ERERERERERE2EwR4iIiIiIiIioiby
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[15]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.text.Text at 0x5b736748></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHsAAADtCAYAAAAvIXmjAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XeYnGXV+PHvgVBEWkCSUEMHQaQFpLMQujRRQXh5RQFF
@@ -7136,14 +7142,13 @@ QrWPJElSr+A0LkmS1OjeAVYo3I6OdlxcSukd4JmI+Fzrtoj4ZBljkyRJKjuTPZIkqaGllGYA90TE
 ROBHLNqzZ5Fd29l+NHBcRDwcEZOBgysQpiRJUtm49LokSZIkSVIDsbJHkiRJkiSpgZjskSRJkiRJ
 aiAmeyRJkiRJkhqIyR5JkiRJkqQGYrJHkiRJkiSpgZjskSRJkiRJaiAmeyRJkiRJkhqIyR5JkiRJ
 kqQG8v8Bee7NmUoq93oAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -7168,12 +7173,14 @@ kqQG8v8Bee7NmUoq93oAAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[16]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[16]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.text.Text at 0x5d8d1748></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKwAAADSCAYAAABnwFjrAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xm8ZHdZ5/HvU3fp291JurOHEBIBwYggJARMBEyLOkYx
@@ -7422,26 +7429,26 @@ JJ2f9L5JqD9SP5ZJ+j2F72brFYJoP5X0fmt139TclpoxreY1cvdMr5FuuaRoTOtTmLq7SeGz5uqk
 901aLhbvICBV4to3f+dhHi8AtC3GMwCdgvEMQCdhTEu/bpwSiJQzs/cqFDj/aNJtAYClYDwD0CkY
 zwB0Esa09kCGFQAAAAAAAFKFDCsAAAAAAACkCgErAAAAAAAApAoBKwAAAAAAAKQKASsAAAAAAACk
 CgErAAAAAAAApMr/B/x5XhTMUdz3AAAAAElFTkSuQmCC
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It seems like most of the time I'm kind of ok, and don't get my parents too upset with my visits frequency...</p>
 <p>But there's that huge red pick! It occurred around the birth of my first child, so I think it's reasonable I didn't drive all the way to Jerusalem to pay a visit... And the joy of being grandparents might be greater than the grudge, so I'm ok there.</p>
 <p>One more thing I didn't consider is the frequency of visits my parents conducted to Tel-Aviv. It's reasonable that I don't come to Jerusalem the day after they came visit me in Tel-Aviv. But I don't think my parents' phones have GPS turned on, so I can't extract their data...</p>
-<hr>
+<hr/>
 <p>To conclude:</p>
 <p>Mother, father - if you're reading this, I hope you don't hold a grudge against me (or just didn't understand this analysis).</p>
-</hr></div>
 </div>
 </div>
+</div>
+
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';

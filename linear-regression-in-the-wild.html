@@ -265,6 +265,7 @@ div.cell.selected.jupyter-soft-selected {
   }
 }
 div.inner_cell {
+  min-width: 0;
   /* Old browsers */
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -285,11 +286,6 @@ div.inner_cell {
   box-flex: 1;
   /* Modern browsers */
   flex: 1;
-}
-@-moz-document url-prefix() {
-  div.inner_cell {
-    overflow-x: hidden;
-  }
 }
 /* input_area and input_prompt must match in top border and margin for alignment */
 div.input_area {
@@ -1027,8 +1023,10 @@ h6:hover .anchor-link {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -1039,9 +1037,11 @@ h6:hover .anchor-link {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
 <style type="text/css">
 /* Temporary definitions which will become obsolete with Notebook release 5.0 */
@@ -1080,8 +1080,7 @@ h6:hover .anchor-link {
 
 .ansi-bold { font-weight: bold; }
 </style>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1122,7 +1121,8 @@ h6:hover .anchor-link {
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[2]:</div>
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <table border="1" class="dataframe">
@@ -1167,8 +1167,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1188,12 +1187,14 @@ h6:hover .anchor-link {
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0xa1b0320></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZ4AAAEZCAYAAACnyUNvAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xt0VeW97vHvAyQQBRS3CIqaaBXFvXVI3FD38RaqeBvd
@@ -1364,14 +1365,13 @@ krpySbtL+pOkI4pdL7NC8cgFZr2ApOuAivTxZkTcWOQqmRWMg8esF5BURjKA63rgv4V/Ma2EuanN
 rHfYm2T64SHAoCLXxaygfMZj1gtIehSYSzKS9n4RcWWRq2RWMLv0RHBmpUDSvwDNETFPUj/g/0iq
 iYj6IlfNrCB8xmNmZpnyNR4zM8uUg8fMzDLl4DEzs0w5eMzMLFMOHjMzy5SDx8zMMuXgMTOzTDl4
 zMwsU/8fmH9cZ/b38AMAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1392,12 +1392,14 @@ zMwsU/8fmH9cZ/b38AMAAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[4]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.axes._subplots.AxesSubplot at 0xa2256a0></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZUAAAEZCAYAAABfKbiYAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+cXHV97/HXJySbHUg2P3QBISbBQiBYLQndiBVlgwmg
@@ -1595,14 +1597,13 @@ JMTMvgDkwsfT7n5tykUSiZ2CikhCzGwcwUSe/cAfuP7zSRNS9ZdIcl5PsNztRKA15bKI1IUyFZGE
 mNldwB0EMzMf4+6fSLlIIrFriEW6RBqdmX0Y2Ofua81sDPBDM+t09+6UiyYSK2UqIiISG7WpiIhI
 bBRUREQkNgoqIiISGwUVERGJjYKKiIjERkFFRERio6AiIiKxUVAREZHY/H+iR1EA6XQcPgAAAABJ
 RU5ErkJggg==
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1625,12 +1626,14 @@ RU5ErkJggg==
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre>[<matplotlib.lines.Line2D at 0xb251320>]</pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZUAAAEZCAYAAABfKbiYAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+cXHV97/HXJySbHUiyEFxAfiRBIRJUYEMTtVLZYALY
@@ -1844,14 +1847,13 @@ ROKmEfUidWJmfwekwsez7n5DwkUSiZ2CikidmNkEgok8+4E/dv3nk1FI1V8i9fMqguVuJwOtCZdF
 pCaUqYjUiZndD6whmJn5RHf/VMJFEoldUyzSJdLszOxDwIC7rzWzccB/mFmnu3cnXDSRWClTERGR
 2KhNRUREYqOgIiIisVFQERGR2CioiIhIbBRUREQkNgoqIiISGwUVERGJjYKKiIjE5v8D4W4ZFRUy
 bZcAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1875,12 +1877,14 @@ bZcAAAAASUVORK5CYII=
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.text.Text at 0xb4e6080></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYkAAAEKCAYAAADn+anLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+UXHWZ5/H3A0knDUknYWxBE+iggAQZJXES2HXm0FGD
@@ -2053,14 +2057,13 @@ Sxx/D/BE/Ltri34No17P6USjhbYBq4qOJyXG9wKvE42+ejR+308HDiNabuVp4D5g9nifRcGv41T2
 j25qmNiBdxN9oXgM+Dui0U2NFP8VcSyPE3X6Tg05fmAd8GvgVaIk92lgTq3xFlXupMRfl3JTk+lE
 RCRVEM1NIiISJiUJERFJpSQhIiKplCRERCSVkoSIiKRSkhARkVRKEiIikkpJQkREUv1/1J1uydqp
 4IMAAAAASUVORK5CYII=
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -2088,7 +2091,8 @@ RCRVEM1NIiISJiUJERFJpSQhIiKplCRERCSVkoSIiKRSkhARkVRKEiIikkpJQkREUv1/1J1uydqp
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAY4AAAEZCAYAAACAZ8KHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XmczfX+wPHX264hWjRlrHdabkJXXUspjSKtlm4kJLT9
@@ -2346,14 +2350,13 @@ itNktAFoII7qOEvCApyJs+b2frcG4c9svvvd8/LyG1BFRJq4sZTyWWSnhqp+CzztXqeCn7doTIFZ
 +nlBRH4GlgJXubWPsSLyixvDq6q6LwD3bUyebFp1Y/zgftv/CGinqj+HOh5jQskShzHGmHyxpipj
 jDH5YonDGGNMvljiMMYYky+WOIwxxuSLJQ5jjDH5YonDGGNMvljiMMYYky//D06NQnIGidNzAAAA
 AElFTkSuQmCC
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -2374,7 +2377,8 @@ AElFTkSuQmCC
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>y = 70.023655 + 2.973585*x
 </pre>
@@ -2383,12 +2387,11 @@ AElFTkSuQmCC
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
+<hr/>
 <p>We got a consistent estimator of the parameters required for calculating $y$ given $x$ (where both have measurement errors), or in other words, the line's coefficients.</p>
 <p>Up until now all I've done is plain old linear regression. The interesting thing about this task is that $x$ has measurement error (which is typical in real world use cases).</p>
 <p>If we want to estimate the parameters required for calculating $y$ given the exact $x$ value (without measurement error), we need to use a different approach. Using simple linear regression without accounting for $x$ being random with noise results in line slope slightly smaller than the <em>true</em> line slope (the line describing $x$ without measurement errors). You can read <a href="https://en.wikipedia.org/wiki/Errors-in-variables_models#Motivational_example">this wiki page</a> for learning why.</p>
@@ -2397,7 +2400,7 @@ AElFTkSuQmCC
 </blockquote>
 <p>So in our settings, $\delta$ is 2 squared.</p>
 <p>Using the formulas found in the <a href="https://en.wikipedia.org/wiki/Deming_regression#Solution">wiki page</a>, we get</p>
-</hr></div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
@@ -2420,8 +2423,7 @@ AElFTkSuQmCC
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -2441,7 +2443,8 @@ AElFTkSuQmCC
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>y = 19.575797 + 3.391855*x
 </pre>
@@ -2466,12 +2469,14 @@ AElFTkSuQmCC
 </div>
 <div class="output_wrapper">
 <div class="output">
-<div class="output_area"><div class="prompt output_prompt">Out[11]:</div>
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
 <div class="output_text output_subarea output_execute_result">
 <pre><matplotlib.legend.Legend at 0xb961278></pre>
 </div>
 </div>
-<div class="output_area"><div class="prompt"></div>
+<div class="output_area">
+<div class="prompt"></div>
 <div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbcAAAEbCAYAAABZScp+AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnXd4VFX6+D8HSCAICS0oNaELqAhIcW2JgqiAK+JioqJo
@@ -2826,28 +2831,28 @@ eCDrLEnzVDxgdyB3LrO28h1KzGoi6QVgTlqOR8SWzJHMWsuDm1lNJM2kuGH1GeDu8H8+s57xYUmz
 +iwE5gNXAldkzmLWat5zM6uJpJ3AOxRPQrg2IjZkjmTWWn3xsFKzfifpEeCPiNguaQbwqaT7ImJv
 5mhmreQ9NzMzax2fczMzs9bx4GZmZq3jwc3MzFrHg5uZmbWOBzczM2sdD25mZtY6HtzMzKx1PLiZ
 mVnr/A0YmrpxvtBkmgAAAABJRU5ErkJggg==
-">
-</img></div>
+"/>
 </div>
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
+<hr/>
 <p>We fit two models: one is a simple linear regression model, and the other is a linear regression model accounting for the $x$ measurement errors.</p>
 <p>The more simple one may be enough if our purpose is to calculate $y$ given a new $x$ where the new $x$ also has measurement error (resulting from the same distribution as the measurement errors used when training the model).</p>
 <p>If we want to state the true relationship for $y$ as a function of $x$ in a world without measurement errors, we should go with the second model.</p>
-<hr>
+<hr/>
 <p>This was a great interview question, since I got to learn a new kind of model, which is pretty nice :)</p>
 <p>Although this isn't really an example for <em>linear regression in the wild</em> as the title suggests (ok, I lied), this post does demonstrate an important concept many people don't deal with: the dependant variables in many cases are measured in an inaccurate way, which might need to be accounted for (depending on the application).</p>
 <p>Regress with care!</p>
-</hr></hr></div>
 </div>
 </div>
+</div>
+
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
     mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';

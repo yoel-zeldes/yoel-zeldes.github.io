@@ -127,7 +127,7 @@ I used the pre-commit hook for validating the commit's content.</p>
 <span class="nv">marksMessage</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$marks</span><span class="s2">&quot;</span> <span class="p">|</span> sed -r <span class="s1">&#39;s/,/ or /g&#39;</span><span class="sb">`</span>
 <span class="k">if</span> git diff --staged <span class="p">|</span> egrep -q <span class="s2">&quot;^\+.*</span><span class="nv">$marksRegex</span><span class="s2">&quot;</span><span class="p">;</span> <span class="k">then</span>
         <span class="nb">echo</span> <span class="s2">&quot;You forgot to remove a line containing </span><span class="nv">$marksMessage</span><span class="s2">. You can forecully commit using \&quot;commit -n\&quot;&quot;</span>
-        <span class="nb">exit</span> 1
+        <span class="nb">exit</span> <span class="m">1</span>
 <span class="k">fi</span>
 </pre></div>
 
