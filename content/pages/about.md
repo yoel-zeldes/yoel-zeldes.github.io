@@ -2,7 +2,7 @@ Title: about me
 Slug: about
 header_cover: images/about_cover.jpg
 
-My name is Yoel Zeldes. I am a data scientist at [Fortscale](https://fortscale.com/).
+My name is Yoel Zeldes. I am an algorithm engineer at [Taboola](http://engineering.taboola.com/).
 
 I completed my M.Sc. and B.Sc in computer science at the Hebrew University of Jerusalem.
 
