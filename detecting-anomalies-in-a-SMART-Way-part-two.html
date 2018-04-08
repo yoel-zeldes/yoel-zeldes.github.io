@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Detecting Anomalies in a SMART Way (Part Two)</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Second part of a posts series about finding anomalous users.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="statistics">
+        <meta name="tags" content="data-science">
+        <meta name="tags" content="anomalies">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-two.html">
+	<meta property="og:title" content="Detecting Anomalies in a SMART Way (Part Two)">
+	<meta property="article:published_time" content="2016-09-24 21:00:00+03:00">
+            <meta property="og:description" content="Second part of a posts series about finding anomalous users.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/detecting-anomalies-in-a-SMART-Way/cover.png">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/detecting-anomalies-in-a-SMART-Way/cover.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Detecting Anomalies in a SMART Way (Part Two)</h1>
+                        <span class="meta">Posted on 24 September 2016</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p><em>This post was originally published by me on the <a href="https://insider.fortscale.com/detecting-anomalies-in-a-smart-way-part-2">Fortscale blog</a>.</em><br />
+<em>Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.</em></p>
+<hr />
+<p>In the <a href="detecting-anomalies-in-a-SMART-Way.html">previous post</a> of this series I described how we at Fortscale use a personalized adaptive threshold for triggering alerts. Each user’s activity is assigned a risk score (known as the SMART value) that triggers a SMART Alert when crosses the user’s threshold. We explained how the more anomalous activities a user performs through time, the higher his threshold gets. This creates the desired effect that the analyst will be notified of a user only when that user performs a truly anomalous activity, even for him.</p>
+<p>Moreover, we explained why and how we incorporate the whole organization’s anomalous activity into a user’s threshold so the analyst won’t be bothered by alerts from users who are anomalous, but not anomalous enough compared to other users.</p>
+<p>In this post I’ll dive into the technical details of how we’ve implemented the SMART approach. More specifically, I’ll describe the Bayesian inference framework, and will elaborate on how we harnessed it for creating the personalized adaptive user threshold.</p>
+<hr />
+<p>Bayesian inference is a method for calculating probabilities. The probability of interest in our case is the probability that a given user will perform an anomalous activity with relatively high SMART value.
+If we can estimate this probability we will be able to use it in order to assign the appropriate score to each activity.</p>
+<p>Let’s take Joe for example. Joe has never performed any drastic anomalous activities. He has generated SMART values mostly in the range of 0.1 to 0.2. Generating a SMART value of 0.6 is very unlikely for him. Let’s say we estimate that the probability of Joe generating a SMART value of 0.6 is as low as 1%. If Joe generates a SMART value of 0.6, we’ll be able to use this probability and give this activity a risk score of 99 (which is 100 minus the probability). We could decide that only risk scores above some threshold (i.e. 95) should trigger an alert. For this post we will assume some pre-configured threshold, but get ready, choosing the right threshold is a difficult task as well. We will describe the methods we use to calculate this threshold in a separate post.</p>
+<p>In order to calculate the probability we first need to model our data. Let’s visualize SMART values collected across all the organization users at one of our customers:</p>
+<p><img alt="organization SMART values histogram" src="images/detecting-anomalies-in-a-SMART-Way-part-two/organization-SMART-values.png" /></p>
+<p>Since the majority of the SMART values are zero, which makes sense as most of the time users don’t do anomalous activities, this histogram is hard to interpret... Let’s inspect the same data after discarding all the zeros:</p>
+<p><img alt="organization positive SMART values histogram" src="images/detecting-anomalies-in-a-SMART-Way-part-two/organization-positive-SMART-values.png" /></p>
+<p>That’s better. Now we can see two patterns in the data:</p>
+<ol>
+<li>High SMART values tend to happen less often than low ones.</li>
+<li>It seems like the frequency decays in an aggressive manner (it decreases faster than linear pace).</li>
+</ol>
+<p>Let <span class="math">\(V\)</span> be a random variable representing a SMART value a user might have. A natural model choice would be the exponential distribution (for some <span class="math">\(\lambda\)</span> which is a parameter of the model): 
+</p>
+<div class="math">$$Prob(\text{V = v}) = \lambda e^{-\lambda v}$$</div>
+<p>We could have checked that this model has a good <a href="https://en.wikipedia.org/wiki/Goodness_of_fit">goodness-of-fit</a>, but we don’t really have to; we need to remember that our goal is to give high scores to users who perform activities that are extremely anomalous relative to their own behavioral model. We could have chosen other models that can describe the data, e.g., one with an inverse proportional relationship, but in comparison to the exponential model, this would give lower scores for exceptionally high SMART values. We chose the more aggressive exponential model because it better reduces the false positives.</p>
+<p>Since we model each user separately, we should investigate and make sure that each user’s data follows the same pattern of more or less exponential decay; and it does.</p>
+<hr />
+<p>In order to be able to calculate probabilities for Joe, we first need to estimate his model’s <span class="math">\(\lambda\)</span> from his past SMART values. One <a href="https://en.wikipedia.org/wiki/Frequentist_probability">frequentist approach</a> would be to use the Maximum Likelihood Estimation (<a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">MLE</a>) method in order to estimate <span class="math">\(\lambda\)</span>. The problem with this approach is that we get a <a href="https://en.wikipedia.org/wiki/Point_estimation">point estimate</a>: if we had to guess the best <span class="math">\(\lambda\)</span> and we had only one shot, then MLE would probably be our best choice. But we can do better by using other methods which account for uncertainties.</p>
+<p>To better illustrate the problem, let’s consider a the simpler and more straightforward problem of estimating how biased a coin is. Let <span class="math">\(p\)</span> be the probability of tossing a HEAD. The goal then becomes to estimate <span class="math">\(p\)</span>. If we toss the coin 10 times and 3 of the flips were HEAD, we can estimate <span class="math">\(p\)</span> to be 0.3 using MLE. We obviously have some doubts in this estimation, since there is not enough data; it could be that <span class="math">\(p\)</span> is 0.5, and we got only 3 HEADs due to chance. If we tossed a second coin 1000 times and got 300 HEADs, the MLE would still be 0.3, but our certainty would be greater this time.</p>
+<p>There are numerous mathematical approaches we could deploy here in order to account for uncertainties. We chose the Bayesian inference approach. Bayesianism and frequentism are two key approaches used for estimating probabilities, that represent two different philosophical approaches. The Bayesian method treats the model’s parameter as a random variable which means that it can have any value, and there’s a distribution function, called The Prior, that can tell us what values are more likely than others. The frequentist approach on the other hand argues that the model’s parameter is a fixed quantity; there’s nothing random about it, and one can’t state hist prior belief. The Bayesian’s prior will come in handy, so we chose the Bayesian approach.</p>
+<hr />
+<p>Let's examine the math. Let <span class="math">\(v\)</span> be some hypothetical SMART value which Joe might generate, and <span class="math">\(Data\)</span> be his past SMART values. We can use some basic probability properties to derive the following:<br />
+</p>
+<div class="math">$$
+\begin{split}
+Prob(v | Data) &amp;= \int_{0}^{\infty} Prob(v, \lambda | Data) d\lambda \quad&amp;\text{(1.)} \\
+&amp;= \int_{0}^{\infty} Prob(v | \lambda, Data) Prob(\lambda | Data) d\lambda \quad&amp;\text{(2.)} \\
+&amp;= \int_{0}^{\infty} Prob(v | \lambda) Prob(\lambda | Data) d\lambda \quad&amp;\text{(3.)} \\
+&amp;= \int_{0}^{\infty} \lambda e^{-\lambda v} * Prob(\lambda | Data) d\lambda \quad&amp;\text{(4.)}
+\end{split}
+$$</div>
+<p>The equation's steps are</p>
+<ol>
+<li>Use probability marginalization: integrate over all of <span class="math">\(\lambda\)</span>'s possible values.</li>
+<li>Use the <a href="https://en.wikipedia.org/wiki/Chain_rule_(probability)">chain rule</a>.</li>
+<li>Use the assumption that SMART values are independent of each other, so <span class="math">\(v\)</span> is independant of <span class="math">\(Data\)</span>.</li>
+<li>Substitute the probability with the evaluation of the exponential distribution: <span class="math">\(v \sim Exp(\lambda)\)</span>.</li>
+</ol>
+<p>The only piece of the puzzle missing is how to estimate <span class="math">\(Prob(\lambda | Data)\)</span>.
+The bayesian inference approach uses Bayes' rule in the following way:<br />
+</p>
+<div class="math">$$Prob(\lambda | Data) = \dfrac{Prob(Data | \lambda) Prob(\lambda)}{Prob(Data)}$$</div>
+<p>Now we have to calculate the probability of the <span class="math">\(Data\)</span> given <span class="math">\(\lambda\)</span>, and the probability of <span class="math">\(\lambda\)</span>.</p>
+<p>The first part is easy; it is the likelihood function. Since we assume SMART values are independent, we get<br />
+</p>
+<div class="math">$$
+\begin{split}
+Prob(Data | \lambda) &amp;= \prod_{v_i \in Data} Prob(v_i | \lambda) \\
+&amp;= \prod_{v_i \in Data} \lambda e^{-\lambda v_i} \\
+&amp;= \lambda e^{-\lambda \sum_{v_i \in Data}v_i}
+\end{split}
+$$</div>
+<p>The second part is the Prior, which expresses our beliefs about <span class="math">\(\lambda\)</span> before any evidence is taken into account. It turns out that if we choose a specific Prior function, we benefit the nice property where it’s possible to analytically calculate <span class="math">\(Prob(\lambda | Data)\)</span>. Implementation wise, it means that we can write it in a nice closed form without the need to do tedious calculations or employ numerical methods in runtime. I won’t bother you with the details, but in the exponential model case, if you choose the Prior to have the Gamma distribution, then <span class="math">\(Prob(\lambda | Data)\)</span> (also known as the Posterior) is also Gamma, with updated parameters. This kind of Prior is known as <a href="https://en.wikipedia.org/wiki/Conjugate_prior">conjugate prior</a>.</p>
+<p>The Gamma distribution has two parameters which control its shape, <span class="math">\(\alpha\)</span> and <span class="math">\(\beta\)</span>. Let’s say we choose <span class="math">\(\alpha_{prior}\)</span> and <span class="math">\(\beta_{prior}\)</span> for the prior. These parameters state our belief for the values <span class="math">\(\lambda\)</span> can take. Once we observe some SMART values of the user, we update our Prior belief and get a Posterior which is a Gamma with the parameters <span class="math">\(\alpha_{prior} + N\)</span> (where <span class="math">\(N\)</span> is the number of SMART values) and <span class="math">\(\beta_{prior} + \sum_{v_i \in \{\text{user's SMART values}\}}v_i\)</span>.</p>
+<p>If we plug it in our calculations of <span class="math">\(Prob(v | Data)\)</span>, and after some tedious calculations that we will spare the reader, we get<br />
+</p>
+<div class="math">$$
+\begin{split}
+Prob(v | Data) &amp;= \int_{0}^{\infty} \lambda e^{-\lambda v} * Prob(\lambda | Data) d\lambda \\
+&amp;= \quad ... \quad \\
+&amp;= \dfrac{\alpha_{prior} + n}{\beta_{prior} + \sum_{i=1}^{n} v_i + v} \left(\dfrac{\beta_{prior} + \sum_{i=1}^{n} v_i}{\beta_{prior} + \sum_{i=1}^{n} v_i + v}\right)^{\alpha_{prior} + n}
+\end{split}
+$$</div>
+<p>Since SMART values are continuous, we should not compute <span class="math">\(Prob(V = v | Data)\)</span>. Instead, we should calculate <span class="math">\(Prob(V \geq v | Data)\)</span>, which is (after integrating)<br />
+</p>
+<div class="math">$$\left(\dfrac{\beta_{prior} + \sum_{i=1}^{n} v_i}{\beta_{prior} + \sum_{i=1}^{n} v_i + v}\right)^{\alpha_{prior} + n}$$</div>
+<hr />
+<p>At this point, we have a nice formula for the probability of seeing a SMART value of at least <span class="math">\(v\)</span>. This formula has two inputs: the personal data of the user, and the Prior. The higher the SMART values the user has, the higher the probability of seeing <span class="math">\(v\)</span> gets, which consequently means a lower risk score will be given. Once the user has too many anomalies, the risk score <span class="math">\(v\)</span> triggers is lower than the threshold we set, and an alert won’t be created. We can see the adaptive threshold in action! Nice…</p>
+<p>Here’s an example of a concrete user’s past SMART values histogram:</p>
+<p><img alt="user's scoring function" src="images/detecting-anomalies-in-a-SMART-Way-part-two/score-function.png" /></p>
+<p>The user had many near zero SMART values, and a few high ones. The highest one is quite exceptional, about 0.28. The red curve is the scoring function (being one minus the aforementioned probability, multiplied by 100). The light red area is the area where scores are greater than 95. In this area alerts will be triggered. We can see that the 0.28 SMART value indeed triggers an alert.</p>
+<p>In the next post I will elaborate on how to choose a good prior of <span class="math">\(\alpha_{prior}\)</span> and <span class="math">\(\beta_{prior}\)</span>, so stay tuned.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/statistics.html">statistics</a>, <a href="http://anotherdatum.com/tag/data-science.html">data-science</a>, <a href="http://anotherdatum.com/tag/anomalies.html">anomalies</a></p>
+        </div>
+
+    <hr>
+
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'detecting-anomalies-in-a-SMART-Way-part-two.html';
+                var disqus_url = 'http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-two.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>
