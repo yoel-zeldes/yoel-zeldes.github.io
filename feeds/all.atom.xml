@@ -1074,7 +1074,7 @@ h6:hover .anchor-link {
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h1 id="Choosing-Weight-Function"&gt;Choosing Weight Function&lt;a class="anchor-link" href="#Choosing-Weight-Function"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.&lt;/p&gt;
+&lt;h1 id="Choosing-the-Weight-Function"&gt;Choosing the Weight Function&lt;a class="anchor-link" href="#Choosing-the-Weight-Function"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.&lt;/p&gt;
 &lt;p&gt;However, using this approach we'll face a problem: the best path might include edges with high weight, which will result in successive words that aren't semantically similar.&lt;/p&gt;
 &lt;p&gt;To tackle this, we can change $f$ to be&lt;/p&gt;
 &lt;p&gt;$f(n_1, n_2) = \begin{cases}
