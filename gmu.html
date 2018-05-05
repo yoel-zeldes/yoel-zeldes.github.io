@@ -1084,7 +1084,7 @@ h6:hover .anchor-link {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Gated-Multimodal-Units-for-Information-Fusion">Gated Multimodal Units for Information Fusion<a class="anchor-link" href="#Gated-Multimodal-Units-for-Information-Fusion">Â¶</a></h1><p>Deep learning has proven its superiority in many domains, in a variety of tasks such as image classification and text generation. Dealing with tasks that involve inputs from multiple modalities is an interesting research area.</p>
 <p>The Gated Multimodal Unit (GMU) is a new building block proposed by a <a href="https://arxiv.org/abs/1702.01992">recent paper</a>, which is presented in ICLR 2017 as a workshop. The goal of this building block is to fuse information from multiple different modalities in a smart way.</p>
-<p>In this post I'll describe the GMU, and illusrate how it works on a toy data set.</p>
+<p>In this post I'll describe the GMU, and illustrate how it works on a toy data set.</p>
 </div>
 </div>
 </div>
@@ -1092,15 +1092,15 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-architecture">The architecture<a class="anchor-link" href="#The-architecture">Â¶</a></h1><p>Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modailities for instance), the GMU block performs a form of self attention:
+<h1 id="The-architecture">The architecture<a class="anchor-link" href="#The-architecture">Â¶</a></h1><p>Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modalities for instance), the GMU block performs a form of self attention:
 <img alt="Drawing" src="images/gmu/gmu.png" style="width: 250px;"/></p>
 <p>The equations describing the GMU are relatively simple:</p>
 <p>(1)   $h_v = tanh(W_v \cdot x_v)$</p>
 <p>(2)   $h_t = tanh(W_t \cdot x_t)$</p>
 <p>(3)   $z = \sigma(W_z \cdot [x_v, x_t])$</p>
 <p>(4)   $h = z \cdot h_v + (1 - z) \cdot h_t$</p>
-<p>(1) + (2) are tranforming the representations into different representations, which are then attended in (4) according to $z$ which is calculated in (3). Since $z$ is a function of $x_v$ and $x_t$, it means we're dealing with a self attention mechanism.</p>
-<p>The intuition behind the GMU is that it uses the representations themeselves to understand which of the modalities should affect the prediction. For example, if the task is to predict the gender of a photographed person accompanied by a recording of his voice, and in some example the recording is too noisy - the model should learn to use only the image in that example.</p>
+<p>(1) + (2) are transforming the representations into different representations, which are then attended in (4) according to $z$ which is calculated in (3). Since $z$ is a function of $x_v$ and $x_t$, it means we're dealing with a self attention mechanism.</p>
+<p>The intuition behind the GMU is that it uses the representations themselves to understand which of the modalities should affect the prediction. Consider the task of predicting the gender of a photographed person accompanied by a recording of his voice. If the recording of a given example is too noisy, the model should learn to use only the image in that example.</p>
 </div>
 </div>
 </div>
@@ -1109,7 +1109,7 @@ h6:hover .anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Synthetic-data">Synthetic data<a class="anchor-link" href="#Synthetic-data">Â¶</a></h1><p>In the paper they describe a nice synthetic data set which demonstrates how the GMU works.</p>
-<p>Here we'll implement the same data set, and find out for ourselves whether or nor the GMU actually works (spoiler alert: it does).</p>
+<p>Here we'll implement the same data set, and find out for ourselves whether or not the GMU actually works (spoiler alert: it does).</p>
 <p>First, let's do the imports:</p>
 </div>
 </div>
@@ -1141,7 +1141,7 @@ h6:hover .anchor-link {
 <p>Basically what the graph says is that the target class $C$ depicts the values of the modalities $y_v$ and $y_t$ - with some randomness of course.</p>
 <p>In the next step the random variable $M$ decides which of the inputs $y_v$, $y_t$ to ignore, and instead to use a source of noise $\hat{y}_v$, $\hat{y}_t$.</p>
 <p>In the end, $x_v$ and $x_t$ contain either the real source of information which can describe the target class $C$, or random noise.</p>
-<p>The goal of the GMU block is to successfully find out which one of the sources is the informative one given a specific example, and then give all the attention to that source.</p>
+<p>The goal of the GMU block is to successfully find out which one of the sources is the informative one given a specific example, and to give all the attention to that source.</p>
 </div>
 </div>
 </div>
@@ -4007,7 +4007,7 @@ P8KHWUkAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can see $z$ behaves exactly as we want. What's nice about it is that the class of points that reside far from the boundary line are predicted using practically only one of the modalities. It means the model learned when to ignore the modality that contains pure unpredictive noise.</p>
+<p>We can see $z$ behaves exactly as we want (left figure). What's nice about it is that the class of points that reside far from the boundary line are predicted using practically only one of the modalities. It means the model learned when to ignore the modality that contains pure unpredictive noise.</p>
 </div>
 </div>
 </div>
@@ -4015,9 +4015,9 @@ P8KHWUkAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Why-not-to-use-simple-FF?">Why not to use simple FF?<a class="anchor-link" href="#Why-not-to-use-simple-FF?">Â¶</a></h1><p>If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.</p>
+<h1 id="Why-not-to-use-simple-FF-(Feed Forward)?">Why not to use simple FF (Feed Forward)?<a class="anchor-link" href="#Why-not-to-use-simple-FF-(Feed Forward)?">Â¶</a></h1><p>If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.</p>
 <p>These clusters aren't linearly separable. While the GMU gives capacity to the model in order to explain this non-linear behaviour, one could just throw another layer to the mixture instead, thus solving the problem with plain feed-forward (FF) network.</p>
-<blockquote><p>The universal approximation theorem states that a feed-forward network with a single hidden layer containing a finite number of neurons, can approximate continuous functions... (<a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">wikipedia</a>)</p>
+<blockquote><p>The universal approximation theorem states that a feed-forward network with a single hidden layer containing a finite number of neurons, can approximate continuous functions... (<a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Wikipedia</a>)</p>
 </blockquote>
 <p>So indeed, for this contrived example a simple FF will do the job. However, the point in introducing new architectures (GMU in this case) is to introduce inductive bias that allows the training process to take advantage of prior knowledge we have about the problem.</p>
 </div>

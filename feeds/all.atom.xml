@@ -2196,7 +2196,7 @@ h6:hover .anchor-link {
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h1 id="Gated-Multimodal-Units-for-Information-Fusion"&gt;Gated Multimodal Units for Information Fusion&lt;a class="anchor-link" href="#Gated-Multimodal-Units-for-Information-Fusion"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Deep learning has proven its superiority in many domains, in a variety of tasks such as image classification and text generation. Dealing with tasks that involve inputs from multiple modalities is an interesting research area.&lt;/p&gt;
 &lt;p&gt;The Gated Multimodal Unit (GMU) is a new building block proposed by a &lt;a href="https://arxiv.org/abs/1702.01992"&gt;recent paper&lt;/a&gt;, which is presented in ICLR 2017 as a workshop. The goal of this building block is to fuse information from multiple different modalities in a smart way.&lt;/p&gt;
-&lt;p&gt;In this post I'll describe the GMU, and illusrate how it works on a toy data set.&lt;/p&gt;
+&lt;p&gt;In this post I'll describe the GMU, and illustrate how it works on a toy data set.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2204,15 +2204,15 @@ h6:hover .anchor-link {
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h1 id="The-architecture"&gt;The architecture&lt;a class="anchor-link" href="#The-architecture"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modailities for instance), the GMU block performs a form of self attention:
+&lt;h1 id="The-architecture"&gt;The architecture&lt;a class="anchor-link" href="#The-architecture"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modalities for instance), the GMU block performs a form of self attention:
 &lt;img alt="Drawing" src="images/gmu/gmu.png" style="width: 250px;"/&gt;&lt;/p&gt;
 &lt;p&gt;The equations describing the GMU are relatively simple:&lt;/p&gt;
 &lt;p&gt;(1)   $h_v = tanh(W_v \cdot x_v)$&lt;/p&gt;
 &lt;p&gt;(2)   $h_t = tanh(W_t \cdot x_t)$&lt;/p&gt;
 &lt;p&gt;(3)   $z = \sigma(W_z \cdot [x_v, x_t])$&lt;/p&gt;
 &lt;p&gt;(4)   $h = z \cdot h_v + (1 - z) \cdot h_t$&lt;/p&gt;
-&lt;p&gt;(1) + (2) are tranforming the representations into different representations, which are then attended in (4) according to $z$ which is calculated in (3). Since $z$ is a function of $x_v$ and $x_t$, it means we're dealing with a self attention mechanism.&lt;/p&gt;
-&lt;p&gt;The intuition behind the GMU is that it uses the representations themeselves to understand which of the modalities should affect the prediction. For example, if the task is to predict the gender of a photographed person accompanied by a recording of his voice, and in some example the recording is too noisy - the model should learn to use only the image in that example.&lt;/p&gt;
+&lt;p&gt;(1) + (2) are transforming the representations into different representations, which are then attended in (4) according to $z$ which is calculated in (3). Since $z$ is a function of $x_v$ and $x_t$, it means we're dealing with a self attention mechanism.&lt;/p&gt;
+&lt;p&gt;The intuition behind the GMU is that it uses the representations themselves to understand which of the modalities should affect the prediction. Consider the task of predicting the gender of a photographed person accompanied by a recording of his voice. If the recording of a given example is too noisy, the model should learn to use only the image in that example.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2221,7 +2221,7 @@ h6:hover .anchor-link {
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
 &lt;h1 id="Synthetic-data"&gt;Synthetic data&lt;a class="anchor-link" href="#Synthetic-data"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;In the paper they describe a nice synthetic data set which demonstrates how the GMU works.&lt;/p&gt;
-&lt;p&gt;Here we'll implement the same data set, and find out for ourselves whether or nor the GMU actually works (spoiler alert: it does).&lt;/p&gt;
+&lt;p&gt;Here we'll implement the same data set, and find out for ourselves whether or not the GMU actually works (spoiler alert: it does).&lt;/p&gt;
 &lt;p&gt;First, let's do the imports:&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2253,7 +2253,7 @@ h6:hover .anchor-link {
 &lt;p&gt;Basically what the graph says is that the target class $C$ depicts the values of the modalities $y_v$ and $y_t$ - with some randomness of course.&lt;/p&gt;
 &lt;p&gt;In the next step the random variable $M$ decides which of the inputs $y_v$, $y_t$ to ignore, and instead to use a source of noise $\hat{y}_v$, $\hat{y}_t$.&lt;/p&gt;
 &lt;p&gt;In the end, $x_v$ and $x_t$ contain either the real source of information which can describe the target class $C$, or random noise.&lt;/p&gt;
-&lt;p&gt;The goal of the GMU block is to successfully find out which one of the sources is the informative one given a specific example, and then give all the attention to that source.&lt;/p&gt;
+&lt;p&gt;The goal of the GMU block is to successfully find out which one of the sources is the informative one given a specific example, and to give all the attention to that source.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -5119,7 +5119,7 @@ P8KHWUkAAAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;We can see $z$ behaves exactly as we want. What's nice about it is that the class of points that reside far from the boundary line are predicted using practically only one of the modalities. It means the model learned when to ignore the modality that contains pure unpredictive noise.&lt;/p&gt;
+&lt;p&gt;We can see $z$ behaves exactly as we want (left figure). What's nice about it is that the class of points that reside far from the boundary line are predicted using practically only one of the modalities. It means the model learned when to ignore the modality that contains pure unpredictive noise.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -5127,9 +5127,9 @@ P8KHWUkAAAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h1 id="Why-not-to-use-simple-FF?"&gt;Why not to use simple FF?&lt;a class="anchor-link" href="#Why-not-to-use-simple-FF?"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.&lt;/p&gt;
+&lt;h1 id="Why-not-to-use-simple-FF-(Feed Forward)?"&gt;Why not to use simple FF (Feed Forward)?&lt;a class="anchor-link" href="#Why-not-to-use-simple-FF-(Feed Forward)?"&gt;Â¶&lt;/a&gt;&lt;/h1&gt;&lt;p&gt;If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.&lt;/p&gt;
 &lt;p&gt;These clusters aren't linearly separable. While the GMU gives capacity to the model in order to explain this non-linear behaviour, one could just throw another layer to the mixture instead, thus solving the problem with plain feed-forward (FF) network.&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;The universal approximation theorem states that a feed-forward network with a single hidden layer containing a finite number of neurons, can approximate continuous functions... (&lt;a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem"&gt;wikipedia&lt;/a&gt;)&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;The universal approximation theorem states that a feed-forward network with a single hidden layer containing a finite number of neurons, can approximate continuous functions... (&lt;a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem"&gt;Wikipedia&lt;/a&gt;)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;So indeed, for this contrived example a simple FF will do the job. However, the point in introducing new architectures (GMU in this case) is to introduce inductive bias that allows the training process to take advantage of prior knowledge we have about the problem.&lt;/p&gt;
 &lt;/div&gt;
