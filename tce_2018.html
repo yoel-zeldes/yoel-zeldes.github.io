@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Deep Learning: Theory & Practice</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Summary of TCE conference - "Deep Learning: Theory & Practice".">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="conference">
+        <meta name="tags" content="deep learning">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/tce_2018.html">
+	<meta property="og:title" content="Deep Learning: Theory & Practice">
+	<meta property="article:published_time" content="2018-06-18 23:00:00+03:00">
+            <meta property="og:description" content="Summary of TCE conference - "Deep Learning: Theory & Practice".">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/tce/cover.jpg">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/tce/cover.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Deep Learning: Theory & Practice</h1>
+                        <span class="meta">Posted on 18 June 2018</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Last week I had the opportunity to attend at the <a href="http://tce.technion.ac.il/tce-conferences/tce-conference-2018-program">TCE annual conference</a>. It was themed around both theoretical and practical aspects of deep learning. As a deep learning practitioner who enjoys understanding why things work (or don't), I knew I'd find the conference interesting.</p>
+<p>I decided to be a good citizen, and share the highlights with you. Please be aware that by highlights I mean the things I subjectively found interesting. This won't be a thorough summary of the conference.</p>
+<h1>Understanding Optimization and Generalization in Deep Learning</h1>
+<p>The first talk was given by prof. Nati Srebro from the University of Chicago. One of the challenges he tried to tackle was understanding what causes the network to generalize well, despite the model class having extremely high capacity.</p>
+<p>The main takeaway was that the optimization algorithms (SGD, Adam, etc.) introduce an inductive bias. By choosing one of the available algorithms, the training process will be biased towards finding specific type of solutions.</p>
+<p>For instance, although Adam trains faster than SGD (training loss is minimized faster), empirical experimentations show that SGD tends to generalize better (test loss is smaller).</p>
+<p>He showed another interesting example of a FF network without any activation function. The induced class of models is linear functions: the multiple layers are effectively collapsed into one layer. He showed that when using different connection patterns between the layers, we get solutions of different quality, although the models class remains the same. This is due to the inductive bias we introduce to the training process by specifying the connection patterns.</p>
+<p>Eventually, we should keep in mind that deep learning can't just find the optimal solution in terms of generalization <em>magically</em> - even if we have lots of data. This is the reason for using different architectures and different optimization algorithms for different learning problems. Otherwise, using simple FF architectures with simple SGD would do.</p>
+<h1>Efficient Deep Learning with Humans in the Loop</h1>
+<p>In the next talk, Zachary Chase Lipton from Carnegie Mellon University discussed a series of works, each aimed at increasing the efficiency of learning from human interactions.</p>
+<p>In the RL (Reinforcement Learning) setting, the model is exposed to enormous amount of examples while training. The agent can choose how to explore the state-action space. The goal is to explore what reward the possible actions will yield while exploiting the known good actions.</p>
+<p>This tradeoff can be solved using the simple <span class="math">\(\epsilon\)</span>-greedy algorithm: with probability <span class="math">\(1 - \epsilon\)</span> the agent chooses the action which is expected to yield the maximal reward, and with probability <span class="math">\(\epsilon\)</span> a random action is chosen. Usually one anneals down <span class="math">\(\epsilon\)</span> while training.</p>
+<p>This algorithm is obviously not the optimal one. For instance, let's say that in the current state the agent has ten actions to choose from, and it knows that action A is the best with probability 0.5, and so is action B. All the other actions are bad with probability 1.0. If it wants to explore, it'd be wiser to randomly choose only between A and B.</p>
+<p>This is the motivation behind the Thompson Sampling algorithm. For it to work the model has to estimate uncertainty. One way to do it is to use Bayesian Neural Network. In this model, instead of using numbers for the model's weights, we use distributions. In the forward pass we sample from the weights distribution in order to get a point estimate prediction. In the backward pass we update the parameters of the weights distributions using the reparameterization trick. At test time we do inference by sampling from the weights distributions multiple times, thus getting a distribution over the predictions.</p>
+<p>Another interesting topic was how to choose what examples to annotate. One idea was to exploit hierarchies among the labels, and actively select binary questions to ask the annotator. This is similar to the <a href="https://en.wikipedia.org/wiki/Twenty_Questions">twenty questions game</a>.</p>
+<p>The talk ended with an interesting question to keep in mind: datasets tend to have a longer shelf-life than models. When actively annotating the dataset using a specific model, will that dataset be better for a future model compared to a random annotation? The answer is dubious.</p>
+<h1>Unsupervised internal learning</h1>
+<p>Prof. Michal Irani from Weizmann Institute of Science talked about using deep learning for super resolution.</p>
+<p>She explained about the recurrences inside natural images - both inside the same image and across different scales of that image. This is important for super resolution, since one can downscale a given image, find recurrences across the two images, and then learn how to upscale the original image.</p>
+<p>This approach has been done in the past using classical algorithms, and in this talk Michal introduced how to do it using deep learning using only the given image.</p>
+<p><img alt="" src="images/tce/unsupervised_internal_learning.jpg" /></p>
+<p>In her approach, the image is first downscaled. Then, a CNN model is trained to reconstruct the original image. The same model is then used to upscale the original image.</p>
+<p>Michal claims that this <em>internal</em> learning - as opposed to <em>external</em> learning where super resolution is trained using a dataset - can work with a smaller model. This is due to the fact that one image has lower entropy compared to the entire dataset. Consequently, the training process completes under eight seconds, which is impressive.</p>
+<h1>Transformative Generative Models</h1>
+<p>Prof. Lior Wolf from Tel-Aviv University and FAIR described generative models in various domains. Specifically he described in depth a model that can transform musical item performed by one instrument to be performed by another.</p>
+<p><img alt="" src="images/tce/transformative_generative_models.jpg" /></p>
+<p>The idea behind the architecture is to use an autoencoder model for all the instrument types. The encoder component is shared across all the instruments, while the decoder is specific for each one.</p>
+<p>At training time, the model gets a different instrument example every time. It uses the unified encoder and the specific decoder of the instrument, and tries to reconstruct the signal.</p>
+<p>Since the encoder is shared across the instruments, it must learn to encode information that is agnostic to the actual instrument. Thus, the encoded information will contain only the musical information, e.g. <em>which</em> notes are played, and not <em>how</em> they sound. It's the decoder's job to make them sound like the specific instrument.</p>
+<p>Although it sounds good in theory, in practice the encoder learns to allocate different subspaces of the latent space to the different instruments. This is an undesired behavior, because an encoded guitar won't be able to be decoded to a flute, since, the flute's decoder wasn't trained on inputs from this subspace.</p>
+<p>To tackle this problem, they introduced a domain confusion loss: if the model is able to distinguish between the instruments using the encoded vector, the loss would be high.</p>
+<h1>Causal Inference and Deep-Learning: a Two-Way Street</h1>
+<p>Uri Shalit from Technion University talked about an interesting field not well known to many practitioners - casual inference. One example would be to use a model to predict which medication would be better for a given patient.</p>
+<p>We could theoretically train a model using medical records. But what if wealthier patients tend to take more often medication A over B? If we don't measure wealth, any algorithm might be fooled to think A is better than B, even if that's not true. In this case, wealth is called a confounder.</p>
+<p>There's no way to know the truth unless we perform RCT (Randomized Controlled Trials). This way, we can randomly assign treatments to patients, thus eliminating the effect of the confounders. Unfortunately, in many real life scenarios performing experiments is costly or impossible to do due to ethical reasons among other reasons.</p>
+<p>Uri then introduced TARNet (Treatment-Agnostic Representation Network):</p>
+<p><img alt="" src="images/tce/causal_inference.jpg" /></p>
+<p>The first key idea of the architecture is that every example was treated either with treatment <span class="math">\(T = 0\)</span> or treatment <span class="math">\(T = 1\)</span>. Hence, after transformed into a representation <span class="math">\(\Phi\)</span>, one of two paths is chosen based on <span class="math">\(T\)</span>, which could be thought of as a switch.</p>
+<p>The second key idea is that the distributions of samples of the two treatments differ. Thus, if we want to infer the outcome of giving treatment <span class="math">\(T = 1\)</span> to a patient in the training set that got <span class="math">\(T = 0\)</span> we would be in trouble, since that would be extrapolation.</p>
+<p>To tackle this, the model encourages the representation <span class="math">\(\Phi\)</span> to act as if the distributions are the same. In other words, the model has a regularization in a form of penalizing treatment distributional distance in representation space.</p>
+<p>At the end of the talk Uri introduced another model - CEVAE (Casual Effect Variational Autoencoders). I really love VAE flavors, which is why I mention it. If you enjoy this kind of models too, I encourage you to read about it.</p>
+<h1>Theoretical and Empirical Investigation of Several Common Practices in Deep Learning</h1>
+<p>In the next talk, Daniel Soudry from Technion University mentioned several interesting ideas. First, he explained why sometimes when the model starts to overfit (test loss increases) the actual test accuracy might still be improving.</p>
+<p>Take logistic loss for example. After training for <span class="math">\(t\)</span> epochs, the weights vector <span class="math">\(w\)</span> will tend to <span class="math">\(\hat{w} \cdot log(t) + \rho(t)\)</span>, where <span class="math">\(\hat{w}\)</span> is the L2 max margin vector and <span class="math">\(\|\rho\| = O(log(log(t)))\)</span>. In simpler words, the learned <span class="math">\(w\)</span> will tend towards the vector achieved by SVM - the one that maximizes the margin. The length of the vector will tend to infinity.</p>
+<p><img alt="" src="images/tce/theoretical_and_empirical_investigation.jpg" /></p>
+<p>Additionally, the test loss increases in the rate of <span class="math">\(\Omega(log(t))\)</span>. This is due to the fact that some examples in the test set are misclassified. Since the length of <span class="math">\(w\)</span> tends to infinity, the loss of the misclassified test examples will also tend to infinity. This is true even though the model might increase its test accuracy.</p>
+<h1>Trying to Understand Recurrent Neural Networks for Language Processing</h1>
+<p>In the last talk, Yoav Goldberg from Bar-Ilan University tried to shed some light into the different flavors of RNN architectures and what they are capable of.</p>
+<p>First, he showed the performance differences between LSTM and CBOW on three simple tasks - sentence length prediction, words containment (is w inside a given sentence), and words order (is w1 before w2 in a given sentence).</p>
+<p>For length prediction, LSTM is better. Interestingly, CBOW does a decent job. On first thought, it seems as if maybe some words have predictive power to predict what the sentence's length is: maybe some words tend to be in longer sentences?</p>
+<p>But after giving it a second thought, it turns out that the longer a sentence is, the smaller the norm of the words embeddings average gets. This gives the model the capability of predicting the sentence length.</p>
+<p>CBOW performed better on the words containment task, but LSTM showed advantage on the words order task.</p>
+<p>Interestingly, LSTM doesn't rely on language-naturalness, while skip-thought model does.</p>
+<p>Next, Yoav showed that LSTM, as opposed to GRU, can count:</p>
+<p><img alt="" src="images/tce/trying_to_understand_recurrent_neural_networks.jpg" /></p>
+<p>When trained using a hidden state size of 10, we can see that in LSTM one of the dimensions learned to count. This is possible due to the gating nature of the model: one can manually set the values of the weights to enable counting.</p>
+<p>Although the counting task is pretty simple, and usually is not what a typical DL application performs, it's interesting to understand some of the limitations of the building blocks we use in our everyday modeling life.</p>
+<h1>Some final thoughts</h1>
+<p><img alt="" src="images/tce/panel.jpg" /></p>
+<p>The conference ended with a panel. It was both amusing and thought-provoking, as most of the speakers were aware of the hype DL has gained over the last years.</p>
+<p>Many of them thought DL has drawn too much attention, and classical ML deserves the spotlight too. However, they still participate in the DL game - either theoretically or practically. I think that every practitioner should keep in mind the limitations of DL, and that not everything works like black magic.</p>
+<p>This is especially important in critical applications such as in the medical and educational domains, and in applications where we don't want the model to be biased, such as in the banking domain.</p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/conference.html">conference</a>, <a href="http://anotherdatum.com/tag/deep-learning.html">deep learning</a></p>
+        </div>
+
+    <hr>
+
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'tce_2018.html';
+                var disqus_url = 'http://anotherdatum.com/tce_2018.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>

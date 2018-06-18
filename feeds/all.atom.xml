@@ -1,5 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-04-08T10:00:00+03:00</updated><entry><title>Word morphing</title><link href="http://anotherdatum.com/word-morph.html" rel="alternate"></link><published>2018-04-08T10:00:00+03:00</published><updated>2018-04-08T10:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-04-08:word-morph.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-06-18T23:00:00+03:00</updated><entry><title>Deep Learning: Theory &amp; Practice</title><link href="http://anotherdatum.com/tce_2018.html" rel="alternate"></link><published>2018-06-18T23:00:00+03:00</published><updated>2018-06-18T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-06-18:tce_2018.html</id><summary type="html">&lt;p&gt;Last week I had the opportunity to attend at the &lt;a href="http://tce.technion.ac.il/tce-conferences/tce-conference-2018-program"&gt;TCE annual conference&lt;/a&gt;. It was themed around both theoretical and practical aspects of deep learning. As a deep learning practitioner who enjoys understanding why things work (or don't), I knew I'd find the conference interesting.&lt;/p&gt;
+&lt;p&gt;I decided to be a good citizen, and share the highlights with you. Please be aware that by highlights I mean the things I subjectively found interesting. This won't be a thorough summary of the conference.&lt;/p&gt;
+&lt;h1&gt;Understanding Optimization and Generalization in Deep Learning&lt;/h1&gt;
+&lt;p&gt;The first talk was given by prof. Nati Srebro from the University of Chicago. One of the challenges he tried to tackle was understanding what causes the network to generalize well, despite the model class having extremely high capacity.&lt;/p&gt;
+&lt;p&gt;The main takeaway was that the optimization algorithms (SGD, Adam, etc.) introduce an inductive bias. By choosing one of the available algorithms, the training process will be biased towards finding specific type of solutions.&lt;/p&gt;
+&lt;p&gt;For instance, although Adam trains faster than SGD (training loss is minimized faster), empirical experimentations show that SGD tends to generalize better (test loss is smaller).&lt;/p&gt;
+&lt;p&gt;He showed another interesting example of a FF network without any activation function. The induced class of models is linear functions: the multiple layers are effectively collapsed into one layer. He showed that when using different connection patterns between the layers, we get solutions of different quality, although the models class remains the same. This is due to the inductive bias we introduce to the training process by specifying the connection patterns.&lt;/p&gt;
+&lt;p&gt;Eventually, we should keep in mind that deep learning can't just find the optimal solution in terms of generalization &lt;em&gt;magically&lt;/em&gt; - even if we have lots of data. This is the reason for using different architectures and different optimization algorithms for different learning problems. Otherwise, using simple FF architectures with simple SGD would do.&lt;/p&gt;
+&lt;h1&gt;Efficient Deep Learning with Humans in the Loop&lt;/h1&gt;
+&lt;p&gt;In the next talk, Zachary Chase Lipton from Carnegie Mellon University discussed a series of works, each aimed at increasing the efficiency of learning from human interactions.&lt;/p&gt;
+&lt;p&gt;In the RL (Reinforcement Learning) setting, the model is exposed to enormous amount of examples while training. The agent can choose how to explore the state-action space. The goal is to explore what reward the possible actions will yield while exploiting the known good actions.&lt;/p&gt;
+&lt;p&gt;This tradeoff can be solved using the simple &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt;-greedy algorithm: with probability &lt;span class="math"&gt;\(1 - \epsilon\)&lt;/span&gt; the agent chooses the action which is expected to yield the maximal reward, and with probability &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt; a random action is chosen. Usually one anneals down &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt; while training.&lt;/p&gt;
+&lt;p&gt;This algorithm is obviously not the optimal one. For instance, let's say that in the current state the agent has ten actions to choose from, and it knows that action A is the best with probability 0.5, and so is action B. All the other actions are bad with probability 1.0. If it wants to explore, it'd be wiser to randomly choose only between A and B.&lt;/p&gt;
+&lt;p&gt;This is the motivation behind the Thompson Sampling algorithm. For it to work the model has to estimate uncertainty. One way to do it is to use Bayesian Neural Network. In this model, instead of using numbers for the model's weights, we use distributions. In the forward pass we sample from the weights distribution in order to get a point estimate prediction. In the backward pass we update the parameters of the weights distributions using the reparameterization trick. At test time we do inference by sampling from the weights distributions multiple times, thus getting a distribution over the predictions.&lt;/p&gt;
+&lt;p&gt;Another interesting topic was how to choose what examples to annotate. One idea was to exploit hierarchies among the labels, and actively select binary questions to ask the annotator. This is similar to the &lt;a href="https://en.wikipedia.org/wiki/Twenty_Questions"&gt;twenty questions game&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The talk ended with an interesting question to keep in mind: datasets tend to have a longer shelf-life than models. When actively annotating the dataset using a specific model, will that dataset be better for a future model compared to a random annotation? The answer is dubious.&lt;/p&gt;
+&lt;h1&gt;Unsupervised internal learning&lt;/h1&gt;
+&lt;p&gt;Prof. Michal Irani from Weizmann Institute of Science talked about using deep learning for super resolution.&lt;/p&gt;
+&lt;p&gt;She explained about the recurrences inside natural images - both inside the same image and across different scales of that image. This is important for super resolution, since one can downscale a given image, find recurrences across the two images, and then learn how to upscale the original image.&lt;/p&gt;
+&lt;p&gt;This approach has been done in the past using classical algorithms, and in this talk Michal introduced how to do it using deep learning using only the given image.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/unsupervised_internal_learning.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;In her approach, the image is first downscaled. Then, a CNN model is trained to reconstruct the original image. The same model is then used to upscale the original image.&lt;/p&gt;
+&lt;p&gt;Michal claims that this &lt;em&gt;internal&lt;/em&gt; learning - as opposed to &lt;em&gt;external&lt;/em&gt; learning where super resolution is trained using a dataset - can work with a smaller model. This is due to the fact that one image has lower entropy compared to the entire dataset. Consequently, the training process completes under eight seconds, which is impressive.&lt;/p&gt;
+&lt;h1&gt;Transformative Generative Models&lt;/h1&gt;
+&lt;p&gt;Prof. Lior Wolf from Tel-Aviv University and FAIR described generative models in various domains. Specifically he described in depth a model that can transform musical item performed by one instrument to be performed by another.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/transformative_generative_models.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The idea behind the architecture is to use an autoencoder model for all the instrument types. The encoder component is shared across all the instruments, while the decoder is specific for each one.&lt;/p&gt;
+&lt;p&gt;At training time, the model gets a different instrument example every time. It uses the unified encoder and the specific decoder of the instrument, and tries to reconstruct the signal.&lt;/p&gt;
+&lt;p&gt;Since the encoder is shared across the instruments, it must learn to encode information that is agnostic to the actual instrument. Thus, the encoded information will contain only the musical information, e.g. &lt;em&gt;which&lt;/em&gt; notes are played, and not &lt;em&gt;how&lt;/em&gt; they sound. It's the decoder's job to make them sound like the specific instrument.&lt;/p&gt;
+&lt;p&gt;Although it sounds good in theory, in practice the encoder learns to allocate different subspaces of the latent space to the different instruments. This is an undesired behavior, because an encoded guitar won't be able to be decoded to a flute, since, the flute's decoder wasn't trained on inputs from this subspace.&lt;/p&gt;
+&lt;p&gt;To tackle this problem, they introduced a domain confusion loss: if the model is able to distinguish between the instruments using the encoded vector, the loss would be high.&lt;/p&gt;
+&lt;h1&gt;Causal Inference and Deep-Learning: a Two-Way Street&lt;/h1&gt;
+&lt;p&gt;Uri Shalit from Technion University talked about an interesting field not well known to many practitioners - casual inference. One example would be to use a model to predict which medication would be better for a given patient.&lt;/p&gt;
+&lt;p&gt;We could theoretically train a model using medical records. But what if wealthier patients tend to take more often medication A over B? If we don't measure wealth, any algorithm might be fooled to think A is better than B, even if that's not true. In this case, wealth is called a confounder.&lt;/p&gt;
+&lt;p&gt;There's no way to know the truth unless we perform RCT (Randomized Controlled Trials). This way, we can randomly assign treatments to patients, thus eliminating the effect of the confounders. Unfortunately, in many real life scenarios performing experiments is costly or impossible to do due to ethical reasons among other reasons.&lt;/p&gt;
+&lt;p&gt;Uri then introduced TARNet (Treatment-Agnostic Representation Network):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/causal_inference.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The first key idea of the architecture is that every example was treated either with treatment &lt;span class="math"&gt;\(T = 0\)&lt;/span&gt; or treatment &lt;span class="math"&gt;\(T = 1\)&lt;/span&gt;. Hence, after transformed into a representation &lt;span class="math"&gt;\(\Phi\)&lt;/span&gt;, one of two paths is chosen based on &lt;span class="math"&gt;\(T\)&lt;/span&gt;, which could be thought of as a switch.&lt;/p&gt;
+&lt;p&gt;The second key idea is that the distributions of samples of the two treatments differ. Thus, if we want to infer the outcome of giving treatment &lt;span class="math"&gt;\(T = 1\)&lt;/span&gt; to a patient in the training set that got &lt;span class="math"&gt;\(T = 0\)&lt;/span&gt; we would be in trouble, since that would be extrapolation.&lt;/p&gt;
+&lt;p&gt;To tackle this, the model encourages the representation &lt;span class="math"&gt;\(\Phi\)&lt;/span&gt; to act as if the distributions are the same. In other words, the model has a regularization in a form of penalizing treatment distributional distance in representation space.&lt;/p&gt;
+&lt;p&gt;At the end of the talk Uri introduced another model - CEVAE (Casual Effect Variational Autoencoders). I really love VAE flavors, which is why I mention it. If you enjoy this kind of models too, I encourage you to read about it.&lt;/p&gt;
+&lt;h1&gt;Theoretical and Empirical Investigation of Several Common Practices in Deep Learning&lt;/h1&gt;
+&lt;p&gt;In the next talk, Daniel Soudry from Technion University mentioned several interesting ideas. First, he explained why sometimes when the model starts to overfit (test loss increases) the actual test accuracy might still be improving.&lt;/p&gt;
+&lt;p&gt;Take logistic loss for example. After training for &lt;span class="math"&gt;\(t\)&lt;/span&gt; epochs, the weights vector &lt;span class="math"&gt;\(w\)&lt;/span&gt; will tend to &lt;span class="math"&gt;\(\hat{w} \cdot log(t) + \rho(t)\)&lt;/span&gt;, where &lt;span class="math"&gt;\(\hat{w}\)&lt;/span&gt; is the L2 max margin vector and &lt;span class="math"&gt;\(\|\rho\| = O(log(log(t)))\)&lt;/span&gt;. In simpler words, the learned &lt;span class="math"&gt;\(w\)&lt;/span&gt; will tend towards the vector achieved by SVM - the one that maximizes the margin. The length of the vector will tend to infinity.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/theoretical_and_empirical_investigation.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Additionally, the test loss increases in the rate of &lt;span class="math"&gt;\(\Omega(log(t))\)&lt;/span&gt;. This is due to the fact that some examples in the test set are misclassified. Since the length of &lt;span class="math"&gt;\(w\)&lt;/span&gt; tends to infinity, the loss of the misclassified test examples will also tend to infinity. This is true even though the model might increase its test accuracy.&lt;/p&gt;
+&lt;h1&gt;Trying to Understand Recurrent Neural Networks for Language Processing&lt;/h1&gt;
+&lt;p&gt;In the last talk, Yoav Goldberg from Bar-Ilan University tried to shed some light into the different flavors of RNN architectures and what they are capable of.&lt;/p&gt;
+&lt;p&gt;First, he showed the performance differences between LSTM and CBOW on three simple tasks - sentence length prediction, words containment (is w inside a given sentence), and words order (is w1 before w2 in a given sentence).&lt;/p&gt;
+&lt;p&gt;For length prediction, LSTM is better. Interestingly, CBOW does a decent job. On first thought, it seems as if maybe some words have predictive power to predict what the sentence's length is: maybe some words tend to be in longer sentences?&lt;/p&gt;
+&lt;p&gt;But after giving it a second thought, it turns out that the longer a sentence is, the smaller the norm of the words embeddings average gets. This gives the model the capability of predicting the sentence length.&lt;/p&gt;
+&lt;p&gt;CBOW performed better on the words containment task, but LSTM showed advantage on the words order task.&lt;/p&gt;
+&lt;p&gt;Interestingly, LSTM doesn't rely on language-naturalness, while skip-thought model does.&lt;/p&gt;
+&lt;p&gt;Next, Yoav showed that LSTM, as opposed to GRU, can count:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/trying_to_understand_recurrent_neural_networks.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;When trained using a hidden state size of 10, we can see that in LSTM one of the dimensions learned to count. This is possible due to the gating nature of the model: one can manually set the values of the weights to enable counting.&lt;/p&gt;
+&lt;p&gt;Although the counting task is pretty simple, and usually is not what a typical DL application performs, it's interesting to understand some of the limitations of the building blocks we use in our everyday modeling life.&lt;/p&gt;
+&lt;h1&gt;Some final thoughts&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/tce/panel.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The conference ended with a panel. It was both amusing and thought-provoking, as most of the speakers were aware of the hype DL has gained over the last years.&lt;/p&gt;
+&lt;p&gt;Many of them thought DL has drawn too much attention, and classical ML deserves the spotlight too. However, they still participate in the DL game - either theoretically or practically. I think that every practitioner should keep in mind the limitations of DL, and that not everything works like black magic.&lt;/p&gt;
+&lt;p&gt;This is especially important in critical applications such as in the medical and educational domains, and in applications where we don't want the model to be biased, such as in the banking domain.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="conference"></category><category term="deep learning"></category></entry><entry><title>Word morphing</title><link href="http://anotherdatum.com/word-morph.html" rel="alternate"></link><published>2018-04-08T10:00:00+03:00</published><updated>2018-04-08T10:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-04-08:word-morph.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
 *
 * IPython notebook
 *
