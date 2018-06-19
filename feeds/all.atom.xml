@@ -117,7 +117,91 @@
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</summary><category term="conference"></category><category term="deep learning"></category></entry><entry><title>Word morphing</title><link href="http://anotherdatum.com/word-morph.html" rel="alternate"></link><published>2018-04-08T10:00:00+03:00</published><updated>2018-04-08T10:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-04-08:word-morph.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
+&lt;/script&gt;</summary><category term="conference"></category><category term="deep learning"></category></entry><entry><title>The Hitchhiker's Guide to Hyperparameter Tuning</title><link href="http://anotherdatum.com/hpt.html" rel="alternate"></link><published>2018-06-14T23:00:00+03:00</published><updated>2018-06-14T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-06-14:hpt.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me on the &lt;a href="https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/"&gt;Taboola engineering blog&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Now that more than a year has passed since our &lt;a href="http://engineering.taboola.com/deep-learning-from-prototype-to-production"&gt;first deep learning project&lt;/a&gt; emerged, we have had to keep moving forward and delivering the best models we can.&lt;/p&gt;
+&lt;p&gt;Doing so has involved a lot of research, trying out different models, from as simple as &lt;a href="https://en.wikipedia.org/wiki/Bag-of-words_model"&gt;bag-of-words&lt;/a&gt;, &lt;a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/"&gt;LSTM&lt;/a&gt; and &lt;a href="https://en.wikipedia.org/wiki/Convolutional_neural_network"&gt;CNN&lt;/a&gt;, to the more advanced &lt;a href="https://distill.pub/2016/augmented-rnns/"&gt;attention&lt;/a&gt;, &lt;a href="http://publications.aston.ac.uk/373/1/NCRG_94_004.pdf"&gt;MDN&lt;/a&gt; and &lt;a href="http://ruder.io/multi-task/index.html"&gt;multi-task learning&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Even the simplest model we tried has many hyperparameters, and tuning these might be even more important than the actual architecture we ended up using - in terms of the model's accuracy.&lt;/p&gt;
+&lt;p&gt;Although there's a lot of active research in the field of hyperparameter tuning (see &lt;a href="https://arxiv.org/pdf/1607.08316.pdf"&gt;1&lt;/a&gt;, &lt;a href="https://arxiv.org/pdf/1705.08520.pdf"&gt;2&lt;/a&gt;, &lt;a href="https://arxiv.org/pdf/1703.01785.pdf"&gt;3&lt;/a&gt;), implementing this tuning process has evaded the spotlight.&lt;/p&gt;
+&lt;p&gt;If you go around and ask people how they tune their models, their most likely answer will be "just write a script that does it for you". Well, that's easier said than done...&lt;/p&gt;
+&lt;p&gt;Apparently, there are a few things you should keep in mind when implementing such a script.&lt;/p&gt;
+&lt;p&gt;Here, at Taboola, we implemented a hyperparameter tuning script. Let me share with you the things we learned along the way...&lt;/p&gt;
+&lt;h1&gt;Let's start simple&lt;/h1&gt;
+&lt;p&gt;Sometimes using &lt;a href="http://scikit-learn.org/stable/modules/grid_search.html"&gt;scikit-learn&lt;/a&gt; for hyperparameter tuning might be enough - at least for personal projects.&lt;/p&gt;
+&lt;p&gt;For long term projects, when you need to keep track of the experiments you've performed, and the variety of different architectures you try keeps increasing, it might not suffice.&lt;/p&gt;
+&lt;h1&gt;Bare bones&lt;/h1&gt;
+&lt;p&gt;The first version of the script was simple, but encompassed most of our needs.
+The requirements were:&lt;/p&gt;
+&lt;h3&gt;Easy to run&lt;/h3&gt;
+&lt;p&gt;You are going to run this script many times. So, it should be as easy as possible to specify what experiments you want to run.&lt;/p&gt;
+&lt;p&gt;We ended up with the following JSON format:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;architecture&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;lstm-attention&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;date-range&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;2017-01-01&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;2017-04-01&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]],&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;parameters&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;num_of_attentions&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;attention_hidden_layer_size&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;128&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;256&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;attention_regularization&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.01&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.001&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;architecture&lt;/strong&gt;: architecture you want to tune, assuming your code supports multiple types&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;date-range&lt;/strong&gt;: list of tuples, each defines a time range that will be used to train a model. Each experiment will be executed once per date-range&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;parameters&lt;/strong&gt;: values to try for each hyperparameter. Our initial implementation only supported a finite set of values (grid search)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The script randomly generates experiments out of this JSON.&lt;/p&gt;
+&lt;p&gt;We created a Jenkins job that runs the script on one of our machines with GPUs, thus freeing us from the need to use SSH.&lt;/p&gt;
+&lt;h3&gt;Enrich experiments with metrics&lt;/h3&gt;
+&lt;p&gt;Our training process generates many metrics, such as MSE, loss and training time. You can choose whichever you want, and they will show in the results.&lt;/p&gt;
+&lt;h3&gt;Save results to the cloud&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="" src="images/hpt/results.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Results are saved as a CSV file in Google Cloud Storage, which enables us to launch the script from any machine, and watch the results from our laptops.&lt;/p&gt;
+&lt;p&gt;The results are continuously uploaded, so we don't have to wait for all the experiments to finish to start inspecting the results.&lt;/p&gt;
+&lt;p&gt;The models themselves are also saved.&lt;/p&gt;
+&lt;h1&gt;So what have we learned so far?&lt;/h1&gt;
+&lt;p&gt;This first implementation was the most important one.&lt;/p&gt;
+&lt;p&gt;Being simple, the script didn't do anything smart for you. It didn't specify which experiments to perform - you had to manually define the JSON input for every run.&lt;/p&gt;
+&lt;p&gt;After running the script many times, you start to understand which values work better than others. It's one of the most important things we got from the script - a more in depth understanding of our models.&lt;/p&gt;
+&lt;p&gt;Using this script for the first time got us a big improvement - the MSE dropped by more than 10%.&lt;/p&gt;
+&lt;h1&gt;Are we sure it's real?&lt;/h1&gt;
+&lt;p&gt;When you run hundreds of experiments, the best ones usually have negligible differences. How can you know it's statistically significant?&lt;/p&gt;
+&lt;p&gt;One way to tackle this problem, assuming you have enough data, is to train the same model on several date-ranges. If one model is better than the others in all of the date-ranges, you can be more confident it's real.&lt;/p&gt;
+&lt;p&gt;Let's say today is June, and you run the script. Here are the date-ranges the script will choose:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/hpt/date_ranges.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Note that the script chooses a new set of date-ranges if you run it on a different month. This is important, since otherwise you could accidentally overfit your models due to extensive hyperparameter tuning.&lt;/p&gt;
+&lt;h1&gt;I don't have time for this&lt;/h1&gt;
+&lt;p&gt;Who has the time to run every experiment three times? It's nice that you can get reliable results, but it means you'll end up running fewer different experiments.&lt;/p&gt;
+&lt;p&gt;The next version of the script tackled this problem by supporting a new mode of operation:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Only one date-range is used&lt;/li&gt;
+&lt;li&gt;The date-range contains only one month of data&lt;/li&gt;
+&lt;li&gt;Training is limited to fewer epochs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;But are the results correlated with what we would get if we used more data and epochs?&lt;/p&gt;
+&lt;p&gt;To answer this, we performed some experiments, each using a different amount of data ranging from one week to three months. We found out that one month had a good tradeoff between MSE and training time.&lt;/p&gt;
+&lt;p&gt;(Did you notice we used the hyperparameter tuning script to tune the hyperparameter script? How cool is that?)&lt;/p&gt;
+&lt;p&gt;To investigate what the right number of epochs would be, we analyzed the MSE on TensorBoard.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/hpt/short_mode_analysis.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Each plot in the graph represents a different model trained on a different amount of data. After 20 epochs all of the models have almost converged, so it's safe to stop there.&lt;/p&gt;
+&lt;h1&gt;C'mon script, do the job for me!&lt;/h1&gt;
+&lt;p&gt;At this point we decided the script should choose the hyperparameter values for you.
+We started with the learning rate related hyperparameters: initial learning rate, decay factor, number of epochs with no improvement for early stopping, etc.&lt;/p&gt;
+&lt;p&gt;Why learning rate?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It significantly affects training time. We should first settle on a good learning rate, both in terms of accuracy and training time, before tuning all the rest&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://books.google.co.il/books?id=Np9SDQAAQBAJ&amp;amp;pg=PA417&amp;amp;dq=%22The+learning+rate+is+perhaps+the+most+important+hyperparameter.+If+you+have+time+to+tune+only+one+hyperparameter,+tune+the+learning+rate%22&amp;amp;hl=en&amp;amp;sa=X&amp;amp;ved=0ahUKEwj-kdXZn8bWAhWEbRQKHeAbAiMQ6AEIJDAA#v=onepage&amp;amp;q=%22The%20learning%20rate%20is%20perhaps%20the%20most%20important%20hyperparameter.%20If%20you%20have%20time%20to%20tune%20only%20one%20hyperparameter%2C%20tune%20the%20learning%20rate%22&amp;amp;f=false"&gt;Some suggest&lt;/a&gt; it controls the effective capacity of the model in a more complicated way than other hyperparameters, so it might be better to start with that.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The new mode of the script uses hard-coded ranges of values that are reasonable for our models.&lt;/p&gt;
+&lt;p&gt;Then came the next demand:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/hpt/tune_everything.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The next version of the script did just that: provided with an architecture name, it automatically generates experiments for you. You don't need to specify any hyperparameter values.&lt;/p&gt;
+&lt;h1&gt;Let's go random&lt;/h1&gt;
+&lt;p&gt;Although being worse than random search in &lt;a href="http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf"&gt;some cases&lt;/a&gt;, grid search is easier to analyze: every value is used by multiple experiments, so it's easy to spot trends.&lt;/p&gt;
+&lt;p&gt;Since we had already gained intuition on what values work better, it was time to implement random search. Doing so helped the script find better hyperparameters.&lt;/p&gt;
+&lt;h1&gt;Some final thoughts&lt;/h1&gt;
+&lt;p&gt;In the research phase of any machine learning project, hyperparameter tuning can be done manually. However, when you want to take the project to the next level, it's highly effective to automate the process. In this post I described some of the small touches we implemented into the automation process. Some might be useful for you, some might not. Drop a line in the comments if you found any other exciting things to be helpful.&lt;/p&gt;</summary><category term="deep learning"></category><category term="machine learning"></category></entry><entry><title>Word morphing</title><link href="http://anotherdatum.com/word-morph.html" rel="alternate"></link><published>2018-04-08T10:00:00+03:00</published><updated>2018-04-08T10:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-04-08:word-morph.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
 *
 * IPython notebook
 *
