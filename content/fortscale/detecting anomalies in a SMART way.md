@@ -5,7 +5,7 @@ Tags: statistics, data-science, anomalies
 Summary: Detecting anomalous user behavior is hard. Really hard. Here at Fortscale we show that with the right tools, it’s doable.
 header_cover: images/detecting-anomalies-in-a-SMART-Way/cover.png
 
-*This post was originally published by me at the [Fortscale blog](https://insider.fortscale.com/detecting-anomalies-smart-way/).*  
+*This post was originally published by me at the [Fortscale blog](https://blog.fortscale.com/detecting-anomalies-smart-way).*  
 *Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.*
 
 ---
