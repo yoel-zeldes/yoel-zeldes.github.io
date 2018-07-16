@@ -5,7 +5,7 @@ Tags: deep learning, machine learning
 Summary: Our implementation and usage of hyperparameter tuning at Taboola.
 header_cover: images/hpt/cover.jpg
 
-*This post was originally published by me on the [Taboola engineering blog](https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/).*
+*This post was originally published by me at the [Taboola engineering blog](https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/).*
 
 Now that more than a year has passed since our [first deep learning project](http://engineering.taboola.com/deep-learning-from-prototype-to-production) emerged, we have had to keep moving forward and delivering the best models we can.
 
