@@ -33,7 +33,8 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 # Social widget
 SOCIAL = (('linkedin', 'https://il.linkedin.com/in/yoelzeldes'),
           ('github', 'https://github.com/yoel-zeldes'),
-          ('facebook', 'https://www.facebook.com/yoel.zeldes'))
+          ('facebook', 'https://www.facebook.com/yoel.zeldes'),
+          ('twitter', 'https://twitter.com/YZeldes'))
 
 DEFAULT_PAGINATION = 10
 
