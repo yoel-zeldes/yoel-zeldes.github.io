@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Using Uncertainty to Interpret your Model</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Interpreting deep learning models is hard. Learn how to use uncertainty estimates to get insights about what the model has learned.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="deep learning">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/using-uncertainty-to-interpret-your-model.html">
+	<meta property="og:title" content="Using Uncertainty to Interpret your Model">
+	<meta property="article:published_time" content="2018-07-31 21:00:00+03:00">
+            <meta property="og:description" content="Interpreting deep learning models is hard. Learn how to use uncertainty estimates to get insights about what the model has learned.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/uncertainty_paper/interpretability/cover.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@YZeldes">
+        <meta name="twitter:title" content="Using Uncertainty to Interpret your Model">
+
+            <meta name="twitter:image" content="http://anotherdatum.com/images/uncertainty_paper/interpretability/cover.jpg">
+
+            <meta name="twitter:description" content="Interpreting deep learning models is hard. Learn how to use uncertainty estimates to get insights about what the model has learned.">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/uncertainty_paper/interpretability/cover.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Using Uncertainty to Interpret your Model</h1>
+                        <span class="meta">Posted on 31 July 2018</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p><em>This is a joint post with <a href="https://medium.com/@inbarnaor">Inbar Naor</a>. Originally published at <a href="https://engineering.taboola.com/using-uncertainty-interpret-model">engineering.taboola.com</a>.</em></p>
+<hr />
+<p>As deep neural networks (DNN) become more powerful, their complexity increases. This complexity introduces new challenges, including model interpretability.</p>
+<p>Interpretability is crucial in order to build models that are more robust and resistant to adversarial attacks. Moreover, designing a model for a new, not well researched domain is challenging and being able to interpret what the model is doing can help us in the process.</p>
+<p>The importance of model interpretation has driven researchers to develop a <a href="https://arxiv.org/pdf/1706.07979.pdf">variety of methods</a> over the past few years and an entire <a href="http://www.interpretable-ml.org/nips2017workshop">workshop</a> was dedicated to this subject at the NIPS conference last year. These methods include:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1602.04938">LIME</a>: a method to explain a model’s prediction via local linear approximation</li>
+<li><a href="https://pdfs.semanticscholar.org/65d9/94fb778a8d9e0f632659fb33a082949a50d3.pdf">Activation Maximization</a> a method for understanding which input patterns produce maximal model response</li>
+<li><a href="https://distill.pub/2017/feature-visualization">Feature Visualizations</a></li>
+<li>Embedding a DNN’s layer into a <a href="http://www.interpretable-ml.org/nips2017workshop/papers/04.pdf">low dimensional explanation space</a></li>
+<li><a href="https://deepmind.com/blog/cognitive-psychology/">Employing methods from cognitive psychology</a></li>
+<li>Uncertainty estimation methods – the focus of this post</li>
+</ul>
+<p>Before we dive into how to use uncertainty for debugging and interpreting your models, let’s understand why uncertainty is important.</p>
+<h1>Why should you care about uncertainty?</h1>
+<p>One prominent example is that of high risk applications. Let’s say you’re building a model that helps doctors decide on the preferred treatment for patients. In this case we should not only care about the accuracy of the model, but also about how certain the model is of its prediction. If the uncertainty is too high, the doctor should to take this into account.</p>
+<p>Self-driving cars are another interesting example. When the model is uncertain if there is a pedestrian on the road we could use this information to slow the car down or trigger an alert so the driver can take charge.</p>
+<p>Uncertainty can also help us with out of data examples. If the model wasn’t trained using examples similar to the sample at hand it might be better if it’s able to say “sorry, I don’t know”. This could have prevented the embarrassing mistake Google photos had when they misclassified african americans as gorillas. Mistakes like that sometimes happen due to an insufficiently diverse training set.</p>
+<p>The last usage of uncertainty, which is the purpose of this post, is as a tool for practitioners to debug their model. We’ll dive into this in a moment, but first, let’s talk about different types of uncertainty.</p>
+<h1>Uncertainty Types</h1>
+<p>There are different types of uncertainty and modeling, and each is useful for different purposes.</p>
+<p><strong>Model uncertainty</strong>, AKA epistemic uncertainty: let’s say you have a single data point and you want to know which linear model best explains your data. There is no good way to choose between the different lines in the picture – we need more data!</p>
+<p><img alt="" src="images/uncertainty_paper/interpretability/model_uncertainty.png" />
+<em>On the left: not enough data results in high uncertainty. On the right: given more data uncertainty reduces.</em></p>
+<p>Epistemic uncertainty accounts for uncertainty in the model’s parameter. We are not sure which model weights describe the data best, but given more data our uncertainty decreases. This type of uncertainty is important in high risk applications and when dealing with small and sparse data.</p>
+<p><img alt="" src="images/uncertainty_paper/interpretability/animals.png" /></p>
+<p>As an example, let’s say you want to build a model that gets a picture of an animal, and predicts if that animal will try to eat you. Let’s say you trained the model on different pictures of lions and giraffes and now it saw a zombie. Since the model wasn’t trained on pictures of zombies, the uncertainty will be high. This uncertainty is the result of the model, and given enough pictures of zombies it will decrease.</p>
+<p><strong>Data uncertainty</strong>, or aleatoric uncertainty, captures the noise inherent in the observation. Sometimes the world itself is stochastic. Obtaining more data will not help us in that case, because the noise is inherent in the data.</p>
+<p>To understand this point, let’s get back to our carnivorous animals model. Our model can recognize that an image contains a lion, and therefore you’re likely to be eaten. But what if that lion is not hungry right now? This time the uncertainty comes from the data. Another example is that of two snakes that look the same but while one of them is venomous, the other isn’t.</p>
+<p>Aleatoric uncertainty is divided into two types:</p>
+<ol>
+<li>Homoscedastic uncertainty: uncertainty is the same for all inputs.</li>
+<li>Heteroscedastic uncertainty: uncertainty that depends on the specific input at hand. For instance, for a model that <a href="https://arxiv.org/abs/1703.04977">predicts depth in an image</a> a featureless wall is expected to have a higher level of uncertainty than that of an image with strong vanishing lines.</li>
+</ol>
+<p><strong>Measurement uncertainty</strong>: another source of uncertainty is the measurement itself. When the measurement is noisy, the uncertainty increases. In the animals example the model’s confidence can be impaired if some of the pictures are taken using a bad quality camera; or if we were running away from a scary hippo and as a result we only have blurry images to work with.</p>
+<p><strong>Noisy labels</strong>: with supervised learning we use labels to train the models. If the labels are noisy, the uncertainty increases.</p>
+<p>There are various ways to model each type of uncertainty. These will be covered in the following posts in this series. For now, let’s assume we have a black box model that exposes the uncertainty it has regarding its predictions. How can we use it in order to debug the model?</p>
+<p>Let’s consider one of our models in Taboola used for predicting the likelihood of a user clicking on a content recommendation, also known as CTR (Click Through Rate).</p>
+<h1>Using uncertainty to debug your model</h1>
+<p>The model has many categorical features <a href="https://engineering.taboola.com/using-word2vec-better-embeddings-categorical-features/">represented by embedding vectors</a>. The model might have difficulties with learning generalized embeddings for rare values. A common way to solve this is to use a special Out Of Vocabulary (OOV) embedding.</p>
+<p>Think about the advertiser of an article. All rare advertisers share the same OOV embedding, therefore, from the point of view of the model they are essentially one advertiser. This OOV advertiser has many different items, each with different CTR. If we’d use only the advertiser as a predictor for CTR, we should get high uncertainty for OOV.</p>
+<p>To validate the model outputs high uncertainty for OOV, we took a validation set and switched all the advertisers embeddings into OOV. Next, we inspected what was the uncertainty before and after the switch. As expected, the uncertainty increased due to the switch. The model was able to learn that given an informative advertiser it should reduce the uncertainty.</p>
+<p><img alt="" src="images/uncertainty_paper/interpretability/oov_uncertainty.png" /></p>
+<p>We can repeat this for different features and look for ones that result in low uncertainty when replaced with OOV embeddings. Either those features are uninformative, or something in the way we feed them to the model is not ideal.</p>
+<p>We can even go to finer granularity: some advertisers have high variability between CTR of different items, while others have items with roughly the same CTR. We would expect the model to have higher uncertainty for advertisers of the first type. A useful analysis is therefore looking at the correlation between uncertainty and CTR variability within an advertiser. If the correlation isn’t positive, it means the model failed to learn what uncertainty to associate with each advertiser. This tool allows us to understand if something went wrong in the training process or in the model’s architecture, indicating we should further debug it.</p>
+<p>We can perform a similar analysis and see if the uncertainty associated with a specific item decreases the more times we show it (i.e. show it to more users / in more places). Again, we expect the model to become more certain, and if it doesn’t – debug we will!</p>
+<p>Another cool example is the title feature: unique titles with rare words should incur high model uncertainty. This is the result of the model not seeing a lot of examples from that area of all possible titles. We can look in the validation set for a group of similar titles that are rare and estimate the model’s uncertainty on these titles. Then we’ll retrain the model using one of the titles, and see if the uncertainty has been reduced for the entire group. Indeed, we can see that’s exactly what happened:</p>
+<p><img alt="" src="images/uncertainty_paper/interpretability/title_uncertainty.jpg" /></p>
+<p>Wait a second... By exposing the model to some titles it was able to get better and be more certain about a bunch of new titles. Maybe we can use that to somehow encourage exploration of new items? Well, yes we can! More on that in a following post of the series.</p>
+<h1>Final thoughts</h1>
+<p>Uncertainty is a big deal in many domains. Identifying which uncertainty type is important is application specific. You can use them in a variety of ways once you know how to model them. In this post we discussed how you can use them to debug your model. In the next post we’ll talk about different ways to get uncertainty estimations from your model.</p>
+<p><em>This is the first post of a series related to a paper we’re presenting in a workshop in this year KDD conference: <a href="https://arxiv.org/abs/1711.02487">deep density networks and uncertainty in recommender systems</a>.</em></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/deep-learning.html">deep learning</a></p>
+        </div>
+
+    <hr>
+
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'using-uncertainty-to-interpret-your-model.html';
+                var disqus_url = 'http://anotherdatum.com/using-uncertainty-to-interpret-your-model.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/YZeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>
