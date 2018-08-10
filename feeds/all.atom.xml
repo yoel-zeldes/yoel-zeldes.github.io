@@ -1,5 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-07-31T21:00:00+03:00</updated><entry><title>Using Uncertainty to Interpret your Model</title><link href="http://anotherdatum.com/using-uncertainty-to-interpret-your-model.html" rel="alternate"></link><published>2018-07-31T21:00:00+03:00</published><updated>2018-07-31T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-07-31:using-uncertainty-to-interpret-your-model.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-08-06T21:00:00+03:00</updated><entry><title>Neural Networks from a Bayesian Perspective</title><link href="http://anotherdatum.com/bnn.html" rel="alternate"></link><published>2018-08-06T21:00:00+03:00</published><updated>2018-08-06T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-08-06:bnn.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/neural-networks-bayesian-perspective"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Understanding what a model doesn’t know is important both from the
+practitioner’s perspective and for the end users of many different machine
+learning applications. In &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model"&gt;our previous blog
+post&lt;/a&gt; we
+discussed the different types of uncertainty. We explained how we can use it to
+interpret and debug our models.&lt;/p&gt;
+&lt;p&gt;In this post we’ll discuss different ways to obtain uncertainty in Deep Neural
+Networks. Let’s start by looking at neural networks from a Bayesian perspective.&lt;/p&gt;
+&lt;h1&gt;Bayesian learning 101&lt;/h1&gt;
+&lt;p&gt;Bayesian statistics allow us to draw conclusions based on both evidence (data)
+and our prior knowledge about the world. This is often contrasted with
+frequentist statistics which only consider evidence. The prior knowledge
+captures our belief on which model generated the data, or what the weights of
+that model are. We can represent this belief using a &lt;em&gt;prior distribution&lt;/em&gt; &lt;span class="math"&gt;\(p(w)\)&lt;/span&gt;
+over the model’s weights.&lt;/p&gt;
+&lt;p&gt;As we collect more data we update the prior distribution and turn in into a
+&lt;em&gt;posterior distribution&lt;/em&gt; using Bayes’ law, in a process called &lt;em&gt;Bayesian
+updating&lt;/em&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(p(w|X,Y) = \frac{p(Y|X,w) p(w)}{p(Y|X)}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This equation introduces another key player in Bayesian learning — the
+&lt;em&gt;likelihood&lt;/em&gt;, defined as &lt;span class="math"&gt;\(p(y|x,w)\)&lt;/span&gt;. This term represents how likely the data is,
+given the model’s weights &lt;span class="math"&gt;\(w\)&lt;/span&gt;.&lt;/p&gt;
+&lt;h1&gt;Neural networks from a Bayesian perspective&lt;/h1&gt;
+&lt;p&gt;A neural network’s goal is to estimate the likelihood &lt;span class="math"&gt;\(p(y|x,w)\)&lt;/span&gt;. This is true
+even when you’re not explicitly doing that, e.g. &lt;a href="https://www.jessicayung.com/mse-as-maximum-likelihood"&gt;when you minimize
+MSE&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To find the best model weights we can use &lt;em&gt;Maximum Likelihood Estimation&lt;/em&gt; (MLE):&lt;/p&gt;
+&lt;div class="math"&gt;\begin{split}
+w^{MLE} &amp;amp;= \text{argmax}_{w}\text{log}P(D|w) \\
+&amp;amp; = \text{argmax}_{w}\sum_i \text{log}P(y_i|x_i,w)
+\end{split}&lt;/div&gt;
+&lt;p&gt;Alternatively, we can use our prior knowledge, represented as a prior
+distribution over the weights, and maximize the posterior distribution. This
+approach is called &lt;em&gt;Maximum Aposteriori Estimation&lt;/em&gt; (MAP):&lt;/p&gt;
+&lt;div class="math"&gt;\begin{split}
+w^{MAP} &amp;amp;= \text{argmax}_{w}\text{log}P(w|D) \\
+&amp;amp; = \text{argmax}_{w}\text{log}P(D|w) + \text{log}P(w)
+\end{split}&lt;/div&gt;
+&lt;p&gt;The term &lt;span class="math"&gt;\(\text{log}P(w)\)&lt;/span&gt;, which represents our prior, acts as a regularization term.
+Choosing a Gaussian distribution with mean 0 as the prior, you’ll get the
+mathematical equivalence of L2 regularization.&lt;/p&gt;
+&lt;p&gt;Now that we start thinking about neural networks as probabilistic creatures, we
+can let the fun begin. For start, who says we have to output one set of weights
+at the end of the training process? What if instead of learning the model’s
+weights, we learn a distribution over the weights? This will allow us to
+estimate uncertainty over the weights. So how do we do that?&lt;/p&gt;
+&lt;h1&gt;Once you go Bayesian, you never go back&lt;/h1&gt;
+&lt;p&gt;We start again with a prior distribution over the weights and aim at finding
+their posterior distribution. This time, instead of optimizing the network’s
+weights directly we’ll average over all possible weights (referred to as
+marginalization).&lt;/p&gt;
+&lt;p&gt;At inference, instead of taking the single set of weights that maximized the
+posterior distribution (or the likelihood, if we’re working with MLE), we
+consider all possible weights, weighted by their probability. This is achieved
+using an integral:&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(p(y|x,X,Y) = {\displaystyle \int} p(y|x,w)p(w|X,Y)dw\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(x\)&lt;/span&gt; is a data point for which we want to infer &lt;span class="math"&gt;\(y\)&lt;/span&gt;, and &lt;span class="math"&gt;\(X\)&lt;/span&gt;,&lt;span class="math"&gt;\(Y\)&lt;/span&gt; are training
+data. The first term &lt;span class="math"&gt;\(p(y|x,w)\)&lt;/span&gt; is our good old likelihood, and the second term
+&lt;span class="math"&gt;\(p(w|X,Y)\)&lt;/span&gt; is the posterior probability of the model’s weights given the data.&lt;/p&gt;
+&lt;p&gt;We can think about it as an ensemble of models weighted by the probability of
+each model. Indeed this is equivalent to an ensemble of infinite number of
+neural networks, with the same architecture but with different weights.&lt;/p&gt;
+&lt;h1&gt;Are we there yet?&lt;/h1&gt;
+&lt;p&gt;Ay, There’s the rub! Turns out that this integral is intractable in most cases.
+This is because the posterior probability cannot be evaluated analytically.&lt;/p&gt;
+&lt;p&gt;This problem is not unique to Bayesian Neural Networks. You would run into this
+problem in many cases of Bayesian learning, and many methods to overcome this
+have been developed over the years. We can divide these methods into two
+families: variational inference and sampling methods.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/BNN/methods.png" /&gt;&lt;/p&gt;
+&lt;h3&gt;Monte Carlo sampling&lt;/h3&gt;
+&lt;p&gt;We have a problem. The posterior distribution is intractable. What if instead of
+computing the integral over the true distribution we’ll approximate it with the
+average of samples drawn from it? One way to do that is the &lt;a href="https://towardsdatascience.com/a-zero-math-introduction-to-markov-chain-monte-carlo-methods-dcba889e0c50"&gt;Markov Chain Monte
+Carlo&lt;/a&gt;
+— you construct a markov chain with the desired distribution as its equilibrium
+distribution.&lt;/p&gt;
+&lt;h3&gt;Variational Inference&lt;/h3&gt;
+&lt;p&gt;Another solution is to approximate the true intractable distribution with a
+different distribution from a tractable family. To measure the similarity of the
+two distribution we can use KL divergence:&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(D_{KL}(p||q) = {\displaystyle \int}_{-\infty}^{\infty} p(x) log \frac{p(x)}{q(x)}dx\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let &lt;span class="math"&gt;\(q\)&lt;/span&gt; be a variational distribution parameterized by &lt;span class="math"&gt;\(\theta\)&lt;/span&gt;. We want to find the
+value of &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; that minimizes the KL divergence:&lt;/p&gt;
+&lt;div class="math"&gt;\begin{split}
+\theta^* &amp;amp;= \text{argmin}_\theta D_{KL}(q_\theta(w)||p(w|X,Y)) \\
+&amp;amp; = \text{argmin}_\theta {\displaystyle \int} q_\theta(w) log \frac{q_\theta(w)p(X,Y)}{p(X,Y|w)p(w)}dw \\
+&amp;amp; = \text{argmin}_\theta {\displaystyle \int} q_\theta(w) log \frac{q_\theta(w)}{p(w)}dw - {\displaystyle \int} q_\theta(w) log (p(X,Y|w))dw \\
+&amp;amp; = \text{argmin}_\theta D_{KL}(q_\theta(w)||p(w)) - \mathbb{E}_{q_\theta(w)} log(p(X,Y|w))
+\end{split}&lt;/div&gt;
+&lt;p&gt;Look at what we’ve got: the first term is the KL divergence between the
+variational distribution and the prior distribution. The second term is the
+likelihood with regards to &lt;span class="math"&gt;\(q_\theta\)&lt;/span&gt;. So we’re looking for &lt;span class="math"&gt;\(q_\theta\)&lt;/span&gt; that explains the
+data best, but on the other hand is as close as possible to the prior
+distribution. This is just another way to introduce regularization into neural
+networks!&lt;/p&gt;
+&lt;p&gt;Now that we have &lt;span class="math"&gt;\(q_\theta\)&lt;/span&gt; we can use it to make predictions:&lt;/p&gt;
+&lt;p&gt;&lt;span class="math"&gt;\(q_\theta(y|x) = {\displaystyle \int} p(y|x,w)q_\theta(w)dw\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The above formulation comes from a &lt;a href="http://proceedings.mlr.press/v37/blundell15.html"&gt;work by
+DeepMind&lt;/a&gt; in 2015. Similar
+ideas were presented by
+&lt;a href="http://proceedings.mlr.press/v37/blundell15.html"&gt;graves&lt;/a&gt; in 2011 and go back
+to &lt;a href="http://www.cs.toronto.edu/~fritz/absps/colt93.pdf"&gt;Hinton and van Camp&lt;/a&gt; in
+1993. The &lt;a href="https://www.youtube.com/watch?v=FD8l2vPU5FY"&gt;keynote&lt;/a&gt; in NIPS
+Bayesian Deep Learning workshop had a very nice overview of how these ideas
+evolved over the years.&lt;/p&gt;
+&lt;p&gt;OK, but what if we don’t want to train a model from scratch? What if we have a
+trained model that we want to get uncertainty estimation from? Can we do that?&lt;/p&gt;
+&lt;p&gt;It turns out that if we use dropout during training, we actually can.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/BNN/data_scientists.jpg" /&gt;
+&lt;em&gt;Professional data scientists contemplating the uncertainty of their model — an
+illustration&lt;/em&gt;&lt;/p&gt;
+&lt;h3&gt;Dropout as a mean for uncertainty&lt;/h3&gt;
+&lt;p&gt;&lt;a href="http://jmlr.org/papers/v15/srivastava14a.html"&gt;Dropout&lt;/a&gt; is a well used practice
+as a regularizer. In training time, you randomly sample nodes and drop them out,
+that is — set their output to 0. The motivation? You don’t want to over rely on
+specific nodes, which might imply overfitting.&lt;/p&gt;
+&lt;p&gt;In 2016, &lt;a href="http://proceedings.mlr.press/v48/gal16.pdf"&gt;Gal and Ghahramani&lt;/a&gt; showed
+that if you apply dropout at inference time as well, you can easily get an
+uncertainty estimator:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Infer &lt;span class="math"&gt;\(y|x\)&lt;/span&gt; multiple times, each time sample a different set of nodes to drop out.&lt;/li&gt;
+&lt;li&gt;Average the predictions to get the final prediction &lt;span class="math"&gt;\(\mathbb{E}(y|x)\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;Calculate the sample variance of the predictions.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;That’s it! You got an estimate of the variance! The
+&lt;a href="http://www.cs.ox.ac.uk/people/yarin.gal/website/blog_3d801aa532c1ce.html"&gt;intuition&lt;/a&gt;
+behind this approach is that the training process can be thought of as training
+2^m different models simultaneously — where m is the number of nodes in the
+network: each subset of nodes that is not dropped out defines a new model. All
+models share the weights of the nodes they don’t drop out. At every batch, a
+randomly sampled set of these models is trained.&lt;/p&gt;
+&lt;p&gt;After training, you have in your hands an ensemble of models. If you use this
+ensemble at inference time as described above, you get the ensemble’s
+uncertainty.&lt;/p&gt;
+&lt;h1&gt;Sampling methods vs Variational Inference&lt;/h1&gt;
+&lt;p&gt;In terms of the &lt;a href="https://en.wikipedia.org/wiki/Biasâvariance_tradeoff"&gt;bias-variance
+tradeoff&lt;/a&gt;, variational
+inference has high bias because we choose the distributions family. This is a
+strong assumption that we’re making, and as any strong assumption, it introduces
+bias. However, it’s stable, with low variance.&lt;/p&gt;
+&lt;p&gt;Sampling methods on the other hand have low bias, because we don’t make
+assumptions about the distribution. This comes at the price of high variance,
+since the result is dependent on the samples we draw.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Final thoughts&lt;/h1&gt;
+&lt;p&gt;Being able to estimate the model uncertainty is a hot topic. It’s important to
+be aware of it in high risk applications such as medical assistants and
+self-driving cars. It’s also a valuable tool to understand which data could
+benefit the model, so we can go and get it.&lt;/p&gt;
+&lt;p&gt;In this post we covered some of the approaches to get model uncertainty
+estimations. There are many more methods out there, so if you feel highly
+uncertain about it, go ahead and look for more data 🙂&lt;/p&gt;
+&lt;p&gt;In the next post we’ll show you how to use uncertainty in recommender systems,
+and specifically — how to tackle the &lt;a href="https://en.wikipedia.org/wiki/Multi-armed_bandit"&gt;exploration-exploitation
+challenge&lt;/a&gt;. Stay tuned.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;This is the second post of a series related to a paper we’re presenting in a
+workshop in this year KDD conference: &lt;a href="https://arxiv.org/abs/1711.02487"&gt;deep density networks and uncertainty in
+recommender systems&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;The first post can be found
+&lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model"&gt;here&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="deep learning"></category><category term="uncertainty"></category></entry><entry><title>Using Uncertainty to Interpret your Model</title><link href="http://anotherdatum.com/using-uncertainty-to-interpret-your-model.html" rel="alternate"></link><published>2018-07-31T21:00:00+03:00</published><updated>2018-07-31T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-07-31:using-uncertainty-to-interpret-your-model.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;As deep neural networks (DNN) become more powerful, their complexity increases. This complexity introduces new challenges, including model interpretability.&lt;/p&gt;
 &lt;p&gt;Interpretability is crucial in order to build models that are more robust and resistant to adversarial attacks. Moreover, designing a model for a new, not well researched domain is challenging and being able to interpret what the model is doing can help us in the process.&lt;/p&gt;
@@ -50,7 +270,7 @@
 &lt;p&gt;Wait a second... By exposing the model to some titles it was able to get better and be more certain about a bunch of new titles. Maybe we can use that to somehow encourage exploration of new items? Well, yes we can! More on that in a following post of the series.&lt;/p&gt;
 &lt;h1&gt;Final thoughts&lt;/h1&gt;
 &lt;p&gt;Uncertainty is a big deal in many domains. Identifying which uncertainty type is important is application specific. You can use them in a variety of ways once you know how to model them. In this post we discussed how you can use them to debug your model. In the next post we’ll talk about different ways to get uncertainty estimations from your model.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;This is the first post of a series related to a paper we’re presenting in a workshop in this year KDD conference: &lt;a href="https://arxiv.org/abs/1711.02487"&gt;deep density networks and uncertainty in recommender systems&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="deep learning"></category></entry><entry><title>Neural Networks gone wild! They can sample from discrete distributions now!</title><link href="http://anotherdatum.com/gumbel-gan.html" rel="alternate"></link><published>2018-07-16T23:00:00+03:00</published><updated>2018-07-16T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-07-16:gumbel-gan.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
+&lt;p&gt;&lt;em&gt;This is the first post of a series related to a paper we’re presenting in a workshop in this year KDD conference: &lt;a href="https://arxiv.org/abs/1711.02487"&gt;deep density networks and uncertainty in recommender systems&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="deep learning"></category><category term="uncertainty"></category></entry><entry><title>Neural Networks gone wild! They can sample from discrete distributions now!</title><link href="http://anotherdatum.com/gumbel-gan.html" rel="alternate"></link><published>2018-07-16T23:00:00+03:00</published><updated>2018-07-16T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-07-16:gumbel-gan.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
 *
 * IPython notebook
 *
