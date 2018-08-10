@@ -1,7 +1,7 @@
 Title: Neural Networks from a Bayesian Perspective
 Slug: bnn
 Date: 2018-08-06 21:00
-Tags: deep learning
+Tags: deep learning, uncertainty
 Summary: Learn how to estimate model uncertainty in neural networks.
 header_cover: images/uncertainty_paper/BNN/cover.jpg
 
