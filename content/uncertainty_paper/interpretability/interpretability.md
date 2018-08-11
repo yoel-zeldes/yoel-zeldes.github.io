@@ -30,7 +30,7 @@ One prominent example is that of high risk applications. Let’s say you’re bu
 
 Self-driving cars are another interesting example. When the model is uncertain if there is a pedestrian on the road we could use this information to slow the car down or trigger an alert so the driver can take charge.
 
-Uncertainty can also help us with out of data examples. If the model wasn’t trained using examples similar to the sample at hand it might be better if it’s able to say “sorry, I don’t know”. This could have prevented the embarrassing mistake Google photos had when they misclassified african americans as gorillas. Mistakes like that sometimes happen due to an insufficiently diverse training set.
+Uncertainty can also help us with out of data examples. If the model wasn’t trained using examples similar to the sample at hand it might be better if it’s able to say “sorry, I don’t know”. This could have prevented the embarrassing mistake Google photos had when they misclassified African Americans as gorillas. Mistakes like that sometimes happen due to an insufficiently diverse training set.
 
 The last usage of uncertainty, which is the purpose of this post, is as a tool for practitioners to debug their model. We’ll dive into this in a moment, but first, let’s talk about different types of uncertainty.
 
