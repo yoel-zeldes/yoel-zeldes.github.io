@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Uncertainty for CTR Prediction: One Model to Clarify Them All</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="Learn how to handle uncertainty in recommender systems in a principled way using one unified model.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="deep learning">
+        <meta name="tags" content="uncertainty">
+        <meta name="tags" content="recommender systems">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/ctr-model.html">
+	<meta property="og:title" content="Uncertainty for CTR Prediction: One Model to Clarify Them All">
+	<meta property="article:published_time" content="2018-08-21 21:00:00+03:00">
+            <meta property="og:description" content="Learn how to handle uncertainty in recommender systems in a principled way using one unified model.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/uncertainty_paper/model/cover.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@YZeldes">
+        <meta name="twitter:title" content="Uncertainty for CTR Prediction: One Model to Clarify Them All">
+
+            <meta name="twitter:image" content="http://anotherdatum.com/images/uncertainty_paper/model/cover.jpg">
+
+            <meta name="twitter:description" content="Learn how to handle uncertainty in recommender systems in a principled way using one unified model.">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/uncertainty_paper/model/cover.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Uncertainty for CTR Prediction: One Model to Clarify Them All</h1>
+                        <span class="meta">Posted on 21 August 2018</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p><em>This is a joint post with <a href="https://medium.com/@inbarnaor">Inbar Naor</a>. Originally published at <a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify/">engineering.taboola.com</a>.</em></p>
+<hr />
+<p>In <a href="https://engineering.taboola.com/using-uncertainty-interpret-model/">the first
+post</a> of the
+series we discussed three types of uncertainty that can affect your model — data
+uncertainty, model uncertainty and measurement uncertainty. In <a href="https://engineering.taboola.com/neural-networks-bayesian-perspective/">the second
+post</a> we
+talked about various methods to handle the model uncertainty specifically.
+Then, in our <a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/">third
+post</a>
+we showed how we can use the model’s uncertainty to encourage exploration of new
+items in recommender systems.</p>
+<p>Wouldn’t it be great if we can handle all three types of uncertainty in a
+principled way using one unified model? In this post we’ll show you how we at
+Taboola implemented a neural network that estimates both the probability of an
+item being relevant to the user, as well as the uncertainty of this prediction.</p>
+<h1>Let’s jump to the deep water</h1>
+<p><img alt="" src="images/uncertainty_paper/model/model.jpg" /></p>
+<p>A picture is worth a thousand words, isn’t it? And a picture containing a
+thousand neurons?...</p>
+<p>In any case, this is the model we use. The model is composed of several modules.
+We’ll explain the goal of each one, and then the picture will become clearer...</p>
+<h2>Item module</h2>
+<p><img alt="" src="images/uncertainty_paper/model/item_module.png" /></p>
+<p>The model tries to predict the probability that an item will be clicked, i.e —
+the CTR (Click Through Rate). To do so, we have a module that gets as input the
+item’s features such as its title and thumbnail, and outputs a dense
+representation — a vector of numbers if you will.</p>
+<p>Once the model is trained, this vector will contain the important information
+extracted out of the item.</p>
+<h2>Context module</h2>
+<p><img alt="" src="images/uncertainty_paper/model/context_module.png" /></p>
+<p>We said the model predicts the probability of a click on an item, right? But in
+which context is the item shown?</p>
+<p>Context can mean many things — the publisher, the user, the time of day, etc.
+This module gets as input the features of the context. It then outputs the dense
+representation of the context.</p>
+<h2>Fusion module</h2>
+<p><img alt="" src="images/uncertainty_paper/model/fusion_module.png" /></p>
+<p>So we have the information extracted out of both the item and the context. For
+sure, there’s some interaction between the two. For instance, an item about
+soccer probably will have higher CTR in a sports publisher compared to a finance
+publisher.</p>
+<p>This module fuses the two representations into one, in a similar fashion to
+collaborative filtering.</p>
+<h2>Estimation module</h2>
+<p><img alt="" src="images/uncertainty_paper/model/estimation_module.png" /></p>
+<p>At the end we have a module whose goal is to predict the CTR. In addition, it
+also estimates uncertainty about the CTR estimation.</p>
+<p>I guess you’re mostly uncertain about how <em>this</em> module works, so let’s shed
+some light on it.</p>
+<p>We’ll walk you through the three types of uncertainty we’ve mentioned, and show
+you how each one is handled by our model. First, let’s tackle the data
+uncertainty.</p>
+<h1>Data uncertainty</h1>
+<p>Let’s take some generic neural network trained on a regression task. One common
+loss function is MSE — Mean Squared Error. We like this loss because it’s
+intuitive, right? You want to minimize the errors... But it turns out that when
+you minimize MSE, you implicitly maximize the likelihood of the data — assuming
+the label is distributed normally with a fixed standard deviation <span class="math">\(\sigma\)</span>. This <span class="math">\(\sigma\)</span> is
+the noise inherent in the data.</p>
+<p><img alt="" src="images/uncertainty_paper/model/likelihood.png" /></p>
+<p>One thing we can do is explicitly maximize the likelihood by introducing a new
+node which we’ll call <span class="math">\(\sigma\)</span>. Plugging it into the likelihood equation and letting
+the gradients propagate enable this node to learn to output the data noise.</p>
+<p>We didn’t achieve anything different, right? We got an equivalent result to the
+initial MSE based model. However, now we can introduce a link from the last
+layer to <span class="math">\(\sigma\)</span>:</p>
+<p><img alt="" src="images/uncertainty_paper/model/likelihood2.png" /></p>
+<p>Now we’re getting into something interesting! <span class="math">\(\sigma\)</span> is now a function of the input.
+It means the model can learn to associate different levels of data uncertainty
+with different inputs.</p>
+<p>We can make the model even more powerful. Instead of estimating a Gaussian
+distribution, we can estimate a mixture of Gaussians. The more Gaussians we put
+into the mix, the more capacity the model will have — and more prone to
+overfitting, so be careful with that.</p>
+<p>This architecture is called MDN — Mixture Density Network. It was introduced by
+<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/bishop-ncrg-94-004.pdf">Bishop et al. in
+1994</a>.
+Here is an example of what it captures:</p>
+<p>We have two groups of similar items — one about shopping, and the other about
+sports.</p>
+<p><img alt="" src="images/uncertainty_paper/model/shopping_sports.png" /></p>
+<p>It turns out the shopping items tend to have more variable CTR — maybe due to
+trendiness. Indeed, if we ask the model to estimate the uncertainty of one item
+in each group (the dotted graph in the figure), we get higher uncertainty for
+shopping compared to sports.</p>
+<p><img alt="" src="images/uncertainty_paper/model/shopping_sports_uncertainty.jpg" /></p>
+<p>So data uncertainty is behind us. What’s next?</p>
+<h1>Measurement uncertainty</h1>
+<p><img alt="" src="images/uncertainty_paper/model/measurement_process.png" /></p>
+<p>This one is a bit more tricky. In <a href="https://engineering.taboola.com/using-uncertainty-interpret-model/">the first
+post</a> we
+explained that sometimes measurement can be noisy. This might result in noisy
+features or even noisy labels. In our case, our label <span class="math">\(y\)</span> is the empiric CTR of an
+item — the number of times it was clicked so far, divided by the number of times
+it was shown.</p>
+<p>Let’s say the true CTR of an item is <span class="math">\(y^*\)</span> — that is, without measurement noise.
+This would be the CTR had we shown the item infinite amount of times in the
+context. But time is finite (at least the time we’ve got), so we showed it only
+a finite amount of times. We measured an observed CTR <span class="math">\(y\)</span>. This <span class="math">\(y\)</span> has measurement
+noise — which we denote by <span class="math">\(\epsilon\)</span>.</p>
+<p>Next, we assume <span class="math">\(\epsilon\)</span> is distributed normally with a <span class="math">\(\sigma_\epsilon\)</span> as the standard
+deviation. <span class="math">\(\sigma_\epsilon\)</span> function of <span class="math">\(r\)</span> — the number of times we showed the item. The
+bigger <span class="math">\(r\)</span> is, the smaller <span class="math">\(\sigma_\epsilon\)</span> gets, which makes <span class="math">\(y\)</span> more similar to <span class="math">\(y^*\)</span>.</p>
+<p>At the end of the day, after we spare you from the mathematical details (which
+you can find <a href="https://arxiv.org/abs/1711.02487">in our paper</a>), we get this
+likelihood equation:</p>
+<p><img alt="" src="images/uncertainty_paper/model/measurement_likelihood.png" /></p>
+<p>This is the same as the likelihood we have in the MDN architecture of a mixture
+of Gaussians, with one difference — the error term is split to two:</p>
+<ul>
+<li>data uncertainty (<span class="math">\(\sigma_i\)</span>)</li>
+<li>measurement uncertainty (<span class="math">\(\sigma_\epsilon\)</span>)</li>
+</ul>
+<p>Now that the model is able to explain each uncertainty using a different term,
+the data uncertainty is not polluted by the measurement uncertainty.</p>
+<p>Besides being able the explain the data in a better way, this allows us to use
+more data in the training process. This is due to the fact that prior to this
+work we filtered out data with too much noise.</p>
+<h1>Last but not least</h1>
+<p>In a previous post we discussed how to handle model uncertainty. One of the
+approaches we described was using dropout at inference time.</p>
+<p>Being able to estimate model uncertainty allows us to understand better what the
+model doesn’t know because of lack of data. So let’s put it to the test!</p>
+<p>Let’s see if unique titles are associated with high uncertainty. We’ll map each
+title in the training set to a dense representation (e.g. average word2vec
+embeddings) and expect the model to be less certain about unique titles — titles
+that are mapped to sparse regions of the embedding space.</p>
+<p>To test it, we calculated the sparse and dense regions by calculating KDE
+(Kernel Density Estimation). This is a method for estimating the PDF
+(Probability Density Function) of our space. Next, we asked the model to
+estimate the uncertainty associated with each title. It turns out that indeed
+the model has higher uncertainty in the sparse regions!</p>
+<p><img alt="" src="images/uncertainty_paper/model/model_uncertainty_and_pdf.png" /></p>
+<p>Nice... What would happen if we show the model more titles from the sparse
+regions? Will it be more certain about these regions? Let’s test it out!</p>
+<p>We took a bunch of similar titles about cars and removed them from the training
+set. Effectively, it altered their region in the space from dense to sparse.
+Next, we estimated the model uncertainty over these titles. As expected, the
+uncertainty was high.</p>
+<p>Finally, we added only one of the titles to the training set and retrained the
+model. To our satisfaction, now the uncertainty has reduced for <em>all</em> of these
+items. Neat!</p>
+<p><img alt="" src="images/uncertainty_paper/model/model_uncertainty_shift.png" /></p>
+<p>As we saw in <a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/">the post about
+exploration-exploitation</a>,
+we can encourage exploration of these sparse regions. After doing so, the
+uncertainty will decrease. This will result in a natural decay of exploration of
+that region.</p>
+<h1>Final thoughts</h1>
+<p>In this post we elaborated on how we model all three types of uncertainty —
+data, model and measurement — in a principled way, using one unified model.</p>
+<p>We encourage you to think how you can use uncertainty in your application as
+well! Even it you don’t need to explicitly model uncertainty in your prediction,
+you might benefit from using it in the training process — if your model can
+understand better how data is generated and how uncertainty affects the game, it
+might be able to improve.</p>
+<hr />
+<p>This is the forth post of a series related to a paper we're presenting in a workshop in this year KDD conference: <a href="https://arxiv.org/abs/1711.02487">deep density networks and uncertainty in recommender systems</a>.</p>
+<p>The first post can be found <a href="https://engineering.taboola.com/using-uncertainty-interpret-model/">here</a>.</p>
+<p>The second post can be found <a href="https://engineering.taboola.com/neural-networks-bayesian-perspective/">here</a>.</p>
+<p>The third post can be found <a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/">here</a>.</p>
+<hr />
+<p><em>Originally published at
+<a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify">engineering.taboola.com</a>
+by me and <a href="https://medium.com/@inbarnaor">Inbar Naor</a>.</em></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/deep-learning.html">deep learning</a>, <a href="http://anotherdatum.com/tag/uncertainty.html">uncertainty</a>, <a href="http://anotherdatum.com/tag/recommender-systems.html">recommender systems</a></p>
+        </div>
+
+    <hr>
+
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:300px;}
+	#mc_embed_signup form{padding: 0;}
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="//anotherdatum.us14.list-manage.com/subscribe/post?u=6894d7badcfb253606fa3fb54&amp;id=c6f34ad6b7" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<h2>Get updated of new posts</h2>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address </label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6894d7badcfb253606fa3fb54_c6f34ad6b7" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+<hr />
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'ctr-model.html';
+                var disqus_url = 'http://anotherdatum.com/ctr-model.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/YZeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>

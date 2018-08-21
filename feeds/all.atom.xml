@@ -1,5 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-08-14T21:00:00+03:00</updated><entry><title>Recommender Systems: Exploring the Unknown Using Uncertainty</title><link href="http://anotherdatum.com/exploration-exploitation.html" rel="alternate"></link><published>2018-08-14T21:00:00+03:00</published><updated>2018-08-14T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-08-14:exploration-exploitation.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-08-21T21:00:00+03:00</updated><entry><title>Uncertainty for CTR Prediction: One Model to Clarify Them All</title><link href="http://anotherdatum.com/ctr-model.html" rel="alternate"></link><published>2018-08-21T21:00:00+03:00</published><updated>2018-08-21T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-08-21:ctr-model.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify/"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;In &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model/"&gt;the first
+post&lt;/a&gt; of the
+series we discussed three types of uncertainty that can affect your model — data
+uncertainty, model uncertainty and measurement uncertainty. In &lt;a href="https://engineering.taboola.com/neural-networks-bayesian-perspective/"&gt;the second
+post&lt;/a&gt; we
+talked about various methods to handle the model uncertainty specifically.
+Then, in our &lt;a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/"&gt;third
+post&lt;/a&gt;
+we showed how we can use the model’s uncertainty to encourage exploration of new
+items in recommender systems.&lt;/p&gt;
+&lt;p&gt;Wouldn’t it be great if we can handle all three types of uncertainty in a
+principled way using one unified model? In this post we’ll show you how we at
+Taboola implemented a neural network that estimates both the probability of an
+item being relevant to the user, as well as the uncertainty of this prediction.&lt;/p&gt;
+&lt;h1&gt;Let’s jump to the deep water&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/model.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;A picture is worth a thousand words, isn’t it? And a picture containing a
+thousand neurons?...&lt;/p&gt;
+&lt;p&gt;In any case, this is the model we use. The model is composed of several modules.
+We’ll explain the goal of each one, and then the picture will become clearer...&lt;/p&gt;
+&lt;h2&gt;Item module&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/item_module.png" /&gt;&lt;/p&gt;
+&lt;p&gt;The model tries to predict the probability that an item will be clicked, i.e —
+the CTR (Click Through Rate). To do so, we have a module that gets as input the
+item’s features such as its title and thumbnail, and outputs a dense
+representation — a vector of numbers if you will.&lt;/p&gt;
+&lt;p&gt;Once the model is trained, this vector will contain the important information
+extracted out of the item.&lt;/p&gt;
+&lt;h2&gt;Context module&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/context_module.png" /&gt;&lt;/p&gt;
+&lt;p&gt;We said the model predicts the probability of a click on an item, right? But in
+which context is the item shown?&lt;/p&gt;
+&lt;p&gt;Context can mean many things — the publisher, the user, the time of day, etc.
+This module gets as input the features of the context. It then outputs the dense
+representation of the context.&lt;/p&gt;
+&lt;h2&gt;Fusion module&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/fusion_module.png" /&gt;&lt;/p&gt;
+&lt;p&gt;So we have the information extracted out of both the item and the context. For
+sure, there’s some interaction between the two. For instance, an item about
+soccer probably will have higher CTR in a sports publisher compared to a finance
+publisher.&lt;/p&gt;
+&lt;p&gt;This module fuses the two representations into one, in a similar fashion to
+collaborative filtering.&lt;/p&gt;
+&lt;h2&gt;Estimation module&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/estimation_module.png" /&gt;&lt;/p&gt;
+&lt;p&gt;At the end we have a module whose goal is to predict the CTR. In addition, it
+also estimates uncertainty about the CTR estimation.&lt;/p&gt;
+&lt;p&gt;I guess you’re mostly uncertain about how &lt;em&gt;this&lt;/em&gt; module works, so let’s shed
+some light on it.&lt;/p&gt;
+&lt;p&gt;We’ll walk you through the three types of uncertainty we’ve mentioned, and show
+you how each one is handled by our model. First, let’s tackle the data
+uncertainty.&lt;/p&gt;
+&lt;h1&gt;Data uncertainty&lt;/h1&gt;
+&lt;p&gt;Let’s take some generic neural network trained on a regression task. One common
+loss function is MSE — Mean Squared Error. We like this loss because it’s
+intuitive, right? You want to minimize the errors... But it turns out that when
+you minimize MSE, you implicitly maximize the likelihood of the data — assuming
+the label is distributed normally with a fixed standard deviation &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt;. This &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt; is
+the noise inherent in the data.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/likelihood.png" /&gt;&lt;/p&gt;
+&lt;p&gt;One thing we can do is explicitly maximize the likelihood by introducing a new
+node which we’ll call &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt;. Plugging it into the likelihood equation and letting
+the gradients propagate enable this node to learn to output the data noise.&lt;/p&gt;
+&lt;p&gt;We didn’t achieve anything different, right? We got an equivalent result to the
+initial MSE based model. However, now we can introduce a link from the last
+layer to &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/likelihood2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now we’re getting into something interesting! &lt;span class="math"&gt;\(\sigma\)&lt;/span&gt; is now a function of the input.
+It means the model can learn to associate different levels of data uncertainty
+with different inputs.&lt;/p&gt;
+&lt;p&gt;We can make the model even more powerful. Instead of estimating a Gaussian
+distribution, we can estimate a mixture of Gaussians. The more Gaussians we put
+into the mix, the more capacity the model will have — and more prone to
+overfitting, so be careful with that.&lt;/p&gt;
+&lt;p&gt;This architecture is called MDN — Mixture Density Network. It was introduced by
+&lt;a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/bishop-ncrg-94-004.pdf"&gt;Bishop et al. in
+1994&lt;/a&gt;.
+Here is an example of what it captures:&lt;/p&gt;
+&lt;p&gt;We have two groups of similar items — one about shopping, and the other about
+sports.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/shopping_sports.png" /&gt;&lt;/p&gt;
+&lt;p&gt;It turns out the shopping items tend to have more variable CTR — maybe due to
+trendiness. Indeed, if we ask the model to estimate the uncertainty of one item
+in each group (the dotted graph in the figure), we get higher uncertainty for
+shopping compared to sports.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/shopping_sports_uncertainty.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;So data uncertainty is behind us. What’s next?&lt;/p&gt;
+&lt;h1&gt;Measurement uncertainty&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/measurement_process.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This one is a bit more tricky. In &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model/"&gt;the first
+post&lt;/a&gt; we
+explained that sometimes measurement can be noisy. This might result in noisy
+features or even noisy labels. In our case, our label &lt;span class="math"&gt;\(y\)&lt;/span&gt; is the empiric CTR of an
+item — the number of times it was clicked so far, divided by the number of times
+it was shown.&lt;/p&gt;
+&lt;p&gt;Let’s say the true CTR of an item is &lt;span class="math"&gt;\(y^*\)&lt;/span&gt; — that is, without measurement noise.
+This would be the CTR had we shown the item infinite amount of times in the
+context. But time is finite (at least the time we’ve got), so we showed it only
+a finite amount of times. We measured an observed CTR &lt;span class="math"&gt;\(y\)&lt;/span&gt;. This &lt;span class="math"&gt;\(y\)&lt;/span&gt; has measurement
+noise — which we denote by &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Next, we assume &lt;span class="math"&gt;\(\epsilon\)&lt;/span&gt; is distributed normally with a &lt;span class="math"&gt;\(\sigma_\epsilon\)&lt;/span&gt; as the standard
+deviation. &lt;span class="math"&gt;\(\sigma_\epsilon\)&lt;/span&gt; function of &lt;span class="math"&gt;\(r\)&lt;/span&gt; — the number of times we showed the item. The
+bigger &lt;span class="math"&gt;\(r\)&lt;/span&gt; is, the smaller &lt;span class="math"&gt;\(\sigma_\epsilon\)&lt;/span&gt; gets, which makes &lt;span class="math"&gt;\(y\)&lt;/span&gt; more similar to &lt;span class="math"&gt;\(y^*\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;At the end of the day, after we spare you from the mathematical details (which
+you can find &lt;a href="https://arxiv.org/abs/1711.02487"&gt;in our paper&lt;/a&gt;), we get this
+likelihood equation:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/measurement_likelihood.png" /&gt;&lt;/p&gt;
+&lt;p&gt;This is the same as the likelihood we have in the MDN architecture of a mixture
+of Gaussians, with one difference — the error term is split to two:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;data uncertainty (&lt;span class="math"&gt;\(\sigma_i\)&lt;/span&gt;)&lt;/li&gt;
+&lt;li&gt;measurement uncertainty (&lt;span class="math"&gt;\(\sigma_\epsilon\)&lt;/span&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now that the model is able to explain each uncertainty using a different term,
+the data uncertainty is not polluted by the measurement uncertainty.&lt;/p&gt;
+&lt;p&gt;Besides being able the explain the data in a better way, this allows us to use
+more data in the training process. This is due to the fact that prior to this
+work we filtered out data with too much noise.&lt;/p&gt;
+&lt;h1&gt;Last but not least&lt;/h1&gt;
+&lt;p&gt;In a previous post we discussed how to handle model uncertainty. One of the
+approaches we described was using dropout at inference time.&lt;/p&gt;
+&lt;p&gt;Being able to estimate model uncertainty allows us to understand better what the
+model doesn’t know because of lack of data. So let’s put it to the test!&lt;/p&gt;
+&lt;p&gt;Let’s see if unique titles are associated with high uncertainty. We’ll map each
+title in the training set to a dense representation (e.g. average word2vec
+embeddings) and expect the model to be less certain about unique titles — titles
+that are mapped to sparse regions of the embedding space.&lt;/p&gt;
+&lt;p&gt;To test it, we calculated the sparse and dense regions by calculating KDE
+(Kernel Density Estimation). This is a method for estimating the PDF
+(Probability Density Function) of our space. Next, we asked the model to
+estimate the uncertainty associated with each title. It turns out that indeed
+the model has higher uncertainty in the sparse regions!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/model_uncertainty_and_pdf.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Nice... What would happen if we show the model more titles from the sparse
+regions? Will it be more certain about these regions? Let’s test it out!&lt;/p&gt;
+&lt;p&gt;We took a bunch of similar titles about cars and removed them from the training
+set. Effectively, it altered their region in the space from dense to sparse.
+Next, we estimated the model uncertainty over these titles. As expected, the
+uncertainty was high.&lt;/p&gt;
+&lt;p&gt;Finally, we added only one of the titles to the training set and retrained the
+model. To our satisfaction, now the uncertainty has reduced for &lt;em&gt;all&lt;/em&gt; of these
+items. Neat!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/uncertainty_paper/model/model_uncertainty_shift.png" /&gt;&lt;/p&gt;
+&lt;p&gt;As we saw in &lt;a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/"&gt;the post about
+exploration-exploitation&lt;/a&gt;,
+we can encourage exploration of these sparse regions. After doing so, the
+uncertainty will decrease. This will result in a natural decay of exploration of
+that region.&lt;/p&gt;
+&lt;h1&gt;Final thoughts&lt;/h1&gt;
+&lt;p&gt;In this post we elaborated on how we model all three types of uncertainty —
+data, model and measurement — in a principled way, using one unified model.&lt;/p&gt;
+&lt;p&gt;We encourage you to think how you can use uncertainty in your application as
+well! Even it you don’t need to explicitly model uncertainty in your prediction,
+you might benefit from using it in the training process — if your model can
+understand better how data is generated and how uncertainty affects the game, it
+might be able to improve.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;This is the forth post of a series related to a paper we're presenting in a workshop in this year KDD conference: &lt;a href="https://arxiv.org/abs/1711.02487"&gt;deep density networks and uncertainty in recommender systems&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first post can be found &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model/"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The second post can be found &lt;a href="https://engineering.taboola.com/neural-networks-bayesian-perspective/"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The third post can be found &lt;a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty/"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published at
+&lt;a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify"&gt;engineering.taboola.com&lt;/a&gt;
+by me and &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</summary><category term="deep learning"></category><category term="uncertainty"></category><category term="recommender systems"></category></entry><entry><title>Recommender Systems: Exploring the Unknown Using Uncertainty</title><link href="http://anotherdatum.com/exploration-exploitation.html" rel="alternate"></link><published>2018-08-14T21:00:00+03:00</published><updated>2018-08-14T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-08-14:exploration-exploitation.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This is a joint post with &lt;a href="https://medium.com/@inbarnaor"&gt;Inbar Naor&lt;/a&gt;. Originally published at &lt;a href="https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;Now that we know &lt;a href="https://engineering.taboola.com/using-uncertainty-interpret-model"&gt;what uncertainty
 types&lt;/a&gt; exist
