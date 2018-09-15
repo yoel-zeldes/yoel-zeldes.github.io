@@ -1173,7 +1173,7 @@ h6:hover .anchor-link {
 <li>Approximate using $ P(x) \approx \frac{1}{n}\sum_{i=1}^n P(x|z_i)$.</li>
 </ol>
 <p>Great! So we just sample a bunch of $z$’s and let the backpropagation party begin!</p>
-<p>Unfortunately, since $x$ hash high dimensionality, many samples are needed to get a reasonable approximation. I mean, if you sample $z$'s, what are the chances you’ll end up with an image that looks anything to do with x? This, by the way, explains why $P(x|z)$ must assign a positive probability value to any possible image, or otherwise the model won’t be able to learn: a sampled $z$ will result with an image that is almost surely different from $x$, and if the probability will be 0 the gradients won’t propagate.</p>
+<p>Unfortunately, since $x$ has high dimensionality, many samples are needed to get a reasonable approximation. I mean, if you sample $z$'s, what are the chances you’ll end up with an image that looks anything to do with x? This, by the way, explains why $P(x|z)$ must assign a positive probability value to any possible image, or otherwise the model won’t be able to learn: a sampled $z$ will result with an image that is almost surely different from $x$, and if the probability will be 0 the gradients won’t propagate.</p>
 <p>So how do we solve this mess?</p>
 </div>
 </div>
@@ -1183,7 +1183,7 @@ h6:hover .anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Let’s-take-a-shortcut!">Let’s take a shortcut!<a class="anchor-link" href="#Let’s-take-a-shortcut!">Â¶</a></h1><p><img alt="Photo by Stefan Steinbauer on Unsplash" src="images/vae/shortcut.jpg"/></p>
-<p>Most sampled $z$’s won’t contribute anything to $P(x)$ - they’ll be too off. If only we can know in advance where to sample from...</p>
+<p>Most sampled $z$’s won’t contribute anything to $P(x)$ - they’ll be too off. If only we could know in advance where to sample from...</p>
 <p>We can introduce $Q(z|x)$. $Q$ will be trained to give high probability values to $z$’s that are likely to have generated $x$.
 Now we can calculate the Monte Carlo estimation using much fewer samples from $Q$.</p>
 <p>Unfortunately, a new problem arises! Instead of maximizing $P(x) = \int P(x|z)P(z)dz = \mathbb{E}_{z \sim P(z)} P(x|z)$, we’ll be maximizing $\mathbb{E}_{z \sim Q(z|x)} P(x|z)$. How do the two relate to each other?</p>
@@ -1196,7 +1196,7 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Variational-Inference">Variational Inference<a class="anchor-link" href="#Variational-Inference">Â¶</a></h1><p>Variational Inference is a topic for a post of its own, so I won’t elaborate here. All I’ll say is that the two do relate via this equation:</p>
 <p>$log P(X) - \mathcal{KL}[Q(z|x) || P(z|x)] = \mathbb{E}_{z \sim Q(z|x)}[log P(x|z)] - \mathcal{KL}[Q(z|x) || P(z)]$</p>
-<p>$\mathcal{KL}$ is the KL divergence, which intuitively measures how similar two distributions are.</p>
+<p>$\mathcal{KL}$ is the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler divergence</a>, which intuitively measures how similar two distributions are.</p>
 <p>In a moment you'll see how we can maximize the right side of the equation. By doing so, the left side will also be maximized:</p>
 <ul>
 <li>$P(x)$ will be maximized.</li>
@@ -1204,7 +1204,7 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </ul>
 <p>The intuition behind the right side of the equation is that we have a tension:</p>
 <ol>
-<li>In one hand we hand to maximize how well $x$ is expected to be decoded from $z \sim Q$.</li>
+<li>In one hand we want to maximize how well $x$ is expected to be decoded from $z \sim Q$.</li>
 <li>On the other hand, we want $Q(z|x)$ (the <em>encoder</em>) to be similar to the prior $P(z)$ (a multivariate Gaussian). One can think of this term as a regularization.</li>
 </ol>
 <p>Minimizing the KL divergence is easy given the right choice of distributions. We’ll model $Q(z|x)$ as a neural network whose output is the parameters of a multivariate Gaussian:</p>
@@ -1221,7 +1221,7 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Reparameterization-trick">Reparameterization trick<a class="anchor-link" href="#Reparameterization-trick">Â¶</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
+<h1 id="The-reparameterization-trick">The reparameterization trick<a class="anchor-link" href="#The-reparameterization-trick">Â¶</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
 <ol>
 <li>Sample from a standard (parameterless) Gaussian.</li>
 <li>Multiply the sample by the square root of $\Sigma_Q$.</li>
