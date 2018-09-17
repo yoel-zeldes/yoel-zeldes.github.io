@@ -996,7 +996,7 @@ h6:hover .anchor-link {
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="The-challenge-of-modeling-images"&gt;The challenge of modeling images&lt;a class="anchor-link" href="#The-challenge-of-modeling-images"&gt;Â¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The interactions between pixels oppose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.&lt;/p&gt;
+&lt;h2 id="The-challenge-of-modeling-images"&gt;The challenge of modeling images&lt;a class="anchor-link" href="#The-challenge-of-modeling-images"&gt;Â¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The interactions between pixels pose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.&lt;/p&gt;
 &lt;p&gt;In digit images there are clear dependencies between pixels. If you look at the left half of an image and see the start of a 4, you’d be very surprised to see the right half is the end of a 0. But why?...&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1014,7 +1014,7 @@ h6:hover .anchor-link {
 &lt;ul&gt;
 &lt;li&gt;The integral means we should search over the entire latent space for candidates.&lt;/li&gt;
 &lt;li&gt;For every candidate $z$, we ask ourselves: can $x$ be generated using the instructions of $z$? Is $P(x|z)$ big enough? If, for instance, $z$ encodes the information that the digit is 7, then an image of 8 is impossible. An image of 1, however, might be possible, since 1 and 7 look similar.&lt;/li&gt;
-&lt;li&gt;We found a good $z$? Good! But wait a second… Is this $z$ even likely? Is $P(z)$ big enough? Let’s consider a given image of an upside down 7. A latent vector describing a similar looking 7 where the angle dimension is set to 180 degrees will be a perfect match. However, that $z$ is not likely, since usually digits are not drawn in 180 degrees angle.&lt;/li&gt;
+&lt;li&gt;We found a good $z$? Good! But wait a second… Is this $z$ even likely? Is $P(z)$ big enough? Let’s consider a given image of an upside down 7. A latent vector describing a similar looking 7 where the angle dimension is set to 180 degrees will be a perfect match. However, that $z$ is not likely, since usually digits are not drawn in a 180 degrees angle.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The VAE training objective is to maximize $P(x)$. We’ll model $P(x|z)$ using a multivariate Gaussian $\mathcal{N}(f(z), \sigma^2 \cdot I)$.&lt;/p&gt;
 &lt;p&gt;$f(z)$ will be modeled using a neural network. $\sigma$ is a hyperparameter that multiplies the identity matrix $I$.&lt;/p&gt;
