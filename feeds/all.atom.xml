@@ -1,5 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-09-14T23:00:00+03:00</updated><entry><title>Variational Autoencoders Explained</title><link href="http://anotherdatum.com/vae.html" rel="alternate"></link><published>2018-09-14T23:00:00+03:00</published><updated>2018-09-14T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-09-14:vae.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-10-10T21:00:00+03:00</updated><entry><title>Zooming Past the Competition</title><link href="http://anotherdatum.com/taboola-hackathon-2018.html" rel="alternate"></link><published>2018-10-10T21:00:00+03:00</published><updated>2018-10-10T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-10-10:taboola-hackathon-2018.html</id><summary type="html">&lt;p&gt;Imagine you’re walking down the street and you see a nice car you’re thinking of
+buying. Just by pointing your phone camera, you can see relevant content about
+that car. How cool is that?!&lt;/p&gt;
+&lt;p&gt;That was our team’s idea that awarded us first place in the recent Taboola R&amp;amp;D
+hackathon aptly named — &lt;a href="https://zoom.taboola.com/"&gt;Taboola Zoom&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;Every year Taboola holds a global R&amp;amp;D hackathon for its 350+ engineers aimed at
+creating ideas for cool potential products or just some fun experiments in
+general.&lt;/p&gt;
+&lt;p&gt;This year, 33 teams worked for 36 hours to come up with ideas that are both
+awesome and helpful to Taboola. Some of the highlights included a tool that can
+accurately predict the users’ gender based on their browsing activity and an
+integration to social networks for Taboola Feed.&lt;/p&gt;
+&lt;p&gt;Our team decided to create an
+&lt;a href="https://en.wikipedia.org/wiki/Augmented_reality"&gt;AR&lt;/a&gt; (Augmented Reality)
+application that allows a user to get content recommendations, much like
+Taboola’s recommendations widget, based on whatever they’re pointing their phone
+camera at.&lt;/p&gt;
+&lt;h1&gt;What is Zoom?&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/hackathon_2018/demo.png" /&gt;&lt;/p&gt;
+&lt;p&gt;The app itself is an AR experience similar to that of Google Glass, which allows
+you to interact with the world using your phone camera. Using the app, one just
+needs to point their camera onto an object to immediately get a list of stories
+from the web related to that object.&lt;/p&gt;
+&lt;p&gt;To make this idea a reality we used technologies from several domains —
+&lt;a href="https://en.wikipedia.org/wiki/Artificial_intelligence"&gt;AI&lt;/a&gt;, &lt;a href="https://en.wikipedia.org/wiki/Web_application"&gt;Web
+Applications&lt;/a&gt; and
+&lt;a href="https://en.wikipedia.org/wiki/Microservices"&gt;Microservices&lt;/a&gt;.&lt;/p&gt;
+&lt;h3&gt;Under the Hood&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="" src="images/hackathon_2018/architecture.png" /&gt;&lt;/p&gt;
+&lt;p&gt;The flow is pretty simple:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The user opens a web application on his phone — an
+&lt;a href="https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5"&gt;HTML5&lt;/a&gt; page that
+behaves like a native app.&lt;/li&gt;
+&lt;li&gt;The app sends a screenshot of the captured video every second to a remote
+server.&lt;/li&gt;
+&lt;li&gt;The server processes the image using computer vision technologies.&lt;/li&gt;
+&lt;li&gt;The server searches for web articles with thumbnails that are the most similar
+to the processed image.&lt;/li&gt;
+&lt;li&gt;The retrieved images are filtered using a similarity threshold, and are sent
+back to the user to be shown in a slick widget atop of the user’s display.&lt;/li&gt;
+&lt;li&gt;When the user clicks the widget the relevant article is opened in the browser.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Zooming In&lt;/h3&gt;
+&lt;p&gt;Each component of the system is implemented using different technologies:&lt;/p&gt;
+&lt;h4&gt;Web Application&lt;/h4&gt;
+&lt;p&gt;We decided to implement the user interface using HTML5, which allowed us access
+to native capabilities of the phone such as the camera. Additionally, we used
+&lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API"&gt;WebRTC API&lt;/a&gt; and
+&lt;a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API"&gt;Canvas API&lt;/a&gt;.&lt;/p&gt;
+&lt;h4&gt;Computer Vision Service&lt;/h4&gt;
+&lt;p&gt;&lt;img alt="" src="images/hackathon_2018/vision.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;For every image, the service processes the image and returns an
+&lt;a href="https://developers.google.com/machine-learning/crash-course/embeddings/video-lecture"&gt;embedding&lt;/a&gt;
+— a numerical vector representing information extracted from the content of the
+image.&lt;/p&gt;
+&lt;p&gt;Understanding the content of an image is a well known problem with plenty of
+solutions. We chose to use Google’s
+&lt;a href="https://research.googleblog.com/2016/03/train-your-own-image-classifier-with.html"&gt;Inception&lt;/a&gt;
+model, which is a &lt;a href="https://en.wikipedia.org/wiki/Deep_learning"&gt;DNN&lt;/a&gt; (Deep
+Neural Network) trained to classify the object found in an image.&lt;/p&gt;
+&lt;p&gt;A DNN is a construct of layers of neurons — similar to nodes in a graph, where
+each layer learns certain patterns in the image. The first layers learn to
+output simple patterns such as edges and corners, while the last layer outputs
+the type of the object, e.g. dog, cat etc.&lt;/p&gt;
+&lt;p&gt;We chose to use the output of the layer before last — as that produced the best
+results.&lt;/p&gt;
+&lt;h4&gt;Database&lt;/h4&gt;
+&lt;p&gt;The only component that was already available to us was Taboola’s internal
+database of articles, containing, among other things, the thumbnail and the
+article URL.&lt;/p&gt;
+&lt;p&gt;If such a database was not readily available to us, we could have just built our
+own by &lt;a href="https://en.wikipedia.org/wiki/Web_scraping"&gt;scraping&lt;/a&gt; images using a
+library such as &lt;a href="https://www.crummy.com/software/BeautifulSoup/"&gt;BeautifulSoup&lt;/a&gt;.&lt;/p&gt;
+&lt;h4&gt;Server&lt;/h4&gt;
+&lt;p&gt;We used Flask as our web server. On startup, the server queries Taboola’s
+internal database of articles from the web. It then sends each image to the
+computer vision service, which returns an embedding. The embeddings are then
+stored into a designated data structure called
+&lt;a href="https://code.facebook.com/posts/1373769912645926/faiss-a-library-for-efficient-similarity-search/"&gt;FAISS&lt;/a&gt;
+(Facebook AI Similarity Search). It allows us to perform a &lt;a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search"&gt;nearest neighbors
+search&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Each image sent from the user is similarly transformed into an embedding. It is
+then used as a query to the above data structure to retrieve its nearest
+embeddings, meaning, images with similar patterns and content. Only images which
+are considered similar above a predefined threshold are then returned to the
+user.&lt;/p&gt;
+&lt;p&gt;So to recap, the entire architecture relies on three main components:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;web application&lt;/li&gt;
+&lt;li&gt;computer vision service&lt;/li&gt;
+&lt;li&gt;articles database&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Do it Yourself&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/hackathon_2018/diy.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The entire project was developed in under 36 hours by a team of 5 people.&lt;/p&gt;
+&lt;p&gt;This app touches several interesting and exciting domains that are “hot” in the
+industry — AR and AI. It was a breeze to implement thanks to the commonly
+available tools and libraries.&lt;/p&gt;
+&lt;p&gt;If there’s only one thing we want you to take from this is that it’s not that
+difficult.&lt;/p&gt;
+&lt;p&gt;We invite you to be aware of the potential that lies in these domains and to be
+on the lookout for interesting and exciting ideas. Once you find one, go and
+have your own private hackathon!&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Finally&lt;/h1&gt;
+&lt;p&gt;If you want to play around with the app, open
+&lt;a href="https://zoom.taboola.com/"&gt;https://zoom.taboola.com&lt;/a&gt; &lt;strong&gt;on your phone&lt;/strong&gt; — use
+Chrome on Android and Safari on iOS, and try hovering over different objects to
+see the various results — keep in mind this is a pre-alpha hackathon project.&lt;/p&gt;
+&lt;p&gt;We want to thank our wonderful teammates who worked tirelessly to create this
+amazing app –&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.linkedin.com/in/amir-keren/"&gt;Amir Keren&lt;/a&gt;, &lt;a href="https://www.linkedin.com/in/yoelzeldes/"&gt;Yoel
+Zeldes&lt;/a&gt;, &lt;a href="https://www.linkedin.com/in/elinarevzin/"&gt;Elina
+Revzin&lt;/a&gt;, &lt;a href="https://www.linkedin.com/in/avivrotman/"&gt;Aviv
+Rotman&lt;/a&gt; and &lt;a href="https://www.linkedin.com/in/ofri-mann-b53669/"&gt;Ofri
+Mann&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published at
+&lt;a href="https://engineering.taboola.com/zooming-past-competition"&gt;engineering.taboola.com&lt;/a&gt;
+by me and &lt;a href="https://medium.com/u/3214d1645ea8"&gt;Amir Keren&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="deep learning"></category><category term="web"></category><category term="hackathon"></category><category term="augmented reality"></category></entry><entry><title>Variational Autoencoders Explained</title><link href="http://anotherdatum.com/vae.html" rel="alternate"></link><published>2018-09-14T23:00:00+03:00</published><updated>2018-09-14T23:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-09-14:vae.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
 *
 * IPython notebook
 *
