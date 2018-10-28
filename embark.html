@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>How to Engineer Your Way Out of Slow Models</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="So you just finished designing that great neural network architecture. But how do you handle the fact it is slow?">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="deep learning">
+        <meta name="tags" content="architecture">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/embark.html">
+	<meta property="og:title" content="How to Engineer Your Way Out of Slow Models">
+	<meta property="article:published_time" content="2018-10-28 23:00:00+02:00">
+            <meta property="og:description" content="So you just finished designing that great neural network architecture. But how do you handle the fact it is slow?">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/embark/cover.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@YZeldes">
+        <meta name="twitter:title" content="How to Engineer Your Way Out of Slow Models">
+
+            <meta name="twitter:image" content="http://anotherdatum.com/images/embark/cover.jpg">
+
+            <meta name="twitter:description" content="So you just finished designing that great neural network architecture. But how do you handle the fact it is slow?">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/embark/cover.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>How to Engineer Your Way Out of Slow Models</h1>
+                        <span class="meta">Posted on 28 October 2018</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>So you just finished designing that great neural network architecture of yours.
+It has a blazing number of 300 fully connected layers interleaved with 200
+<a href="https://en.wikipedia.org/wiki/Convolutional_neural_network#Convolutional">convolutional
+layers</a>
+with 20 channels each, where the result is fed as the seed of a glorious
+<a href="https://en.wikipedia.org/wiki/Bidirectional_recurrent_neural_networks">bidirectional</a>
+<a href="https://machinelearningmastery.com/stacked-long-short-term-memory-networks/">stacked</a>
+<a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM</a> with a pinch
+of
+<a href="http://www.wildml.com/2016/01/attention-and-memory-in-deep-learning-and-nlp/">attention</a>.
+After training you get an accuracy of 99.99%, and you’re ready to ship it to
+production.</p>
+<p>But then you realize the production constraints won’t allow you to run inference
+using this beast. You need the inference to be done in under 200 milliseconds.</p>
+<p>In other words, you need to chop off half of the layers, give up on using
+convolutions, and let’s not get started about the costly LSTM...</p>
+<p>If only you could make that amazing model faster!</p>
+<p><img alt="" src="images/embark/sad.jpg" /></p>
+<h1>Sometimes you can</h1>
+<p>Here at Taboola we did it. Well, not exactly... Let me explain.</p>
+<p>One of our models has to predict CTR (Click Through Rate) of an item, or in
+other words — the probability the user will like an article recommendation and
+click on it.</p>
+<p>The model has multiple modalities as input, each goes through a different
+transformation. Some of them are:</p>
+<ul>
+<li>categorical features: these are
+<a href="https://engineering.taboola.com/using-word2vec-better-embeddings-categorical-features/">embedded</a>
+into a dense representation</li>
+<li>image: the pixels are passed through convolutional and fully connected layers</li>
+<li>text: after being tokenized, the text is passed through a LSTM which is followed
+by <a href="https://arxiv.org/abs/1703.03130">self attention</a></li>
+</ul>
+<p>These processed modalities are then passed through fully connected layers in
+order to learn the interactions between the modalities, and finally, they are
+passed through a
+<a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify">MDN</a>
+layer.</p>
+<p>As you can imagine, this model is slow.</p>
+<p>We decided to insist on the predictive power of the model, instead of trimming
+components, and came up with an engineering solution.</p>
+<h1>Cache me if you can</h1>
+<p>Let’s focus on the image component. The output of this component is a learned
+representation of the image. In other words, given an image, the image component
+outputs an embedding.</p>
+<p>The model is deterministic, so given the same image will result with the same
+embedding. This is costly, so we can cache it. Let me elaborate on how we
+implemented it.</p>
+<h1>The architecture (of the cache, not the model)</h1>
+<p><img alt="" src="images/embark/architecture.png" /></p>
+<ul>
+<li>We used a <a href="http://cassandra.apache.org/">Cassandra</a> database as the cache which
+maps an image URL to its embedding.</li>
+<li>The service which queries Cassandra is called EmbArk (Embedding Archive,
+<a href="https://techcrunch.com/2017/05/20/the-bizarre-naming-trends-that-modern-startups-follow/">misspelled of
+course</a>).
+It’s a <a href="https://grpc.io/">gRPC</a> server which gets an image URL from a client and
+retrieves the embedding from Cassandra. On cache miss EmbArk sends an async
+request to embed that image. Why async? Because we need EmbArk to respond with
+the result as fast as it can. Given it can’t wait for the image to be embedded,
+it returns a special OOV (Out Of Vocabulary) embedding.</li>
+<li>The async mechanism we chose to use is <a href="https://kafka.apache.org/">Kafka</a> — a
+streaming platform used as a message queue.</li>
+<li>The next link is KFC (Kafka Frontend Client) — a Kafka consumer we implemented
+to pass messages synchronously to the embedding service, and save the resulting
+embeddings in Cassandra.</li>
+<li>The embedding service is called Retina. It gets an image URL from KFC, downloads
+it, preprocesses it, and evaluates the convolutional layers to get the final
+embedding.</li>
+<li>The load balancing of all the components is done using
+<a href="https://linkerd.io/">Linkerd</a>.</li>
+<li>EmbArk, KFC, Retina and Linkerd run inside <a href="https://www.docker.com/">Docker</a>,
+and they are orchestrated by <a href="https://www.nomadproject.io/">Nomad</a>. This allows
+us to easily scale each component as we see fit.</li>
+</ul>
+<p>This architecture was initially used for images. After proving its worth, we
+decided to use it for other components as well, such as text.</p>
+<p>EmbArk proved to be a nice solution for <a href="https://arxiv.org/abs/1403.6382">transfer
+learning</a> too. Let’s say we believe the content
+of the image has a good signal for predicting CTR. Thus, a model trained for
+classifying the object in an image such as
+<a href="https://ai.googleblog.com/2016/03/train-your-own-image-classifier-with.html">Inception</a>
+would be valuable for our needs. We can load Inception into Retina, tell the
+model we intend to train that we want to use Inception embedding, and that’s it.</p>
+<p>Not only that the inference time was improved, but also the training process.
+This is possible only when we don’t want to train end to end, since gradients
+can’t backpropagate through EmbArk.</p>
+<p>So whenever you use a model in production you should use EmbArk, right? Well,
+not always...</p>
+<p><img alt="" src="images/embark/nope.jpg" /></p>
+<h1>Caveats</h1>
+<p>There are three pretty strict assumptions here.</p>
+<h3>1. OOV embedding for new inputs is not a big deal</h3>
+<p>It doesn’t hurt us that the first time we see an image we won’t have its
+embedding.</p>
+<p>In our production system it’s ok, since CTR is evaluated multiple times for the
+same item during a short period of time. We create lists of items we want to
+recommend every few minutes, so even if an item won’t make it into the list
+because of non optimal CTR prediction, it will in the next cycle.</p>
+<h3>2. The rate of new inputs is low</h3>
+<p>It’s true that in Taboola we get lots of new items all the time. But relative to
+the number of inferences we need to perform for already known items are not that
+much.</p>
+<h3>3. Embeddings don’t change frequently</h3>
+<p>Since the embeddings are cached, we count on the fact they don’t change over
+time. If they do, we’ll need to perform cache invalidation, and recalculate the
+embeddings using Retina. If this would happen a lot we would lose the advantage
+of the architecture. For cases such as inception or language modeling, this
+assumption holds, since semantics don’t change significantly over time.</p>
+<h1>Some final thoughts</h1>
+<p>Sometimes using state of the art models can be problematic due to their
+computational demands. By caching intermediate results (embeddings) we were able
+to overcome this challenge, and still enjoy state of the art results.</p>
+<p>This solution isn’t right for everyone, but if the three aforementioned
+assumptions hold for your application, you could consider using a similar
+architecture.</p>
+<p>By using a microservices paradigm, other teams in the company were able to use
+EmbArk for needs other than CTR prediction. One team for instance used EmbArk to
+get image and text embeddings for detecting duplicates across different items.
+But I’ll leave that story for another post...</p>
+<hr />
+<p><em>Originally published by me at
+<a href="https://engineering.taboola.com/engineer-way-slow-models">engineering.taboola.com</a>.</em></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/deep-learning.html">deep learning</a>, <a href="http://anotherdatum.com/tag/architecture.html">architecture</a></p>
+        </div>
+
+    <hr>
+
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:300px;}
+	#mc_embed_signup form{padding: 0;}
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="https://anotherdatum.us14.list-manage.com/subscribe/post?u=6894d7badcfb253606fa3fb54&amp;id=c6f34ad6b7" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<h2>Get updated of new posts</h2>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address </label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6894d7badcfb253606fa3fb54_c6f34ad6b7" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+<hr />
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'embark.html';
+                var disqus_url = 'http://anotherdatum.com/embark.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/YZeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>

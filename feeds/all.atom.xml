@@ -1,5 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-10-10T21:00:00+03:00</updated><entry><title>Zooming Past the Competition</title><link href="http://anotherdatum.com/taboola-hackathon-2018.html" rel="alternate"></link><published>2018-10-10T21:00:00+03:00</published><updated>2018-10-10T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-10-10:taboola-hackathon-2018.html</id><summary type="html">&lt;p&gt;Imagine you’re walking down the street and you see a nice car you’re thinking of
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-10-28T23:00:00+02:00</updated><entry><title>How to Engineer Your Way Out of Slow Models</title><link href="http://anotherdatum.com/embark.html" rel="alternate"></link><published>2018-10-28T23:00:00+02:00</published><updated>2018-10-28T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-10-28:embark.html</id><summary type="html">&lt;p&gt;So you just finished designing that great neural network architecture of yours.
+It has a blazing number of 300 fully connected layers interleaved with 200
+&lt;a href="https://en.wikipedia.org/wiki/Convolutional_neural_network#Convolutional"&gt;convolutional
+layers&lt;/a&gt;
+with 20 channels each, where the result is fed as the seed of a glorious
+&lt;a href="https://en.wikipedia.org/wiki/Bidirectional_recurrent_neural_networks"&gt;bidirectional&lt;/a&gt;
+&lt;a href="https://machinelearningmastery.com/stacked-long-short-term-memory-networks/"&gt;stacked&lt;/a&gt;
+&lt;a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/"&gt;LSTM&lt;/a&gt; with a pinch
+of
+&lt;a href="http://www.wildml.com/2016/01/attention-and-memory-in-deep-learning-and-nlp/"&gt;attention&lt;/a&gt;.
+After training you get an accuracy of 99.99%, and you’re ready to ship it to
+production.&lt;/p&gt;
+&lt;p&gt;But then you realize the production constraints won’t allow you to run inference
+using this beast. You need the inference to be done in under 200 milliseconds.&lt;/p&gt;
+&lt;p&gt;In other words, you need to chop off half of the layers, give up on using
+convolutions, and let’s not get started about the costly LSTM...&lt;/p&gt;
+&lt;p&gt;If only you could make that amazing model faster!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/embark/sad.jpg" /&gt;&lt;/p&gt;
+&lt;h1&gt;Sometimes you can&lt;/h1&gt;
+&lt;p&gt;Here at Taboola we did it. Well, not exactly... Let me explain.&lt;/p&gt;
+&lt;p&gt;One of our models has to predict CTR (Click Through Rate) of an item, or in
+other words — the probability the user will like an article recommendation and
+click on it.&lt;/p&gt;
+&lt;p&gt;The model has multiple modalities as input, each goes through a different
+transformation. Some of them are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;categorical features: these are
+&lt;a href="https://engineering.taboola.com/using-word2vec-better-embeddings-categorical-features/"&gt;embedded&lt;/a&gt;
+into a dense representation&lt;/li&gt;
+&lt;li&gt;image: the pixels are passed through convolutional and fully connected layers&lt;/li&gt;
+&lt;li&gt;text: after being tokenized, the text is passed through a LSTM which is followed
+by &lt;a href="https://arxiv.org/abs/1703.03130"&gt;self attention&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These processed modalities are then passed through fully connected layers in
+order to learn the interactions between the modalities, and finally, they are
+passed through a
+&lt;a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify"&gt;MDN&lt;/a&gt;
+layer.&lt;/p&gt;
+&lt;p&gt;As you can imagine, this model is slow.&lt;/p&gt;
+&lt;p&gt;We decided to insist on the predictive power of the model, instead of trimming
+components, and came up with an engineering solution.&lt;/p&gt;
+&lt;h1&gt;Cache me if you can&lt;/h1&gt;
+&lt;p&gt;Let’s focus on the image component. The output of this component is a learned
+representation of the image. In other words, given an image, the image component
+outputs an embedding.&lt;/p&gt;
+&lt;p&gt;The model is deterministic, so given the same image will result with the same
+embedding. This is costly, so we can cache it. Let me elaborate on how we
+implemented it.&lt;/p&gt;
+&lt;h1&gt;The architecture (of the cache, not the model)&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/embark/architecture.png" /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We used a &lt;a href="http://cassandra.apache.org/"&gt;Cassandra&lt;/a&gt; database as the cache which
+maps an image URL to its embedding.&lt;/li&gt;
+&lt;li&gt;The service which queries Cassandra is called EmbArk (Embedding Archive,
+&lt;a href="https://techcrunch.com/2017/05/20/the-bizarre-naming-trends-that-modern-startups-follow/"&gt;misspelled of
+course&lt;/a&gt;).
+It’s a &lt;a href="https://grpc.io/"&gt;gRPC&lt;/a&gt; server which gets an image URL from a client and
+retrieves the embedding from Cassandra. On cache miss EmbArk sends an async
+request to embed that image. Why async? Because we need EmbArk to respond with
+the result as fast as it can. Given it can’t wait for the image to be embedded,
+it returns a special OOV (Out Of Vocabulary) embedding.&lt;/li&gt;
+&lt;li&gt;The async mechanism we chose to use is &lt;a href="https://kafka.apache.org/"&gt;Kafka&lt;/a&gt; — a
+streaming platform used as a message queue.&lt;/li&gt;
+&lt;li&gt;The next link is KFC (Kafka Frontend Client) — a Kafka consumer we implemented
+to pass messages synchronously to the embedding service, and save the resulting
+embeddings in Cassandra.&lt;/li&gt;
+&lt;li&gt;The embedding service is called Retina. It gets an image URL from KFC, downloads
+it, preprocesses it, and evaluates the convolutional layers to get the final
+embedding.&lt;/li&gt;
+&lt;li&gt;The load balancing of all the components is done using
+&lt;a href="https://linkerd.io/"&gt;Linkerd&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;EmbArk, KFC, Retina and Linkerd run inside &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+and they are orchestrated by &lt;a href="https://www.nomadproject.io/"&gt;Nomad&lt;/a&gt;. This allows
+us to easily scale each component as we see fit.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This architecture was initially used for images. After proving its worth, we
+decided to use it for other components as well, such as text.&lt;/p&gt;
+&lt;p&gt;EmbArk proved to be a nice solution for &lt;a href="https://arxiv.org/abs/1403.6382"&gt;transfer
+learning&lt;/a&gt; too. Let’s say we believe the content
+of the image has a good signal for predicting CTR. Thus, a model trained for
+classifying the object in an image such as
+&lt;a href="https://ai.googleblog.com/2016/03/train-your-own-image-classifier-with.html"&gt;Inception&lt;/a&gt;
+would be valuable for our needs. We can load Inception into Retina, tell the
+model we intend to train that we want to use Inception embedding, and that’s it.&lt;/p&gt;
+&lt;p&gt;Not only that the inference time was improved, but also the training process.
+This is possible only when we don’t want to train end to end, since gradients
+can’t backpropagate through EmbArk.&lt;/p&gt;
+&lt;p&gt;So whenever you use a model in production you should use EmbArk, right? Well,
+not always...&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/embark/nope.jpg" /&gt;&lt;/p&gt;
+&lt;h1&gt;Caveats&lt;/h1&gt;
+&lt;p&gt;There are three pretty strict assumptions here.&lt;/p&gt;
+&lt;h3&gt;1. OOV embedding for new inputs is not a big deal&lt;/h3&gt;
+&lt;p&gt;It doesn’t hurt us that the first time we see an image we won’t have its
+embedding.&lt;/p&gt;
+&lt;p&gt;In our production system it’s ok, since CTR is evaluated multiple times for the
+same item during a short period of time. We create lists of items we want to
+recommend every few minutes, so even if an item won’t make it into the list
+because of non optimal CTR prediction, it will in the next cycle.&lt;/p&gt;
+&lt;h3&gt;2. The rate of new inputs is low&lt;/h3&gt;
+&lt;p&gt;It’s true that in Taboola we get lots of new items all the time. But relative to
+the number of inferences we need to perform for already known items are not that
+much.&lt;/p&gt;
+&lt;h3&gt;3. Embeddings don’t change frequently&lt;/h3&gt;
+&lt;p&gt;Since the embeddings are cached, we count on the fact they don’t change over
+time. If they do, we’ll need to perform cache invalidation, and recalculate the
+embeddings using Retina. If this would happen a lot we would lose the advantage
+of the architecture. For cases such as inception or language modeling, this
+assumption holds, since semantics don’t change significantly over time.&lt;/p&gt;
+&lt;h1&gt;Some final thoughts&lt;/h1&gt;
+&lt;p&gt;Sometimes using state of the art models can be problematic due to their
+computational demands. By caching intermediate results (embeddings) we were able
+to overcome this challenge, and still enjoy state of the art results.&lt;/p&gt;
+&lt;p&gt;This solution isn’t right for everyone, but if the three aforementioned
+assumptions hold for your application, you could consider using a similar
+architecture.&lt;/p&gt;
+&lt;p&gt;By using a microservices paradigm, other teams in the company were able to use
+EmbArk for needs other than CTR prediction. One team for instance used EmbArk to
+get image and text embeddings for detecting duplicates across different items.
+But I’ll leave that story for another post...&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published by me at
+&lt;a href="https://engineering.taboola.com/engineer-way-slow-models"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="deep learning"></category><category term="architecture"></category></entry><entry><title>Zooming Past the Competition</title><link href="http://anotherdatum.com/taboola-hackathon-2018.html" rel="alternate"></link><published>2018-10-10T21:00:00+03:00</published><updated>2018-10-10T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-10-10:taboola-hackathon-2018.html</id><summary type="html">&lt;p&gt;Imagine you’re walking down the street and you see a nice car you’re thinking of
 buying. Just by pointing your phone camera, you can see relevant content about
 that car. How cool is that?!&lt;/p&gt;
 &lt;p&gt;That was our team’s idea that awarded us first place in the recent Taboola R&amp;amp;D
