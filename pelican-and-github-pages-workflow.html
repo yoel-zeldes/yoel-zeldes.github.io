@@ -114,16 +114,16 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <!-- Post Content -->
     <article>
-        <p>This blog is powered by <a href="http://docs.getpelican.com/en/stable">Pelican</a> and hosted using <a href="https://pages.github.com/">GitHub Pages</a>.
-In this post I'll describe the workflow I'm using when deploying new posts.</p>
-<p>For those of you not familiar with these technologies, Pelican is a static site generator (meaning you can write your content in a format such
-as <a href="http://daringfireball.net/projects/markdown">Markdown</a>, and Pelican will automatically generate the HTML files for you), and GitHub Pages is
+        <p>This blog is powered by <a href="http://docs.getpelican.com/en/stable">Pelican</a> and hosted through GitHub using <a href="https://pages.github.com/">GitHub Pages</a>.
+In this post I'll describe the workflow I use when deploying new posts.</p>
+<p>For those of you not familiar with these technologies, Pelican is a static site generator - meaning you can write your content in a format such
+as <a href="http://daringfireball.net/projects/markdown">Markdown</a>, and Pelican will automatically generate the HTML files for you; and GitHub Pages is
 a service provided by GitHub for hosting a website under the &lt;your-username>.github.io URL.</p>
 <p>Using Pelican and GitHub Pages is quite easy. There's one annoying little thing though... GitHub Pages assumes
-the <code>master</code> branch contains the root folder to be served to the world. If you're using the Pelican defaults, the <code>output</code>
-folder is the folder you want to serve. <code>output</code> is a subfolder leaving aside other important folders such as the
-<code>content</code> folder (containing the posts Markdown files). A natural choice of how to organize the files inside the repository
-would be to save the pelican's root folder (the parent of <code>output</code>) as the root of the repository. But GitHub Pages needs
+the <code>master</code> branch contains the root folder to be served to the world. If you're using Pelican's default settings, the <code>output</code>
+folder is the folder you want to serve. <code>output</code> contains the generated website's files.
+A natural choice of how to organize the files inside the repository
+would be to define pelican's root folder - the parent of <code>output</code> - as the root of the repository. But GitHub Pages needs
 <code>output</code> to be the root. Bummer...</p>
 <p>There are <a href="http://mavant.com/blog/2014/03/10/pelican-git-hooks-github-dot-io">those</a>
 who solve it using two separate repositories: one for the website "source" files, and
@@ -132,18 +132,18 @@ one for the output which will be served using GitHub Pages.</p>
 using branches and git hooks.</p>
 <p>The first step is to create two branches:</p>
 <ul>
-<li><code>source</code> will contain the blog's "source" files, namely - all the files such as the <code>content</code> folder and <code>pelicanconf.py</code> file.</li>
-<li><code>master</code> will contain only the <code>output</code> contents.</li>
+<li><code>source</code> will contain the blog's "source" files, namely - all the files such as the <code>content</code> folder which contains the actual posts, and <code>pelicanconf.py</code> file.</li>
+<li><code>master</code> will contain only the contents of <code>output</code>.</li>
 </ul>
 <p>These branches will obviously live in my GitHub Pages repo
 (<a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">https://github.com/yoel-zeldes/yoel-zeldes.github.io</a>),
-and since the <code>master</code> branch contains the <code>output</code>'s contents, a user navigating to <a href="yoel-zeldes.github.io">yoel-zeldes.github.io</a>
+and since the <code>master</code> branch contains <code>output</code>'s contents, a user navigating to <a href="yoel-zeldes.github.io">yoel-zeldes.github.io</a>
 will be presented with the goodness of my blog.</p>
-<p>Manually maintaining these two branches is cumbersome. Git hooks to the rescue!</p>
-<p>Git has a way to fire off custom scripts when certain important actions occur. In my case, whenever I push a commit to the <code>source</code> branch,
-I'd like the <code>master</code> branch to get updated with the new <code>output</code> contents. This can be done using the pre-push hook, which is executed,
-you guessed it, just before a push occurs.</p>
-<p>Just create a file named <code>.git/hooks/pre-push</code> with the following content:</p>
+<p>Unfortunately, manually maintaining these two branches is cumbersome. Git hooks to the rescue!</p>
+<p>Git has a mechanism to execute custom scripts when certain important actions occur. In my case, whenever I push a commit to the <code>source</code> branch,
+I'd like the <code>master</code> branch to get updated with the new contents of <code>output</code>. This can be done using the pre-push hook, which is executed -
+you guessed it - just before a push occurs.</p>
+<p>All you have to do is create a file named <code>.git/hooks/pre-push</code> with the following content:</p>
 <div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
 <span class="k">while</span> <span class="nb">read</span> local_ref local_sha remote_ref remote_sha
 <span class="k">do</span>
@@ -165,16 +165,16 @@ you guessed it, just before a push occurs.</p>
 <ol>
 <li>The first thing the script does is iterating over the commits that are about to be pushed. Specifically, only commits that are pushed to the
 <code>source</code> branch are of interest to us.</li>
-<li>If commits are pushed to <code>source</code>, we run <code>pelican</code> with <code>publishconf.py</code> (so we make sure <code>output</code> will contain the production version of the blog).</li>
-<li>It then creates a <code>CNAME</code> file (which is needed since I use a custom domain).</li>
-<li>The <a href="https://github.com/davisp/ghp-import">GitHub Pages Import</a> tool is used for copying the content of <code>output</code> to a branch named <code>gh-pages</code>.</li>
+<li>If commits are pushed to <code>source</code>, it executes <code>pelican</code> command using <code>publishconf.py</code>. This will generate the production version of the blog into <code>output</code>.</li>
+<li>It then creates a <code>CNAME</code> file, which is needed since I use a custom domain (<a href="http://anotherdatum.com">http://anotherdatum.com</a>).</li>
+<li>The <a href="https://github.com/davisp/ghp-import">GitHub Pages Import</a> tool is used for copying the contents of <code>output</code> to a branch named <code>gh-pages</code>.</li>
 <li><code>gh-pages</code> is pushed to the remote <code>master</code> branch. <code>--no-verify</code> skips the pre-push hook so this script won't run again.</li>
-<li><code>pelican</code> is executed again so the development version of my blog will be available for writing the next post.</li>
+<li><code>pelican</code> is executed again to generate the development version of my blog, so I'll be able to write the next post.</li>
 </ol>
-<p>Now, whenever I push to <code>source</code> (and only to <code>source</code>), <code>master</code> gets updated with the new contents. Cool!</p>
-<p>One last small detail: I added <code>output</code> to the <code>.gitignore</code> file. This way, the <code>source</code> branch won't include this folder
-(we don't really want to put it under version control - it would be like putting other types of derivative files such as
-<code>.pyc</code> or <code>.o</code> under version control).</p>
+<p>Now, whenever I push to <code>source</code>, and only to <code>source</code>, <code>master</code> gets updated with the new contents. Cool!</p>
+<p>One last small detail: I added <code>output</code> to the <code>.gitignore</code> file. This way, the <code>source</code> branch won't include this folder.
+We don't really want to put it under version control - it would be like putting other types of generated files such as
+<code>.pyc</code> or <code>.o</code> under version control.</p>
     </article>
 
         <div class="tags">

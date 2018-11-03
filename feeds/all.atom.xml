@@ -18985,16 +18985,16 @@ I used the pre-commit hook for validating the commit's content.&lt;/p&gt;
    that searches for any forbidden mark (using &lt;code&gt;egrep&lt;/code&gt;).&lt;/li&gt;
 &lt;li&gt;If a forbidden mark is found, the script exits with an error code, causing the commit to fail. &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;If you want to bypass the hook (e.g. you want to commit a binary file such as an image, which may contain a forbidden mark), you can &lt;code&gt;commit -n&lt;/code&gt;.&lt;/p&gt;</summary><category term="git"></category></entry><entry><title>Pelican and GitHub Pages workflow</title><link href="http://anotherdatum.com/pelican-and-github-pages-workflow.html" rel="alternate"></link><published>2016-11-08T21:00:00+02:00</published><updated>2016-11-08T21:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-11-08:pelican-and-github-pages-workflow.html</id><summary type="html">&lt;p&gt;This blog is powered by &lt;a href="http://docs.getpelican.com/en/stable"&gt;Pelican&lt;/a&gt; and hosted using &lt;a href="https://pages.github.com/"&gt;GitHub Pages&lt;/a&gt;.
-In this post I'll describe the workflow I'm using when deploying new posts.&lt;/p&gt;
-&lt;p&gt;For those of you not familiar with these technologies, Pelican is a static site generator (meaning you can write your content in a format such
-as &lt;a href="http://daringfireball.net/projects/markdown"&gt;Markdown&lt;/a&gt;, and Pelican will automatically generate the HTML files for you), and GitHub Pages is
+&lt;p&gt;If you want to bypass the hook (e.g. you want to commit a binary file such as an image, which may contain a forbidden mark), you can &lt;code&gt;commit -n&lt;/code&gt;.&lt;/p&gt;</summary><category term="git"></category></entry><entry><title>Pelican and GitHub Pages workflow</title><link href="http://anotherdatum.com/pelican-and-github-pages-workflow.html" rel="alternate"></link><published>2016-11-08T21:00:00+02:00</published><updated>2016-11-08T21:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-11-08:pelican-and-github-pages-workflow.html</id><summary type="html">&lt;p&gt;This blog is powered by &lt;a href="http://docs.getpelican.com/en/stable"&gt;Pelican&lt;/a&gt; and hosted through GitHub using &lt;a href="https://pages.github.com/"&gt;GitHub Pages&lt;/a&gt;.
+In this post I'll describe the workflow I use when deploying new posts.&lt;/p&gt;
+&lt;p&gt;For those of you not familiar with these technologies, Pelican is a static site generator - meaning you can write your content in a format such
+as &lt;a href="http://daringfireball.net/projects/markdown"&gt;Markdown&lt;/a&gt;, and Pelican will automatically generate the HTML files for you; and GitHub Pages is
 a service provided by GitHub for hosting a website under the &amp;lt;your-username&gt;.github.io URL.&lt;/p&gt;
 &lt;p&gt;Using Pelican and GitHub Pages is quite easy. There's one annoying little thing though... GitHub Pages assumes
-the &lt;code&gt;master&lt;/code&gt; branch contains the root folder to be served to the world. If you're using the Pelican defaults, the &lt;code&gt;output&lt;/code&gt;
-folder is the folder you want to serve. &lt;code&gt;output&lt;/code&gt; is a subfolder leaving aside other important folders such as the
-&lt;code&gt;content&lt;/code&gt; folder (containing the posts Markdown files). A natural choice of how to organize the files inside the repository
-would be to save the pelican's root folder (the parent of &lt;code&gt;output&lt;/code&gt;) as the root of the repository. But GitHub Pages needs
+the &lt;code&gt;master&lt;/code&gt; branch contains the root folder to be served to the world. If you're using Pelican's default settings, the &lt;code&gt;output&lt;/code&gt;
+folder is the folder you want to serve. &lt;code&gt;output&lt;/code&gt; contains the generated website's files.
+A natural choice of how to organize the files inside the repository
+would be to define pelican's root folder - the parent of &lt;code&gt;output&lt;/code&gt; - as the root of the repository. But GitHub Pages needs
 &lt;code&gt;output&lt;/code&gt; to be the root. Bummer...&lt;/p&gt;
 &lt;p&gt;There are &lt;a href="http://mavant.com/blog/2014/03/10/pelican-git-hooks-github-dot-io"&gt;those&lt;/a&gt;
 who solve it using two separate repositories: one for the website "source" files, and
@@ -19003,18 +19003,18 @@ one for the output which will be served using GitHub Pages.&lt;/p&gt;
 using branches and git hooks.&lt;/p&gt;
 &lt;p&gt;The first step is to create two branches:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;source&lt;/code&gt; will contain the blog's "source" files, namely - all the files such as the &lt;code&gt;content&lt;/code&gt; folder and &lt;code&gt;pelicanconf.py&lt;/code&gt; file.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;master&lt;/code&gt; will contain only the &lt;code&gt;output&lt;/code&gt; contents.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;source&lt;/code&gt; will contain the blog's "source" files, namely - all the files such as the &lt;code&gt;content&lt;/code&gt; folder which contains the actual posts, and &lt;code&gt;pelicanconf.py&lt;/code&gt; file.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; will contain only the contents of &lt;code&gt;output&lt;/code&gt;.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;These branches will obviously live in my GitHub Pages repo
 (&lt;a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io"&gt;https://github.com/yoel-zeldes/yoel-zeldes.github.io&lt;/a&gt;),
-and since the &lt;code&gt;master&lt;/code&gt; branch contains the &lt;code&gt;output&lt;/code&gt;'s contents, a user navigating to &lt;a href="yoel-zeldes.github.io"&gt;yoel-zeldes.github.io&lt;/a&gt;
+and since the &lt;code&gt;master&lt;/code&gt; branch contains &lt;code&gt;output&lt;/code&gt;'s contents, a user navigating to &lt;a href="yoel-zeldes.github.io"&gt;yoel-zeldes.github.io&lt;/a&gt;
 will be presented with the goodness of my blog.&lt;/p&gt;
-&lt;p&gt;Manually maintaining these two branches is cumbersome. Git hooks to the rescue!&lt;/p&gt;
-&lt;p&gt;Git has a way to fire off custom scripts when certain important actions occur. In my case, whenever I push a commit to the &lt;code&gt;source&lt;/code&gt; branch,
-I'd like the &lt;code&gt;master&lt;/code&gt; branch to get updated with the new &lt;code&gt;output&lt;/code&gt; contents. This can be done using the pre-push hook, which is executed,
-you guessed it, just before a push occurs.&lt;/p&gt;
-&lt;p&gt;Just create a file named &lt;code&gt;.git/hooks/pre-push&lt;/code&gt; with the following content:&lt;/p&gt;
+&lt;p&gt;Unfortunately, manually maintaining these two branches is cumbersome. Git hooks to the rescue!&lt;/p&gt;
+&lt;p&gt;Git has a mechanism to execute custom scripts when certain important actions occur. In my case, whenever I push a commit to the &lt;code&gt;source&lt;/code&gt; branch,
+I'd like the &lt;code&gt;master&lt;/code&gt; branch to get updated with the new contents of &lt;code&gt;output&lt;/code&gt;. This can be done using the pre-push hook, which is executed -
+you guessed it - just before a push occurs.&lt;/p&gt;
+&lt;p&gt;All you have to do is create a file named &lt;code&gt;.git/hooks/pre-push&lt;/code&gt; with the following content:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;read&lt;/span&gt; local_ref local_sha remote_ref remote_sha
 &lt;span class="k"&gt;do&lt;/span&gt;
@@ -19036,16 +19036,16 @@ you guessed it, just before a push occurs.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;The first thing the script does is iterating over the commits that are about to be pushed. Specifically, only commits that are pushed to the
 &lt;code&gt;source&lt;/code&gt; branch are of interest to us.&lt;/li&gt;
-&lt;li&gt;If commits are pushed to &lt;code&gt;source&lt;/code&gt;, we run &lt;code&gt;pelican&lt;/code&gt; with &lt;code&gt;publishconf.py&lt;/code&gt; (so we make sure &lt;code&gt;output&lt;/code&gt; will contain the production version of the blog).&lt;/li&gt;
-&lt;li&gt;It then creates a &lt;code&gt;CNAME&lt;/code&gt; file (which is needed since I use a custom domain).&lt;/li&gt;
-&lt;li&gt;The &lt;a href="https://github.com/davisp/ghp-import"&gt;GitHub Pages Import&lt;/a&gt; tool is used for copying the content of &lt;code&gt;output&lt;/code&gt; to a branch named &lt;code&gt;gh-pages&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If commits are pushed to &lt;code&gt;source&lt;/code&gt;, it executes &lt;code&gt;pelican&lt;/code&gt; command using &lt;code&gt;publishconf.py&lt;/code&gt;. This will generate the production version of the blog into &lt;code&gt;output&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;It then creates a &lt;code&gt;CNAME&lt;/code&gt; file, which is needed since I use a custom domain (&lt;a href="http://anotherdatum.com"&gt;http://anotherdatum.com&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;The &lt;a href="https://github.com/davisp/ghp-import"&gt;GitHub Pages Import&lt;/a&gt; tool is used for copying the contents of &lt;code&gt;output&lt;/code&gt; to a branch named &lt;code&gt;gh-pages&lt;/code&gt;.&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;gh-pages&lt;/code&gt; is pushed to the remote &lt;code&gt;master&lt;/code&gt; branch. &lt;code&gt;--no-verify&lt;/code&gt; skips the pre-push hook so this script won't run again.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;pelican&lt;/code&gt; is executed again so the development version of my blog will be available for writing the next post.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;pelican&lt;/code&gt; is executed again to generate the development version of my blog, so I'll be able to write the next post.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;Now, whenever I push to &lt;code&gt;source&lt;/code&gt; (and only to &lt;code&gt;source&lt;/code&gt;), &lt;code&gt;master&lt;/code&gt; gets updated with the new contents. Cool!&lt;/p&gt;
-&lt;p&gt;One last small detail: I added &lt;code&gt;output&lt;/code&gt; to the &lt;code&gt;.gitignore&lt;/code&gt; file. This way, the &lt;code&gt;source&lt;/code&gt; branch won't include this folder
-(we don't really want to put it under version control - it would be like putting other types of derivative files such as
-&lt;code&gt;.pyc&lt;/code&gt; or &lt;code&gt;.o&lt;/code&gt; under version control).&lt;/p&gt;</summary><category term="pelican"></category><category term="git"></category></entry><entry><title>Detecting Anomalies in a SMART Way (Part Three)</title><link href="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-three.html" rel="alternate"></link><published>2016-10-20T21:00:00+03:00</published><updated>2016-10-20T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-10-20:detecting-anomalies-in-a-SMART-Way-part-three.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me at the &lt;a href="https://blog.fortscale.com/detecting-anomalies-in-a-smart-way-part-3"&gt;Fortscale blog&lt;/a&gt;.&lt;/em&gt;&lt;br /&gt;
+&lt;p&gt;Now, whenever I push to &lt;code&gt;source&lt;/code&gt;, and only to &lt;code&gt;source&lt;/code&gt;, &lt;code&gt;master&lt;/code&gt; gets updated with the new contents. Cool!&lt;/p&gt;
+&lt;p&gt;One last small detail: I added &lt;code&gt;output&lt;/code&gt; to the &lt;code&gt;.gitignore&lt;/code&gt; file. This way, the &lt;code&gt;source&lt;/code&gt; branch won't include this folder.
+We don't really want to put it under version control - it would be like putting other types of generated files such as
+&lt;code&gt;.pyc&lt;/code&gt; or &lt;code&gt;.o&lt;/code&gt; under version control.&lt;/p&gt;</summary><category term="pelican"></category><category term="git"></category></entry><entry><title>Detecting Anomalies in a SMART Way (Part Three)</title><link href="http://anotherdatum.com/detecting-anomalies-in-a-SMART-Way-part-three.html" rel="alternate"></link><published>2016-10-20T21:00:00+03:00</published><updated>2016-10-20T21:00:00+03:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2016-10-20:detecting-anomalies-in-a-SMART-Way-part-three.html</id><summary type="html">&lt;p&gt;&lt;em&gt;This post was originally published by me at the &lt;a href="https://blog.fortscale.com/detecting-anomalies-in-a-smart-way-part-3"&gt;Fortscale blog&lt;/a&gt;.&lt;/em&gt;&lt;br /&gt;
 &lt;em&gt;Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;In the &lt;a href="detecting-anomalies-in-a-SMART-Way.html"&gt;first post&lt;/a&gt; of this series I described how we at Fortscale use a personalized adaptive threshold
