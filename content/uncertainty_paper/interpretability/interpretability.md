@@ -26,7 +26,7 @@ Before we dive into how to use uncertainty for debugging and interpreting your m
 
 # Why should you care about uncertainty?
 
-One prominent example is that of high risk applications. Let’s say you’re building a model that helps doctors decide on the preferred treatment for patients. In this case we should not only care about the accuracy of the model, but also about how certain the model is of its prediction. If the uncertainty is too high, the doctor should to take this into account.
+One prominent example is that of high risk applications. Let’s say you’re building a model that helps doctors decide on the preferred treatment for patients. In this case we should not only care about the accuracy of the model, but also about how certain the model is of its prediction. If the uncertainty is too high, the doctor should take this into account.
 
 Self-driving cars are another interesting example. When the model is uncertain if there is a pedestrian on the road we could use this information to slow the car down or trigger an alert so the driver can take charge.
 
