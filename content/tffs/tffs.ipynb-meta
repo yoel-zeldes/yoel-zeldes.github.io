@@ -1,0 +1,8 @@
+Title: TensorFlow Filesystem - Access Tensors Differently
+Slug: tffs
+Date: 2018-12-09 23:00
+Category: posts
+Tags: tensorflow
+Summary: The weird (but cool) way to access a tensorflow model by mounting it into a filesystem.
+header_cover: images/tffs/cover.png
+
