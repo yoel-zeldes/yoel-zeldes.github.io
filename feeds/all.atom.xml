@@ -1,5 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-12-09T23:00:00+02:00</updated><entry><title>TensorFlow Filesystem - Access Tensors Differently</title><link href="http://anotherdatum.com/tffs.html" rel="alternate"></link><published>2018-12-09T23:00:00+02:00</published><updated>2018-12-09T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-09:tffs.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-12-16T23:00:00+02:00</updated><entry><title>The Story of a Bad Train-Test Split</title><link href="http://anotherdatum.com/train-test.html" rel="alternate"></link><published>2018-12-16T23:00:00+02:00</published><updated>2018-12-16T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-16:train-test.html</id><summary type="html">&lt;p&gt;About a year ago we incorporated a new type of feature into one of our models
+used for recommending content items to our users. I’m talking about the
+thumbnail of the content item:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/train-test/new-feature.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Up until that point we used the item’s title and metadata features. The title is
+easier to work with compared to the thumbnail — machine learning wise.&lt;/p&gt;
+&lt;p&gt;Our model has matured and it was time to add the thumbnail to the party. This
+decision was the first step towards a horrible bias introduced into our
+train-test split procedure. Let me unfold the story...&lt;/p&gt;
+&lt;h2&gt;Setting the scene&lt;/h2&gt;
+&lt;p&gt;From our experience it’s hard to incorporate multiple types of features into a
+unified model. So we decided to take baby steps, and add the thumbnail to a
+model that uses only one feature — the title.&lt;/p&gt;
+&lt;p&gt;There’s one thing you need to take into account when working with these two
+features, and that’s data leakage. When working with the title only, you can
+naively split your dataset into train-test randomly — after removing items with
+the same title. However, you can’t apply random split when you work with both
+the title and the thumbnail. That’s because many items share the same thumbnail
+or title. Stock photos are a good example for shared thumbnails across different
+items. Thus, a model that memorizes titles/thumbnails it encountered in the
+training set might have a good performance on the test set, while not doing a
+good job at generalization.&lt;/p&gt;
+&lt;p&gt;The solution? We should split the dataset so that each thumbnail appears either
+in train or test, but not both. Same goes for the title.&lt;/p&gt;
+&lt;h2&gt;First attempt&lt;/h2&gt;
+&lt;p&gt;Well, that sounds simple. Let’s start with the simplest implementation. We’ll
+mark all the rows in the dataset as “train”. Then, we’ll iteratively convert
+rows into “test” until we get the desired split, let’s say 80%-20%. How is the
+conversion done? At each step of the loop we’ll pick a random “train” row and
+mark it for conversion. Before converting, we’ll inspect all of the rows that
+have the same title/thumbnail, and mark them as well. We’ll continue doing so
+until there are no more rows that we can mark. Finally, we’ll convert the marked
+group into “test”.&lt;/p&gt;
+&lt;h2&gt;And then things escalated&lt;/h2&gt;
+&lt;p&gt;At first sight nothing seems wrong with the naive solution. Each thumbnail/title
+appears either in train or in test. So what seems to be the problem?&lt;/p&gt;
+&lt;p&gt;First I’ll show you the symptoms of the problem. In order to be able to compare
+the title-only model to the model that also uses the thumbnail, we used the new
+split for the title-only model too. It shouldn’t really make an impact on it’s
+performance, right? But then we got the following results:
+&lt;img alt="" src="images/train-test/accuracy.png" /&gt;&lt;/p&gt;
+&lt;p&gt;In the top row we see what we already know: the title-only model has higher
+accuracy on train set, and accuracy isn’t significantly affected by the ratio of
+the split.&lt;/p&gt;
+&lt;p&gt;The problem pops up in the bottom row, where we apply the new split method. We
+expected to see similar results, but the title-only model was better on test.
+What?... It shouldn’t be like that. Additionally, the performance is greatly
+affected by the ratio. Something is suspicious...&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/train-test/suspicious.jpg" /&gt;&lt;/p&gt;
+&lt;h2&gt;So where does the problem lurk?&lt;/h2&gt;
+&lt;p&gt;You can think of our dataset as a bipartite graph, where one side is the
+thumbnails, and the other is the titles. There is an edge between a thumbnail
+and a title if there is an item with that thumbnail and title.
+&lt;img alt="" src="images/train-test/bipartile-graph.png" /&gt;&lt;/p&gt;
+&lt;p&gt;What we effectively did in our new split is making sure each connected component
+resides in its entirety either in train or test set.&lt;/p&gt;
+&lt;p&gt;It turns out that the split is biased. It tends to select big components for the
+test set. Say the test set should contain 15% of the rows. You’d expect it to
+contain 15% of the components, but what we got was 4%.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/train-test/second-try.jpg" /&gt;&lt;/p&gt;
+&lt;h2&gt;Second try&lt;/h2&gt;
+&lt;p&gt;What was the problem with what we did? When you randomly sample a row, the
+probability of getting a row from a specific component is proportional to the
+component’s size. Therefore, the test set ended up with a small number of big
+components. It may be counterintuitive, but here’s a code snippet you can try to
+experience it yourself:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;plt&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;train_test_split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;component_sizes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test_size&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="n"&gt;train&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;component_sizes&lt;/span&gt;
+  &lt;span class="n"&gt;test&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;test_size&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;convert&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;choice&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt;
+                               &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;astype&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;float&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+    &lt;span class="n"&gt;train&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;
+
+&lt;span class="n"&gt;component_sizes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;test_size&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;component_sizes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;train_test_split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;component_sizes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test_size&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;hist&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;label&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;train&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;test&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;bins&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;30&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Distribution of sizes of components&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fontsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;component size&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;fontsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;legend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fontsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="" src="images/train-test/sizes-distribution.png" /&gt;&lt;/p&gt;
+&lt;p&gt;The components size distribution is different between the train and test set.&lt;/p&gt;
+&lt;p&gt;Now that we formalized better what we were doing by means of bipartite graph, we
+can implement the split by randomly sampling connected components, instead of
+randomly sampling rows. Doing so, each component gets the same probability of
+being selected for the test set.&lt;/p&gt;
+&lt;h2&gt;Key takeaway&lt;/h2&gt;
+&lt;p&gt;The way you split your dataset into train-test is crucial for the research phase
+of a project. While researching, you spend a significant amount of your time on
+looking at the performance over the test set. It’s not always straightforward to
+construct the test set so that it’s representative of what happens at inference
+time.&lt;/p&gt;
+&lt;p&gt;Take for example the task of recommending an item to a user: you can either
+recommend a completely new item or an item that has been shown to other users in
+the past. Both are important.&lt;/p&gt;
+&lt;p&gt;In order to understand how the model is doing offline in the research phase,
+you’ll have to construct a test set that contains both completely new items, and
+items that appear in the train set. What is the right proportion? Hard to say... I
+guess it can be a topic for another post on another day 🙂&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published by me at
+&lt;a href="https://engineering.taboola.com/story-of-bad-train-test-split"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="machine learning"></category></entry><entry><title>TensorFlow Filesystem - Access Tensors Differently</title><link href="http://anotherdatum.com/tffs.html" rel="alternate"></link><published>2018-12-09T23:00:00+02:00</published><updated>2018-12-09T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-09:tffs.html</id><summary type="html">&lt;style type="text/css"&gt;/*!
 *
 * IPython notebook
 *
