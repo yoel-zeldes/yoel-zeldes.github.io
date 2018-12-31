@@ -1,5 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-12-16T23:00:00+02:00</updated><entry><title>The Story of a Bad Train-Test Split</title><link href="http://anotherdatum.com/train-test.html" rel="alternate"></link><published>2018-12-16T23:00:00+02:00</published><updated>2018-12-16T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-16:train-test.html</id><summary type="html">&lt;p&gt;About a year ago we incorporated a new type of feature into one of our models
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-12-31T23:00:00+02:00</updated><entry><title>How to Build Your Personal Brand as a Data Scientist</title><link href="http://anotherdatum.com/branding.html" rel="alternate"></link><published>2018-12-31T23:00:00+02:00</published><updated>2018-12-31T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-31:branding.html</id><summary type="html">&lt;p&gt;Personal branding is a thing now. It always has been, but I believe it’s been
+getting more and more attention recently. More people are aware of its
+importance, including the employers. Giving you a big paycheck, assuming you’re
+good, is obvious. Providing opportunities to flourish and build your personal
+brand is something an increasing number of companies are trying to seduce you
+with.&lt;/p&gt;
+&lt;p&gt;While working in the algorithms group at Taboola, I was encouraged by the
+company to share my knowledge with the data science community. It has motivated
+me to embark on a journey to build my personal brand as a data scientist, and I
+want to share how I did it with you.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/branding/journey.jpg" /&gt;&lt;/p&gt;
+&lt;h1&gt;Choosing Your Path Wisely&lt;/h1&gt;
+&lt;p&gt;There are many paths you can choose in your journey to build your personal
+brand. The problem is that your time is limited. There’s a lot of uncertainty
+about each path and its outcomes, so it’s best to make educated decisions.&lt;/p&gt;
+&lt;p&gt;There are several criteria by which I judge each path:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;How likely is it that I’ll get to the finish line?&lt;/em&gt;&lt;br /&gt;
+This is the most
+important criterion when you just start building your brand. If you fail on the
+first path you tried, it’s gonna be a motivation killer, and you’ll quit.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;How much time will it take?&lt;/em&gt;&lt;br /&gt;
+Together with the previous criterion, it
+enables you to better manage your time. Maybe it’s ok to choose a risky path,
+given it’s only gonna take you a small amount of time.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Will I learn something new?&lt;/em&gt;&lt;br /&gt;
+Data scientists have to position themselves as
+experts in their domain. In order to be an expert, you must keep learning all
+the time.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;What will the final product be?&lt;/em&gt;&lt;br /&gt;
+At the beginning of your journey, the
+product can be mild — maybe a nice blog post for beginners. As you gain more
+experience, you should put more emphasis on doing more meaningful things. Maybe
+a blog post about an advanced aspect of ML, or even trying to win a Kaggle
+competition.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;Will I enjoy walking along the path?&lt;/em&gt;&lt;br /&gt;
+At the end of the day, we do what we
+do for fun, right? :)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So which paths exist?&lt;/p&gt;
+&lt;h1&gt;The Roadmap&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/branding/roadmap.jpg" /&gt;&lt;/p&gt;
+&lt;h3&gt;1. Blogging&lt;/h3&gt;
+&lt;p&gt;For me, it’s the path of choice. The advantages of having an active blog are
+&lt;a href="http://varianceexplained.org/r/start-blog"&gt;many&lt;/a&gt;. But how do you choose what to
+write about?&lt;/p&gt;
+&lt;p&gt;The most obvious option is to write about something you worked on as part of
+your job. Most people do interesting things. The sad thing is, they’re not aware
+of it. They think their daily tasks won’t be interesting to others. I claim it
+to be not true.&lt;/p&gt;
+&lt;p&gt;Another option is to write a post about a paper you’ve just read. I believe
+providing value is important — merely summarizing a paper can be done by almost
+anyone. You must make your post unique. I love to write code that accompanies
+the post, for instance. In fact, &lt;a href="http://anotherdatum.com/pelican-and-github-pages-workflow.html"&gt;most of my posts are Jupyter
+notebooks&lt;/a&gt;.
+There is plenty of ML material on the web, but code samples that demonstrate how
+things actually work are hard to come by...&lt;/p&gt;
+&lt;p&gt;A third option, which is for the more experienced data scientists, is to write
+an opinion post. Why is it for the experienced? Inexperienced data scientists
+will be able to deliver their tasks. Experienced data scientists will be able to
+state their opinion about what is the best way to do so. &lt;em&gt;Which framework is
+better for the task? Is this paper any good? When should you use this
+visualization and not the other?...&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Another somewhat harder option would be to write a post as if you were trying to
+teach a subject in class. You’ll want to write the post in a concise, short, to
+the point manner. If you can do it well, there’s a lot of value in it. In my
+&lt;a href="https://towardsdatascience.com/intro-to-statistical-tests-who-wants-to-be-a-coder-c5e04c3ea7ce"&gt;Intro to Statistical Tests
+post&lt;/a&gt;
+I took a well-known concept — statistical tests, and tried to explain it to
+newcomers. I also added code, so it’d be even easier to comprehend. Writing this
+kind of post will allow you to better understand the subject yourself!&lt;/p&gt;
+&lt;h3&gt;2. Working on a side project&lt;/h3&gt;
+&lt;p&gt;Try to think of a cool project you can build in a couple of weeks/months,
+without putting too much time into it. Once you’re done, you can show the
+project to the world!&lt;/p&gt;
+&lt;p&gt;Recognizing in advance that one of the goals is to share the project, you can
+choose which project to do more wisely. For example, solving MNIST won’t be
+interesting. You must choose something original. Here’s an example of a post I
+wrote about &lt;a href="https://towardsdatascience.com/word-morphing-9f87ee577775"&gt;Word
+Morphing&lt;/a&gt; which I
+believe was interesting because of its originality.&lt;/p&gt;
+&lt;p&gt;One of the cool things about side projects is that besides the project itself,
+you can write a blog post about it. If you have an idea of a project which is
+the material for a blog post — it’s a great sign the project will be good.&lt;/p&gt;
+&lt;h3&gt;3. Kaggle competitions&lt;/h3&gt;
+&lt;p&gt;Try to compete using a model you’ve never tried before. You might not win, but
+you will gain knowledge and a bit of experience with that new model, which you
+could share using a blog post! The winners of Kaggle competitions write blog
+posts all the time. There’s no reason why people who don’t win won’t write blog
+posts as well.&lt;/p&gt;
+&lt;h3&gt;4. Meetups and conferences&lt;/h3&gt;
+&lt;p&gt;Strive to give talks at interesting Meetups/conferences. The first time &lt;a href="https://www.meetup.com/Meetups-Yotpo/events/251882912"&gt;I gave
+a talk at a Meetup&lt;/a&gt; was
+because Taboola was asked to give one, and I took the bullet. Only after the
+talk did I realize what a cool and fun experience it could be.&lt;/p&gt;
+&lt;p&gt;When I heard about &lt;a href="https://summit2018.reversim.com/"&gt;Reversim&lt;/a&gt; summit, the
+first thing I did was to submit a talk proposal. Submitting is easy, and no harm
+is done if your proposal gets rejected. I was lucky enough to &lt;a href="https://summit2018.reversim.com/session/5b06fdd06c8bb70014163798.html"&gt;get mine
+accepted&lt;/a&gt;.
+Don’t get me wrong, it required preparation. But there’s a lot of value in it.&lt;/p&gt;
+&lt;p&gt;Even if you just attend an interesting conference without giving a talk, you can
+write a blog post about it. It builds your brand as someone who goes to
+conferences and shares knowledge with the community. &lt;a href="http://anotherdatum.com/tce_2018.html"&gt;Here’s an example of a
+post&lt;/a&gt; I wrote after attending an
+interesting conference.&lt;/p&gt;
+&lt;h3&gt;5. Contribution to Open Source projects&lt;/h3&gt;
+&lt;p&gt;If you become a significant contributor your brand is gonna shine. If we’re only
+talking about small contributions I’m afraid it might not do. But that’s the
+nice thing though — you can put in a small effort, see if you like it, and if
+you do — invest more time in it with the goal of becoming a significant
+contributor.&lt;/p&gt;
+&lt;h3&gt;6. Publishing a paper&lt;/h3&gt;
+&lt;p&gt;If you have published a paper in a known proceeding, it’ll positively affect
+your brand. But if you’re not in the academy, or if you don’t work in a company
+in which it’s part of your job to publish papers, then the risk is huge. You’ll
+need to put a lot of effort and time, and there’s a high probability your paper
+won’t be accepted.&lt;br&gt; I was lucky enough to publish a &lt;a href="https://docs.wixstatic.com/ugd/b6ac34_7010907bceb44809bc5349c24555f9c5.pdf"&gt;paper with my coworkers
+at
+Taboola&lt;/a&gt;,
+but I’m afraid I won’t go through this path in my spare time — because of the
+risk.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Final thoughts&lt;/h1&gt;
+&lt;p&gt;Building your personal brand is a journey. There are no right or wrong paths to
+take. It’s all about your style, what you like more, and how much time you have
+to put into it. I believe that all data scientists should put some effort into
+spreading their knowledge. It can be fun, and it’s awesome for your brand, as
+well as the brand of the company you work at.&lt;/p&gt;
+&lt;p&gt;Do you have some other path you’ve taken that worked better for you? Let the
+world know by dropping a comment!&lt;/p&gt;</summary><category term="blogging"></category></entry><entry><title>The Story of a Bad Train-Test Split</title><link href="http://anotherdatum.com/train-test.html" rel="alternate"></link><published>2018-12-16T23:00:00+02:00</published><updated>2018-12-16T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-16:train-test.html</id><summary type="html">&lt;p&gt;About a year ago we incorporated a new type of feature into one of our models
 used for recommending content items to our users. I’m talking about the
 thumbnail of the content item:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="images/train-test/new-feature.png" /&gt;&lt;/p&gt;
