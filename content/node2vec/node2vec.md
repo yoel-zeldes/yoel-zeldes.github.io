@@ -143,6 +143,8 @@ B, E]. If we fetch the latter into the training process, we’ll learn that E an
 C are interchangeable: the prefix [A, B] will be able to predict both C and E.
 Therefore, C and E will get similar embeddings, and will be clustered together.
 
+---
+
 #Takeway
 Using the right data structure to represent your data is important. Each data
 structure implies a different learning algorithm, or in other words — introduces
