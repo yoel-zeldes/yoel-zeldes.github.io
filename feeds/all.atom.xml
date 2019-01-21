@@ -1,5 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2018-12-31T23:00:00+02:00</updated><entry><title>How to Build Your Personal Brand as a Data Scientist</title><link href="http://anotherdatum.com/branding.html" rel="alternate"></link><published>2018-12-31T23:00:00+02:00</published><updated>2018-12-31T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-31:branding.html</id><summary type="html">&lt;p&gt;Personal branding is a thing now. It always has been, but I believe it’s been
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2019-01-21T23:00:00+02:00</updated><entry><title>Think your Data Different</title><link href="http://anotherdatum.com/node2vec.html" rel="alternate"></link><published>2019-01-21T23:00:00+02:00</published><updated>2019-01-21T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-21:node2vec.html</id><summary type="html">&lt;p&gt;In the last couple of years deep learning (DL) has become a main enabler for
+applications in many domains such as vision, NLP, audio, click stream data etc.
+Recently researchers started to successfully apply deep learning methods to
+graph datasets in domains like social networks, recommender systems and biology,
+where data is inherently structured in a graphical way.&lt;/p&gt;
+&lt;p&gt;So how do Graph Neural Networks work? Why do we need them?&lt;/p&gt;
+&lt;h1&gt;The Premise of Deep Learning&lt;/h1&gt;
+&lt;p&gt;In machine learning tasks involving graphical data, we usually want to describe
+each node in the graph in a way that allows us to feed it into some machine
+learning algorithm. Without DL, one would have to manually extract features,
+such as the number of neighbors a node has. But this is a laborious job.&lt;/p&gt;
+&lt;p&gt;This is where DL shines. It automatically exploits the structure of the graph in
+order to extract features for each node. These features are called embeddings.&lt;/p&gt;
+&lt;p&gt;The interesting thing is, that even if you have absolutely no information about
+the nodes, you can still use DL to extract embeddings. The structure of the
+graph, that is — the connectivity patterns, hold viable information.&lt;/p&gt;
+&lt;p&gt;So how can we use the structure to extract information? Can the context of each
+node within the graph really help us?&lt;/p&gt;
+&lt;h1&gt;Learning from Context&lt;/h1&gt;
+&lt;p&gt;One well known algorithm that extracts information about entities using context
+alone is
+&lt;a href="https://www.tensorflow.org/tutorials/representation/word2vec"&gt;word2vec&lt;/a&gt;. The
+input to word2vec is a set of sentences, and the output is an embedding for each
+word. Similarly to the way text describes the context of each word via the words
+surrounding it, graphs describe the context of each node via neighbor nodes.&lt;/p&gt;
+&lt;p&gt;While in text words appear in linear order, in graphs it’s not the case. There’s
+no natural order between neighbor nodes. So we can’t use word2vec... Or can we?&lt;/p&gt;
+&lt;h1&gt;Reduction like a Badass Mathematician&lt;/h1&gt;
+&lt;p&gt;We can apply reduction from the graphical structure of our data into a linear
+structure such that the information encoded in the graphical structure isn’t
+lost. Doing so, we’ll be able to use good old word2vec.&lt;/p&gt;
+&lt;p&gt;The key point is to perform random walks in the graph. Each walk starts at a
+random node, and performs a series of steps, where each step goes to a random
+neighbor. Each random walk forms a sentence that can be fed into word2vec. This
+algorithm is called &lt;a href="https://snap.stanford.edu/node2vec/"&gt;node2vec&lt;/a&gt;. There are
+more details in the process, which you can read about in the &lt;a href="https://arxiv.org/abs/1607.00653"&gt;original
+paper&lt;/a&gt;.&lt;/p&gt;
+&lt;h1&gt;Case study&lt;/h1&gt;
+&lt;p&gt;Taboola’s content recommender system gathers lots of data, some of which can be
+represented in a graphical manner. Let’s inspect one type of data as a case
+study for using node2vec.&lt;/p&gt;
+&lt;p&gt;Taboola recommends articles in a widget shown in publishers’ websites:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/widget.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Each article has named entities — the entities described by the title. For
+example, the item “the cutest dogs on the planet” contains the entities “dog”
+and “planet”. Each named entity can appear in many different items.&lt;/p&gt;
+&lt;p&gt;We can describe this relationship using a graph in the following way: each node
+will be a named entity, and there will be an edge between two nodes if the two
+named entities appear in the same item:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/named-entities-graph.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we are able to describe our data in a graphical manner, let’s run
+node2vec to see what insights we can learn out of the data. You can find the
+working code &lt;a href="https://github.com/taboola/node2vec-example"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;After learning node embeddings, we can use them as features for a downstream
+task, e.g. CTR (Click Through Rate) prediction. Although it could benefit the
+model, it’ll be hard to understand the qualities learned by node2vec.&lt;/p&gt;
+&lt;p&gt;Another option would be to cluster similar embeddings together using
+&lt;a href="https://en.wikipedia.org/wiki/K-means_clustering"&gt;K-means&lt;/a&gt;, and color the nodes
+according to their associated cluster:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/node2vec-clusters.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Cool! The clusters captured by node2vec seem to be homogeneous. In other words,
+nodes that are close to each other in the graph are also close to each other in
+the embedding space. Take for instance the orange cluster — all of its named
+entities are related to basketball.&lt;/p&gt;
+&lt;p&gt;You might wonder what is the benefit of using node2vec over classical graphical
+algorithms, such as community detection algorithms (e.g., the &lt;a href="https://arxiv.org/abs/cond-mat/0308217"&gt;Girvan-Newman
+algorithm&lt;/a&gt;). Capturing the community
+each node belongs to can definitely be done using such algorithms, there’s
+nothing wrong with it. Actually, that’s exactly feature engineering. And we
+already know that DL can save you the time of carefully handcrafting such
+features. So why not enjoy this benefit? We should also keep in mind that
+node2vec learns high dimensional embeddings. These embeddings are much richer
+than merely community belonging.&lt;/p&gt;
+&lt;h1&gt;Taking Another Approach&lt;/h1&gt;
+&lt;p&gt;Using node2vec in this use case might not be the first idea that comes to mind.
+One might suggest to simply use word2vec, where each sentence is the sequence of
+named entities inside a single item. In this approach we don’t treat the data as
+having a graphical structure. So what’s the difference between this approach —
+which is valid, and node2vec?&lt;/p&gt;
+&lt;p&gt;If we think about it, each sentence we generate in the word2vec approach is a
+walk in the graph we’ve defined earlier. node2vec also defines walks on the same
+graph. So they are the same, right? Let’s have a look at the clusters we get by
+the word2vec approach:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/word2vec-clusters.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now the “basketball” cluster is less homogenous — it contains both orange and
+blue nodes. The named entity “Basketball” for example was colored orange, while
+the basketball players “Lebron James” and “Kobe Bryant” were colored blue!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/word2vec-labeled.png" /&gt;&lt;/p&gt;
+&lt;p&gt;But why did this happen?&lt;/p&gt;
+&lt;p&gt;In this approach each walk in the graph is composed only of named entities that
+appear together in a single item. It means we are limited to walks that don’t go
+further than distance 1 from the starting node. In node2vec, we don’t have that
+limit.&lt;br /&gt;
+Since each approach uses a different kind of walks, the learned
+embeddings capture a different kind of information.&lt;/p&gt;
+&lt;p&gt;To make it more concrete, consider the following example: say we have two items
+— one with named entities A, B, C and another with D, B, E. These items induce
+the following graph:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/node2vec/graph.png" /&gt;&lt;/p&gt;
+&lt;p&gt;In the simple word2vec approach we’ll generate the following sentences: [A, B,
+C] and [D, B, E]. In the node2vec approach we could also get sentences like [A,
+B, E]. If we fetch the latter into the training process, we’ll learn that E and
+C are interchangeable: the prefix [A, B] will be able to predict both C and E.
+Therefore, C and E will get similar embeddings, and will be clustered together.&lt;/p&gt;
+&lt;h1&gt;Takeway&lt;/h1&gt;
+&lt;p&gt;Using the right data structure to represent your data is important. Each data
+structure implies a different learning algorithm, or in other words — introduces
+a different inductive bias.&lt;/p&gt;
+&lt;p&gt;Identifying your data has a certain structure, so you can use the right tool for
+the job, might be challenging.&lt;/p&gt;
+&lt;p&gt;Since so many real world datasets are naturally represented as graphs, we think
+Graph Neural Networks are a must-have in our tool box as data scientists.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published at
+&lt;/em&gt;&lt;a href="https://engineering.taboola.com/think-data-different"&gt;engineering.taboola.com&lt;/a&gt;
+by me and &lt;a href="https://medium.com/@kozohar"&gt;Zohar Komarovsky&lt;/a&gt;.&lt;/p&gt;</summary><category term="deep learning"></category><category term="word2vec"></category><category term="node2vec"></category></entry><entry><title>How to Build Your Personal Brand as a Data Scientist</title><link href="http://anotherdatum.com/branding.html" rel="alternate"></link><published>2018-12-31T23:00:00+02:00</published><updated>2018-12-31T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2018-12-31:branding.html</id><summary type="html">&lt;p&gt;Personal branding is a thing now. It always has been, but I believe it’s been
 getting more and more attention recently. More people are aware of its
 importance, including the employers. Giving you a big paycheck, assuming you’re
 good, is obvious. Providing opportunities to flourish and build your personal
