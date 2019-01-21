@@ -36,6 +36,7 @@ neighbor. Each random walk forms a sentence that can be fed into word2vec. This
 algorithm is called &lt;a href="https://snap.stanford.edu/node2vec/"&gt;node2vec&lt;/a&gt;. There are
 more details in the process, which you can read about in the &lt;a href="https://arxiv.org/abs/1607.00653"&gt;original
 paper&lt;/a&gt;.&lt;/p&gt;
+&lt;hr /&gt;
 &lt;h1&gt;Case study&lt;/h1&gt;
 &lt;p&gt;Taboola’s content recommender system gathers lots of data, some of which can be
 represented in a graphical manner. Let’s inspect one type of data as a case
