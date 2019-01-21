@@ -52,6 +52,8 @@ algorithm is called [node2vec](https://snap.stanford.edu/node2vec/). There are
 more details in the process, which you can read about in the [original
 paper](https://arxiv.org/abs/1607.00653).
 
+---
+
 #Case study
 Taboola’s content recommender system gathers lots of data, some of which can be
 represented in a graphical manner. Let’s inspect one type of data as a case
