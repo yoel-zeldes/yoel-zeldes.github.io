@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>Preparing for the Unexpected</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="How to apply your model to input it has never seen before.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="deep learning">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/preparing-for-the-unexpected.html">
+	<meta property="og:title" content="Preparing for the Unexpected">
+	<meta property="article:published_time" content="2019-01-27 23:00:00+02:00">
+            <meta property="og:description" content="How to apply your model to input it has never seen before.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/oov/cover.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@YZeldes">
+        <meta name="twitter:title" content="Preparing for the Unexpected">
+
+            <meta name="twitter:image" content="http://anotherdatum.com/images/oov/cover.jpg">
+
+            <meta name="twitter:description" content="How to apply your model to input it has never seen before.">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/oov/cover.jpg')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>Preparing for the Unexpected</h1>
+                        <span class="meta">Posted on 27 January 2019</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>Some of the problems we tackle using machine learning involve categorical
+features that represent real world objects, such as words, items and categories.
+So what happens when at inference time we get new object values that have never
+been seen before? How can we prepare ourselves in advance so we can still make
+sense out of the input?</p>
+<p>Unseen values, also called OOV (Out of Vocabulary) values, must be handled
+properly. Different algorithms have different methods to deal with OOV values.
+Different assumptions on the categorical features should be treated differently
+as well.</p>
+<p>In this post, I’ll focus on the case of deep learning applied to dynamic data,
+where new values appear all the time. I’ll use Taboola’s recommender system as
+an example. Some of the inputs the model gets at inference time contain unseen
+values — this is common in recommender systems. Examples include:</p>
+<ul>
+<li>Item id: each recommendable item gets a unique identifier. Every day thousands
+of new items get into the system.</li>
+<li>Advertiser id: sponsored content is created by advertisers. The number of new
+daily advertisers is much smaller compared to the number of new items.
+Nonetheless, it’s important to handle them correctly, especially since we want
+to support new advertisers.</li>
+</ul>
+<p>So what’s the challenge with OOV values?</p>
+<h1>Learning to handle OOV values</h1>
+<p>An OOV value is associated with values not seen by the model at training time.
+Hence, if we get an OOV value at inference time, the model won’t know what to do
+with it.</p>
+<p>One simple solution is to replace all the rare values with a special OOV token
+before training. Since all OOV values are the same from the model’s point of
+view, we’ll replace them with the OOV token at inference time. This solution has
+two positive outcomes:</p>
+<ol>
+<li>The model will be exposed to the OOV token while training. In deep learning we
+usually embed categorical features. After training, the model will learn a
+meaningful embedding for all OOV values .</li>
+<li>The risk of overfitting to the rare values will decrease. These values appear in
+a small number of examples. The model might learn to use their embeddings to
+explain particularities or random noise found in these specific examples.<br> 
+Another possible disaster is that these embeddings won’t get enough gradient
+updates propagated to them. As a consequence, the random initialization will
+dominate the result embeddings over the signal learned through training.</li>
+</ol>
+<p>Problem solved... Or is it?</p>
+<h1>Handling OOV values is hard!</h1>
+<p>The model uses the item id feature to memorize different information per item,
+similarly to the pure <a href="https://en.wikipedia.org/wiki/Collaborative_filtering">collaborative
+filtering</a> approach. Rare
+items that are injected with the OOV token can’t benefit from it, so the model
+performs worse on them.</p>
+<p>The interesting thing is that even if we don’t use the item id at all during
+training, the model still performs worse on rare items! This is because they
+come from a distribution different than that of the general population. They
+have specific characteristics — maybe they performed poorly online, which caused
+Taboola’s recommender system to recommend them less, and in turn — they became
+rare in the dataset. So why does this distribution difference matter?</p>
+<p>If we learn the OOV embedding using this special distribution, it won’t
+generalize to the general population. Think about it this way — every item was a
+new item at some point. At that point, it was injected with the OOV token. So
+the OOV embedding should perform well for all possible items.</p>
+<h1>Randomness is the data scientist’s best friend</h1>
+<p>In order to learn the OOV embedding using the general population, we can inject
+the OOV token to a random set of examples from the dataset before we start the
+training process. But how many examples will suffice?</p>
+<p>The more we sample, the better the OOV embedding will be. But at the same time,
+the model will be exposed to a fewer number of non-OOV values, so the
+performance will degrade.</p>
+<p>How can we use lots of examples to train the OOV embedding while at the same
+time use the same examples to train the non-OOV embeddings? Instead of randomly
+injecting the OOV token before starting to train, we chose the following
+approach: in each epoch the model trains using all of the available values (the
+OOV token isn’t injected). At the end of the epoch we sample a random set of
+examples, inject the OOV token, and train the model once again. This way, we
+enjoy both worlds!</p>
+<p>To evaluate the new approach, we injected the OOV token to all of the examples
+and evaluated our offline metric (MSE). It improved by 15% compared to randomly
+injecting the OOV token before the model starts to train.</p>
+<h1>Final thoughts</h1>
+<p>Our model had been used in production for a long time before we thought of the
+new approach. It could have been easy to miss this potential performance gain,
+since the model performed well overall. It just stresses the fact that you
+always have to look for the unexpected!</p>
+<hr />
+<p><em>Originally published by me at
+<a href="https://engineering.taboola.com/preparing-for-the-unexpected">engineering.taboola.com</a>.</em></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/deep-learning.html">deep learning</a></p>
+        </div>
+
+    <hr>
+
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:300px;}
+	#mc_embed_signup form{padding: 0;}
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="https://anotherdatum.us14.list-manage.com/subscribe/post?u=6894d7badcfb253606fa3fb54&amp;id=c6f34ad6b7" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<h2>Get updated of new posts</h2>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address </label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6894d7badcfb253606fa3fb54_c6f34ad6b7" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+<hr />
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'preparing-for-the-unexpected.html';
+                var disqus_url = 'http://anotherdatum.com/preparing-for-the-unexpected.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/YZeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>

@@ -1,5 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2019-01-21T23:00:00+02:00</updated><entry><title>Think your Data Different</title><link href="http://anotherdatum.com/node2vec.html" rel="alternate"></link><published>2019-01-21T23:00:00+02:00</published><updated>2019-01-21T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-21:node2vec.html</id><summary type="html">&lt;p&gt;In the last couple of years deep learning (DL) has become a main enabler for
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2019-01-27T23:00:00+02:00</updated><entry><title>Preparing for the Unexpected</title><link href="http://anotherdatum.com/preparing-for-the-unexpected.html" rel="alternate"></link><published>2019-01-27T23:00:00+02:00</published><updated>2019-01-27T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-27:preparing-for-the-unexpected.html</id><summary type="html">&lt;p&gt;Some of the problems we tackle using machine learning involve categorical
+features that represent real world objects, such as words, items and categories.
+So what happens when at inference time we get new object values that have never
+been seen before? How can we prepare ourselves in advance so we can still make
+sense out of the input?&lt;/p&gt;
+&lt;p&gt;Unseen values, also called OOV (Out of Vocabulary) values, must be handled
+properly. Different algorithms have different methods to deal with OOV values.
+Different assumptions on the categorical features should be treated differently
+as well.&lt;/p&gt;
+&lt;p&gt;In this post, I’ll focus on the case of deep learning applied to dynamic data,
+where new values appear all the time. I’ll use Taboola’s recommender system as
+an example. Some of the inputs the model gets at inference time contain unseen
+values — this is common in recommender systems. Examples include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Item id: each recommendable item gets a unique identifier. Every day thousands
+of new items get into the system.&lt;/li&gt;
+&lt;li&gt;Advertiser id: sponsored content is created by advertisers. The number of new
+daily advertisers is much smaller compared to the number of new items.
+Nonetheless, it’s important to handle them correctly, especially since we want
+to support new advertisers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So what’s the challenge with OOV values?&lt;/p&gt;
+&lt;h1&gt;Learning to handle OOV values&lt;/h1&gt;
+&lt;p&gt;An OOV value is associated with values not seen by the model at training time.
+Hence, if we get an OOV value at inference time, the model won’t know what to do
+with it.&lt;/p&gt;
+&lt;p&gt;One simple solution is to replace all the rare values with a special OOV token
+before training. Since all OOV values are the same from the model’s point of
+view, we’ll replace them with the OOV token at inference time. This solution has
+two positive outcomes:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The model will be exposed to the OOV token while training. In deep learning we
+usually embed categorical features. After training, the model will learn a
+meaningful embedding for all OOV values .&lt;/li&gt;
+&lt;li&gt;The risk of overfitting to the rare values will decrease. These values appear in
+a small number of examples. The model might learn to use their embeddings to
+explain particularities or random noise found in these specific examples.&lt;br&gt; 
+Another possible disaster is that these embeddings won’t get enough gradient
+updates propagated to them. As a consequence, the random initialization will
+dominate the result embeddings over the signal learned through training.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Problem solved... Or is it?&lt;/p&gt;
+&lt;h1&gt;Handling OOV values is hard!&lt;/h1&gt;
+&lt;p&gt;The model uses the item id feature to memorize different information per item,
+similarly to the pure &lt;a href="https://en.wikipedia.org/wiki/Collaborative_filtering"&gt;collaborative
+filtering&lt;/a&gt; approach. Rare
+items that are injected with the OOV token can’t benefit from it, so the model
+performs worse on them.&lt;/p&gt;
+&lt;p&gt;The interesting thing is that even if we don’t use the item id at all during
+training, the model still performs worse on rare items! This is because they
+come from a distribution different than that of the general population. They
+have specific characteristics — maybe they performed poorly online, which caused
+Taboola’s recommender system to recommend them less, and in turn — they became
+rare in the dataset. So why does this distribution difference matter?&lt;/p&gt;
+&lt;p&gt;If we learn the OOV embedding using this special distribution, it won’t
+generalize to the general population. Think about it this way — every item was a
+new item at some point. At that point, it was injected with the OOV token. So
+the OOV embedding should perform well for all possible items.&lt;/p&gt;
+&lt;h1&gt;Randomness is the data scientist’s best friend&lt;/h1&gt;
+&lt;p&gt;In order to learn the OOV embedding using the general population, we can inject
+the OOV token to a random set of examples from the dataset before we start the
+training process. But how many examples will suffice?&lt;/p&gt;
+&lt;p&gt;The more we sample, the better the OOV embedding will be. But at the same time,
+the model will be exposed to a fewer number of non-OOV values, so the
+performance will degrade.&lt;/p&gt;
+&lt;p&gt;How can we use lots of examples to train the OOV embedding while at the same
+time use the same examples to train the non-OOV embeddings? Instead of randomly
+injecting the OOV token before starting to train, we chose the following
+approach: in each epoch the model trains using all of the available values (the
+OOV token isn’t injected). At the end of the epoch we sample a random set of
+examples, inject the OOV token, and train the model once again. This way, we
+enjoy both worlds!&lt;/p&gt;
+&lt;p&gt;To evaluate the new approach, we injected the OOV token to all of the examples
+and evaluated our offline metric (MSE). It improved by 15% compared to randomly
+injecting the OOV token before the model starts to train.&lt;/p&gt;
+&lt;h1&gt;Final thoughts&lt;/h1&gt;
+&lt;p&gt;Our model had been used in production for a long time before we thought of the
+new approach. It could have been easy to miss this potential performance gain,
+since the model performed well overall. It just stresses the fact that you
+always have to look for the unexpected!&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published by me at
+&lt;a href="https://engineering.taboola.com/preparing-for-the-unexpected"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="deep learning"></category></entry><entry><title>Think your Data Different</title><link href="http://anotherdatum.com/node2vec.html" rel="alternate"></link><published>2019-01-21T23:00:00+02:00</published><updated>2019-01-21T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-21:node2vec.html</id><summary type="html">&lt;p&gt;In the last couple of years deep learning (DL) has become a main enabler for
 applications in many domains such as vision, NLP, audio, click stream data etc.
 Recently researchers started to successfully apply deep learning methods to
 graph datasets in domains like social networks, recommender systems and biology,
