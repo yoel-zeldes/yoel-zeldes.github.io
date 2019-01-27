@@ -43,12 +43,14 @@ two positive outcomes:
 1.  The model will be exposed to the OOV token while training. In deep learning we
 usually embed categorical features. After training, the model will learn a
 meaningful embedding for all OOV values .
-1.  The risk of overfitting to the rare values will decrease. These values appear in
-a small number of examples. The model might learn to use their embeddings to
-explain particularities or random noise found in these specific examples.<br> 
-Another possible disaster is that these embeddings won’t get enough gradient
-updates propagated to them. As a consequence, the random initialization will
-dominate the result embeddings over the signal learned through training.
+2.  The risk of overfitting to the rare values will be mitigated. 
+These values appear in a small number of examples. If we learn embeddings for 
+these values, the model might learn to use them to explain particularities or 
+random noise found in these specific examples.  
+Another disaster that can result with learning these embeddings is not getting 
+enough gradient updates propagated to them. As a consequence, the random 
+initialization will dominate the result embeddings over the signal learned 
+through training.
 
 Problem solved... Or is it?
 
