@@ -90,6 +90,9 @@ OOV token isn’t injected). At the end of the epoch we sample a random set of
 examples, inject the OOV token, and train the model once again. This way, we
 enjoy both worlds!
 
+As was done in the previous approach, we also inject the OOV token to rare 
+values - to avoid overfitting.
+
 To evaluate the new approach, we injected the OOV token to all of the examples
 and evaluated our offline metric (MSE). It improved by 15% compared to randomly
 injecting the OOV token before the model starts to train.
