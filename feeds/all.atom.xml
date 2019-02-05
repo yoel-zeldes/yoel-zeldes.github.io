@@ -1,5 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2019-01-27T23:00:00+02:00</updated><entry><title>Preparing for the Unexpected</title><link href="http://anotherdatum.com/preparing-for-the-unexpected.html" rel="alternate"></link><published>2019-01-27T23:00:00+02:00</published><updated>2019-01-27T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-27:preparing-for-the-unexpected.html</id><summary type="html">&lt;p&gt;Some of the problems we tackle using machine learning involve categorical
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Another Datum</title><link href="http://anotherdatum.com/" rel="alternate"></link><link href="http://anotherdatum.com/feeds/all.atom.xml" rel="self"></link><id>http://anotherdatum.com/</id><updated>2019-02-05T23:00:00+02:00</updated><entry><title>TensorFlow — The Scope of Software Engineering</title><link href="http://anotherdatum.com/tensorflow-scoping.html" rel="alternate"></link><published>2019-02-05T23:00:00+02:00</published><updated>2019-02-05T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-02-05:tensorflow-scoping.html</id><summary type="html">&lt;p&gt;So you’ve finished training your model, and it’s time to get some insights as to
+what it has learned. You decide which tensor should be interesting, and go look
+for it in your code — to find out what its name is. Then it hits you — you
+forgot to give it a name. You also forgot to wrap the logical code block with a
+named scope. It means you’ll have a hard time getting a reference to the tensor.
+It holds for python scripts as well as TensorBoard:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tf-scope/bad_structure.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Can you see that small red circle lost in the sea of tensors? Finding it is
+hard...&lt;/p&gt;
+&lt;p&gt;That’s a bummer! It would have been much better if it looked more like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="images/tf-scope/good_structure.png" /&gt;&lt;/p&gt;
+&lt;p&gt;That’s more like it! Each set of tensors which form a logical unit is wrapped
+inside a named scope.&lt;/p&gt;
+&lt;p&gt;Why can’t the graph be automatically constructed in a way that resembles your
+code? I mean, most chances are you didn’t construct the model using a single
+function, did you? Your code base contains multiple functions — each forms a
+logical unit which deserves its own named scope!&lt;/p&gt;
+&lt;p&gt;Let’s say you have a tensor &lt;code&gt;x&lt;/code&gt; which was defined by the function &lt;code&gt;f&lt;/code&gt;, which in
+turn was called by &lt;code&gt;g&lt;/code&gt;. It means that while you were writing the code, you had
+this logical structure in mind: &lt;code&gt;g&lt;/code&gt; -&amp;gt; &lt;code&gt;f&lt;/code&gt; -&amp;gt; &lt;code&gt;x&lt;/code&gt;. Wouldn’t it be great if the
+model would automatically be constructed in a way that the name of the tensor
+would be &lt;code&gt;g/f/x&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;Come to think of it, it’s pretty simple to do. All you have to do is go over all
+your functions and add a single line of code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;def f():
+    with tensorflow.name_scope(‘f’):
+        # define tensors
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So what’s wrong with that approach?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;The name of the function &lt;code&gt;f&lt;/code&gt; appears twice — both in the function declaration
+and as an argument to &lt;code&gt;tensorflow.name_scope&lt;/code&gt;. Maybe next week you’ll change the
+name of the function to something more meaningful, let’s say &lt;code&gt;foo&lt;/code&gt;.
+Unfortunately, you might forget to update the name of the scope!&lt;/li&gt;
+&lt;li&gt;You have to apply indentation to the entire body of &lt;code&gt;f&lt;/code&gt;. While it’s not that
+bad, personally I don’t like having high indentation levels. Let’s say &lt;code&gt;f&lt;/code&gt;
+contains a for loop which contains an if statement, which contains another for
+loop. Thanks to calling to &lt;code&gt;tensorflow.name_scope&lt;/code&gt;, we’re already at an
+indentation level of 4!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We can bypass these disadvantages using simple metaprogramming — Python’s
+decorators to the rescue!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;name_scope&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="err"&gt;’&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;^&lt;/span&gt;&lt;span class="n"&gt;_&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="err"&gt;’&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="vm"&gt;__name__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;():]&lt;/span&gt;
+        &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;tensorflow&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name_scope&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;
+
+&lt;span class="nd"&gt;@name_scope&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;foo&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="c1"&gt;# define tensors&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;How does it work? The &lt;code&gt;@&lt;/code&gt; is a syntactic sugar. It’s equivalent to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;def foo():
+    # define tensors
+
+foo = name_scope(foo)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;name_scope&lt;/code&gt; gets a function as an argument (&lt;code&gt;f&lt;/code&gt;) and returns a new function
+(&lt;code&gt;func&lt;/code&gt;). &lt;code&gt;func&lt;/code&gt; creates a named scope, and then calls &lt;code&gt;f&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The result? All the tensors that are defined by &lt;code&gt;f&lt;/code&gt; will be created inside a
+named scope. The name of the scope will be the name of the original function
+(“foo”) — thanks to &lt;code&gt;f.__name__&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;One small problem is that while function names might start with “_”, tensorflow
+scope names can’t. This is why we have to use &lt;code&gt;re&lt;/code&gt;.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h1&gt;Why is it that important?&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="" src="images/tf-scope/maintenance.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;The challenge of writing clean tensorflow code is negligible compared to the
+research challenge of actually making the model any good.&lt;/p&gt;
+&lt;p&gt;Thus, it’s easy to be tempted to just focus on the research aspects of your job.
+However, in the long run, it’s important not to neglect the maintainability and
+readability of your code, including those of your graph.&lt;/p&gt;
+&lt;p&gt;The decorator approach make my job a little easier, and I hope you’ll benefit
+from it too. Do you have other tips you’d like to share? Drop a line in the
+comments!&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;em&gt;Originally published by me at
+&lt;a href="https://engineering.taboola.com/tensorflow-scope-software-engineering"&gt;engineering.taboola.com&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;</summary><category term="tensorflow"></category><category term="software engineering"></category></entry><entry><title>Preparing for the Unexpected</title><link href="http://anotherdatum.com/preparing-for-the-unexpected.html" rel="alternate"></link><published>2019-01-27T23:00:00+02:00</published><updated>2019-01-27T23:00:00+02:00</updated><author><name>Yoel Zeldes</name></author><id>tag:anotherdatum.com,2019-01-27:preparing-for-the-unexpected.html</id><summary type="html">&lt;p&gt;Some of the problems we tackle using machine learning involve categorical
 features that represent real world objects, such as words, items and categories.
 So what happens when at inference time we get new object values that have never
 been seen before? How can we prepare ourselves in advance so we can still make

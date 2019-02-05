@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+            <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <title>TensorFlow — The Scope of Software Engineering</title>
+
+            <link href="http://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
+        <!-- Bootstrap Core CSS -->
+        <link href="http://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS -->
+        <link href="http://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
+
+        <!-- Code highlight color scheme -->
+            <link href="http://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
+
+            <!-- CSS specified by the user -->
+            <link href="http://anotherdatum.com/css/overrides.css" rel="stylesheet">
+
+        <!-- Custom Fonts -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+        <meta name="description" content="How to structure your TensorFlow graph like a software engineer.">
+
+        <meta name="author" content="Yoel Zeldes">
+
+        <meta name="tags" content="tensorflow">
+        <meta name="tags" content="software engineering">
+
+	                <meta property="og:locale" content="en">
+		<meta property="og:site_name" content="Another Datum">
+
+	<meta property="og:type" content="article">
+            <meta property="article:author" content="http://anotherdatum.com/author/yoel-zeldes.html">
+	<meta property="og:url" content="http://anotherdatum.com/tensorflow-scoping.html">
+	<meta property="og:title" content="TensorFlow — The Scope of Software Engineering">
+	<meta property="article:published_time" content="2019-02-05 23:00:00+02:00">
+            <meta property="og:description" content="How to structure your TensorFlow graph like a software engineer.">
+
+            <meta property="og:image" content="http://anotherdatum.com/images/tf-scope/cover.png">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@YZeldes">
+        <meta name="twitter:title" content="TensorFlow — The Scope of Software Engineering">
+
+            <meta name="twitter:image" content="http://anotherdatum.com/images/tf-scope/cover.png">
+
+            <meta name="twitter:description" content="How to structure your TensorFlow graph like a software engineer.">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://anotherdatum.com/">Another Datum</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                        <li><a href="http://anotherdatum.com">Posts</a></li>
+
+                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
+                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Header -->
+        <header class="intro-header" style="background-image: url('images/tf-scope/cover.png')">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1>TensorFlow — The Scope of Software Engineering</h1>
+                        <span class="meta">Posted on 05 February 2019</span>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+    <!-- Post Content -->
+    <article>
+        <p>So you’ve finished training your model, and it’s time to get some insights as to
+what it has learned. You decide which tensor should be interesting, and go look
+for it in your code — to find out what its name is. Then it hits you — you
+forgot to give it a name. You also forgot to wrap the logical code block with a
+named scope. It means you’ll have a hard time getting a reference to the tensor.
+It holds for python scripts as well as TensorBoard:</p>
+<p><img alt="" src="images/tf-scope/bad_structure.png" /></p>
+<p>Can you see that small red circle lost in the sea of tensors? Finding it is
+hard...</p>
+<p>That’s a bummer! It would have been much better if it looked more like this:</p>
+<p><img alt="" src="images/tf-scope/good_structure.png" /></p>
+<p>That’s more like it! Each set of tensors which form a logical unit is wrapped
+inside a named scope.</p>
+<p>Why can’t the graph be automatically constructed in a way that resembles your
+code? I mean, most chances are you didn’t construct the model using a single
+function, did you? Your code base contains multiple functions — each forms a
+logical unit which deserves its own named scope!</p>
+<p>Let’s say you have a tensor <code>x</code> which was defined by the function <code>f</code>, which in
+turn was called by <code>g</code>. It means that while you were writing the code, you had
+this logical structure in mind: <code>g</code> -&gt; <code>f</code> -&gt; <code>x</code>. Wouldn’t it be great if the
+model would automatically be constructed in a way that the name of the tensor
+would be <code>g/f/x</code>?</p>
+<p>Come to think of it, it’s pretty simple to do. All you have to do is go over all
+your functions and add a single line of code:</p>
+<div class="highlight"><pre><span></span>def f():
+    with tensorflow.name_scope(‘f’):
+        # define tensors
+</pre></div>
+
+
+<p>So what’s wrong with that approach?</p>
+<ol>
+<li>The name of the function <code>f</code> appears twice — both in the function declaration
+and as an argument to <code>tensorflow.name_scope</code>. Maybe next week you’ll change the
+name of the function to something more meaningful, let’s say <code>foo</code>.
+Unfortunately, you might forget to update the name of the scope!</li>
+<li>You have to apply indentation to the entire body of <code>f</code>. While it’s not that
+bad, personally I don’t like having high indentation levels. Let’s say <code>f</code>
+contains a for loop which contains an if statement, which contains another for
+loop. Thanks to calling to <code>tensorflow.name_scope</code>, we’re already at an
+indentation level of 4!</li>
+</ol>
+<p>We can bypass these disadvantages using simple metaprogramming — Python’s
+decorators to the rescue!</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">name_scope</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">r</span><span class="err">’</span><span class="p">[</span><span class="o">^</span><span class="n">_</span><span class="p">]</span><span class="err">’</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">():]</span>
+        <span class="k">with</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+<span class="nd">@name_scope</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="c1"># define tensors</span>
+</pre></div>
+
+
+<p>How does it work? The <code>@</code> is a syntactic sugar. It’s equivalent to the
+following:</p>
+<div class="highlight"><pre><span></span>def foo():
+    # define tensors
+
+foo = name_scope(foo)
+</pre></div>
+
+
+<p><code>name_scope</code> gets a function as an argument (<code>f</code>) and returns a new function
+(<code>func</code>). <code>func</code> creates a named scope, and then calls <code>f</code>.</p>
+<p>The result? All the tensors that are defined by <code>f</code> will be created inside a
+named scope. The name of the scope will be the name of the original function
+(“foo”) — thanks to <code>f.__name__</code>.</p>
+<p>One small problem is that while function names might start with “_”, tensorflow
+scope names can’t. This is why we have to use <code>re</code>.</p>
+<hr />
+<h1>Why is it that important?</h1>
+<p><img alt="" src="images/tf-scope/maintenance.jpg" /></p>
+<p>The challenge of writing clean tensorflow code is negligible compared to the
+research challenge of actually making the model any good.</p>
+<p>Thus, it’s easy to be tempted to just focus on the research aspects of your job.
+However, in the long run, it’s important not to neglect the maintainability and
+readability of your code, including those of your graph.</p>
+<p>The decorator approach make my job a little easier, and I hope you’ll benefit
+from it too. Do you have other tips you’d like to share? Drop a line in the
+comments!</p>
+<hr />
+<p><em>Originally published by me at
+<a href="https://engineering.taboola.com/tensorflow-scope-software-engineering">engineering.taboola.com</a>.</em></p>
+    </article>
+
+        <div class="tags">
+            <p>tags: <a href="http://anotherdatum.com/tag/tensorflow.html">tensorflow</a>, <a href="http://anotherdatum.com/tag/software-engineering.html">software engineering</a></p>
+        </div>
+
+    <hr>
+
+<!-- Begin MailChimp Signup Form -->
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+	#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:300px;}
+	#mc_embed_signup form{padding: 0;}
+	/* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+	   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+</style>
+<div id="mc_embed_signup">
+<form action="https://anotherdatum.us14.list-manage.com/subscribe/post?u=6894d7badcfb253606fa3fb54&amp;id=c6f34ad6b7" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+    <div id="mc_embed_signup_scroll">
+	<h2>Get updated of new posts</h2>
+<div class="mc-field-group">
+	<label for="mce-EMAIL">Email Address </label>
+	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+</div>
+	<div id="mce-responses" class="clear">
+		<div class="response" id="mce-error-response" style="display:none"></div>
+		<div class="response" id="mce-success-response" style="display:none"></div>
+	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+    <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6894d7badcfb253606fa3fb54_c6f34ad6b7" tabindex="-1" value=""></div>
+    <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+    </div>
+</form>
+</div>
+<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+<!--End mc_embed_signup-->
+<hr />
+        <div class="comments">
+            <h2>Comments !</h2>
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'anotherdatum';
+                var disqus_identifier = 'tensorflow-scoping.html';
+                var disqus_url = 'http://anotherdatum.com/tensorflow-scoping.html';
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//anotherdatum.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                            <li>
+                                <a href="https://il.linkedin.com/in/yoelzeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/yoel-zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.facebook.com/yoel.zeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://twitter.com/YZeldes">
+                                    <span class="fa-stack fa-lg">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </a>
+                            </li>
+                    </ul>
+<p class="copyright text-muted">
+    Blog powered by <a href="http://getpelican.com">Pelican</a>,
+    which takes great advantage of <a href="http://python.org">Python</a>.
+    <br />
+    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
+</p>                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://anotherdatum.com/theme/js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://anotherdatum.com/theme/js/bootstrap.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="http://anotherdatum.com/theme/js/clean-blog.min.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-83684090-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+<script type="text/javascript">
+    var disqus_shortname = 'anotherdatum';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+
+</html>
