@@ -121,9 +121,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -202,12 +317,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -220,27 +343,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -436,7 +571,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -446,11 +583,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -698,6 +848,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -736,7 +889,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -858,6 +1011,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -874,16 +1031,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -899,6 +1064,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -949,8 +1119,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1089,8 +1266,7 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Google has been tracking your footsteps.</strong></p>
 <p>In case you don't know already, google knows where you have been since you have started carrying a mobile device (unless of course you <a href="https://support.google.com/accounts/answer/3118687">turned off Location History</a>).</p>
@@ -1106,7 +1282,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -1124,8 +1300,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>First thing, we'll load the data from the downloaded json file.</p>
 </div>
@@ -1136,7 +1311,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">json_normalize</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">'LocationHistory.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">))[</span><span class="s1">'locations'</span><span class="p">])</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">json_normalize</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">'LocationHistory.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">))[</span><span class="s1">'locations'</span><span class="p">])</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1237,7 +1412,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">'available data:'</span><span class="p">,</span> <span class="s1">' to '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()),</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">'available data:'</span><span class="p">,</span> <span class="s1">' to '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()),</span>
                                          <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">max</span><span class="p">()]))</span>
 </pre></div>
 </div>
@@ -1260,7 +1435,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'longitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">longitudeE7</span> <span class="o">/</span> <span class="mi">10000000</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'longitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">longitudeE7</span> <span class="o">/</span> <span class="mi">10000000</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">'latitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">latitudeE7</span> <span class="o">/</span> <span class="mi">10000000</span>
 <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'longitudeE7'</span><span class="p">,</span> <span class="s1">'latitudeE7'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
@@ -1269,8 +1444,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The first thing crying out to be done is to plot all the locations I've been to.</p>
 </div>
@@ -1281,7 +1455,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_places</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">markersize</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_places</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">markersize</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">Basemap</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s1">'gall'</span><span class="p">,</span>
@@ -1307,7 +1481,7 @@ h6:hover .anchor-link {
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAAEQCAYAAAC0ia5KAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnWd4FFUXgN/Z9N57A9IIvfduABFEQVCxIGBBiohdUAEV
 QbF8IioIqChSRYpSpEOQ3iEQSICEhPTeNtk634/dDNlkEwhFKfM+j4+Z2+bOzDJz7rmnCKIoIiMj
@@ -3088,15 +3262,14 @@ QaqmphZzFv9EhlyHjHLM8TL4bdtOQkNDaduhE8PHjFO516On/hZ+TpdmCRmks2fP4t69q+CEPvCb
 8RhW0Vz51IVgGjZrIczv+qFSB6nt95vQNXp9HuheV15Yw/MKr0VEREREREREpEpUyktLRERERERE
 RORtQLSWEBEREREREXnrEQMeERERERERkbceMeAREREREREReesRAx4RERERERGRtx4x4BERERER
 ERF56/l/8d71NzpZoPgAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I've been abroad a couple of times. But obviously most of the time I've been in my own country, so let's visualize that:</p>
 </div>
@@ -3107,7 +3280,7 @@ ERF56/l/8d71NzpZoPgAAAAASUVORK5CYII=
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">radius</span> <span class="o">=</span> <span class="mi">3</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">radius</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">country_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[((</span><span class="n">data</span><span class="o">.</span><span class="n">longitude</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">median</span><span class="p">())</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o"><=</span> <span class="n">radius</span><span class="p">)</span> <span class="o">&</span>
                     <span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">latitude</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">median</span><span class="p">())</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span> <span class="o"><=</span> <span class="n">radius</span><span class="p">)]</span>
 <span class="n">plot_places</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">country_data</span><span class="p">,</span>
@@ -3122,7 +3295,7 @@ ERF56/l/8d71NzpZoPgAAAAASUVORK5CYII=
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAToAAAJLCAYAAAB31FqlAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnXl8VNXZx79nJpnJTGaSyb6QlQQCgYQQEGRXUHFBxRX3
 utfWtX2rvrXqa7VVW1uXVqlaV9SyqAgKqCCoCCigIUBYAoGQfV9mySSz3vePO0kDJhBIYEhyv58P
@@ -4174,20 +4347,19 @@ ooEUXYSVlZXhbA3/0le1m35PeryGG264IexjCaF28q5rhG3bvhOdMbwPB5q//JSeQ1t5/90/yeY3
 QiBXdBF1+PBhXnhhFYXX/G3YxvB5XBzd+CIvPPc/im1EIoTanPOKrr7LFYkco4I+JZu5l1yGvfYr
 TNMWh2UMW90+Lrr0ChKyxsvvToi/OudS6hHMIoQQIzKsDayFECIWyD06IUTMk6ITQsQ8KTohRMyT
 ohNCxDwpOiFEzPv/io0WTLLIi70AAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In order to find my country data I just used the median location (using the mean won't do good here, since other countries I've visited are outliers and will influence it).</p>
 <p>Choosing <code>radius</code> to be 3 was done empirically so we can get the whole country in the plot.</p>
 <p>In case you don't recognize, that's Israel. Most of my locations mass is in Tel-Aviv and Jerusalem. That's pretty reasonable, since I used to live in Jerusalem before I moved to Tel Aviv. Additionally, my parents live in Jerusalem, so it's expected that I'll visit them occasionally.</p>
-<hr/>
+<hr>
 <p>An interesting question to ask is how often do I visit my parents. Since I moved out of Jerusalem, it isn't reasonable to expect me to visit them more frequently than once a week. But let's be realistic: once a week might be too much. Once a month however will make me look like a bad son...</p>
 <p>Let's analyze that! First, we'll mark the samples located inside Jerusalem.</p>
 </div>
@@ -4198,7 +4370,7 @@ ohNCxDwpOiFEzPv/io0WTLLIi70AAAAASUVORK5CYII=
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'is_jerusalem'</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">longitude</span> <span class="o">>=</span> <span class="mf">35.148037</span><span class="p">)</span> <span class="o">&</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'is_jerusalem'</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">longitude</span> <span class="o">>=</span> <span class="mf">35.148037</span><span class="p">)</span> <span class="o">&</span>
                         <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">longitude</span> <span class="o"><=</span> <span class="mf">35.288230</span><span class="p">)</span> <span class="o">&</span>
                         <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">latitude</span> <span class="o">>=</span> <span class="mf">31.724724</span><span class="p">)</span> <span class="o">&</span>
                         <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">latitude</span> <span class="o"><=</span> <span class="mf">31.831740</span><span class="p">))</span>
@@ -4214,7 +4386,7 @@ ohNCxDwpOiFEzPv/io0WTLLIi70AAAAASUVORK5CYII=
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAAIdCAYAAAA5/6cJAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XlclNXiP/DPYUd2VEBQQcV9R3PDfcur5ppr1yy3zG51
 08yt+63bLc1KyxbTm+WtTFBTc0vNtdx3xIVQUVDZd4ZtYGbO7w/Jn5YiwjCHmfm8X69eCfMsn0GF
@@ -4941,15 +5113,14 @@ YwgV6PV6NFo7nD2NL3jSDn3FoIGDTJhKCCGsk/3tPpCa15j2j2iZNGUmm77/ipb9p6odhrLrWbjZ
 Gej28OBG9nUQAPZeQYRHtaMsLwM3/xZGjaEty6fvY8/I3x8hRKOnuVVjTY1GYx1dN4UQQgghAEVR
 NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 2YcTIUVeF9EAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I didn't perform a precise query of the samples located inside Jerusalem. I selected the points inside some rectangular that contains Jerusalem (I just selected the rectangle's points using Google Maps). It's sufficient for our analysis, since whenever I've been inside the rectangle it has to be that I visited Jerusalem in the same day (since I have no other place to visit in the area). This rectangle defines a cut in the map with a good enough separation of <em>Jerusalem</em> and <em>non-Jerusalem</em> points.</p>
 <p>Next thing, we'll convert the index into <code>DatetimeIndex</code> so it'll be easier for us to do time series manipulations.</p>
@@ -4961,7 +5132,7 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 <div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">))</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">'timestampMs'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">))</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">'timestampMs'</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'time'</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -5071,8 +5242,7 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can easily mark the days in which I've visited Jerusalem.</p>
 </div>
@@ -5083,7 +5253,7 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 <div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">is_jerusalem_daily</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">is_jerusalem</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">'D'</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">is_jerusalem_daily</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">is_jerusalem</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">'D'</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">))</span>
 <span class="n">is_jerusalem_daily</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">'.'</span><span class="p">)</span>
 </pre></div>
@@ -5100,7 +5270,7 @@ NL/357cseIQQQgghbIHs4RFCCCGEzZOCRwghhBA2TwoeIYQQQtg8KXiEEEIIYfOk4BFCCCGEzft/
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABH4AAADeCAYAAABL5sfkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X/QZXddH/D3J7vJZoKBlp8tkB+jQH4tRkBDtGofpGMi
 ZoQWp4KDP7C2TEeq03ZasNrJMrWj7dQZRawQhyo6dagiHUOkmGHMU2r5EX7Ij5DdJCiGsFAoIGZl
@@ -5254,15 +5424,14 @@ Rt+Zzknyl1tXAQEAnBH81AsAOJscS3Lh1vOaVXBSa+1Yko9X1fePt1XVNy6xbwAASyfxAwCcNVpr
 X0jyv6vqw0n+Y06+x89JRXu2vyTJP6qqD1bVHUm+bwXdBABYGn/OHQAAAGCgXPEDAAAAMFASPwAA
 AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
 1UoAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>There's a lot of missing data, but we'll make the best out of what we've got...</p>
 <p>We can see two behavioural transitions:</p>
@@ -5279,7 +5448,7 @@ AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
 <div class="prompt input_prompt">In [10]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">count_days_since_most_recent_marker</span><span class="p">(</span><span class="n">marked_data</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">count_days_since_most_recent_marker</span><span class="p">(</span><span class="n">marked_data</span><span class="p">):</span>
     <span class="sd">'''</span>
 <span class="sd">    marked_data marks some of data's days. The i'th day is marked</span>
 <span class="sd">    if marked_data's i'th cell is evaluated to True.</span>
@@ -5320,7 +5489,7 @@ AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABIEAAADtCAYAAAAoT2XzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XecVOX1x/HPUUBRxB6NvddoYqJG84u6MVHEBnbFKHYj
 ajR2NApqFAu2qFiwK4qCBZSygLIqGCyxdxIUFRELiFio+/z+OHOzs8PM7tS9U77v14sXy5079z5z
@@ -5741,15 +5910,14 @@ YK3Ax8EAAEBX9YmkjfO3o62Cq7P9iaRXImJ8YVlE7FHBvgEAAFQcSSAAANAl2X5f0v9GxDxJM9T8
 O4GaFW1leb2kUyLimYiYL+moKnQTAACgYviJeAAAAAAAgC6AK4EAAAAAAAC6AJJAAAAAAAAAXQBJ
 IAAAAAAAgC6AJBAAAAAAAEAXQBIIAAAAAACgCyAJBAAAAAAA0AWQBAIAAAAAAOgCSAIBAAAAAAB0
 Af8PU7yJJ7b7aEoAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This graph contains some high values. But let's not forget: we have missing data, e.g. in the period between April 2013 and October 2013. The missing data was treated as non-Jerusalem days. Plotting the missing data periods, we get:</p>
 </div>
@@ -5760,7 +5928,7 @@ Af8PU7yJJ7b7aEoAAAAASUVORK5CYII=
 <div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">days_since_last_available_data</span> <span class="o">=</span> <span class="n">count_days_since_most_recent_marker</span><span class="p">(</span><span class="n">is_jerusalem_daily</span><span class="o">.</span><span class="n">notnull</span><span class="p">())</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">days_since_last_available_data</span> <span class="o">=</span> <span class="n">count_days_since_most_recent_marker</span><span class="p">(</span><span class="n">is_jerusalem_daily</span><span class="o">.</span><span class="n">notnull</span><span class="p">())</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">days_since_last_available_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'days since last available data'</span><span class="p">)</span>
 <span class="n">days_since_last_available_data</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -5778,7 +5946,7 @@ Af8PU7yJJ7b7aEoAAAAASUVORK5CYII=
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABIEAAADtCAYAAAAoT2XzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XucXeO9+PHPN0lRIm51OUrFpRSHllZ/1VPMoUcSSqIu
 dekRpajLQYuioUJ7KjR1py5VRWlKVIVEQ7BV0qqqqijVtFGEiEMugiRyeX5/PHvMZMwkk5m995rZ
@@ -6055,15 +6223,14 @@ QJySJEntZhJIkiTpgxY0u52a/b2EfP3UC5hV7h0kSZLULVgOJkmSeqq5wOrl27GsDVtKKc0FXoiI
 AxqXRcT2FYxNkiSp4kwCSZKkHimlNBOYFBFPAxex9JhAS23axvKvAkdFxFMR8QywbxXClCRJqhin
 iJckSZIkSeoB7AkkSZIkSZLUA5gEkiRJkiRJ6gFMAkmSJEmSJPUAJoEkSZIkSZJ6AJNAkiRJkiRJ
 PYBJIEmSJEmSpB7AJJAkSZIkSVIPYBJIkiRJkiSpB/j/o5esOMZ8QvMAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It seems like besides the long periods of missing data, there are short periods (even of one day) of missing data.</p>
 <p>This analysis is aimed at proving (or failing to prove) that I visit Jerusalem in a satisfactory manner. It's like a trial: if there's no data to convict me then I'm free of charge. I'll regard the long missing data periods as such, meaning: they won't be counted as non-Jerusalem days (since most probably I <em>have</em> been in Jerusalem a copule of times in those periods). The short periods on the other hand are too short for me to make the same claim, so I'll treat tham as no-Jerusalem days.
@@ -6076,7 +6243,7 @@ I'll define short periods to be periods of less than a week:</p>
 <div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data_availability</span> <span class="o">=</span> <span class="n">days_since_last_available_data</span> <span class="o"><=</span> <span class="mi">7</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data_availability</span> <span class="o">=</span> <span class="n">days_since_last_available_data</span> <span class="o"><=</span> <span class="mi">7</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'data availability'</span><span class="p">)</span>
@@ -6095,7 +6262,7 @@ I'll define short periods to be periods of less than a week:</p>
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABH4AAADtCAYAAADJCLLnAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XvUZFV55/Hfr2kaogjeEhGwYSEKI4hgYkvG24smcnGW
 INEMsIRIZhSjxCwzifcMbyfO4GR5i+IoPQsVSQwX0aGJcllGXtQoBhRUBAIqaaFlQJAWQdCWfuaP
@@ -6275,15 +6442,14 @@ pQ4cFBE/l3SL7VfOP2f7wBG2DQAAYOQI/AAAgM6IiJ9K+hfb35H0t3r4PX4edugiz79a0n+xfa3t
 6yS9PEMzAQAARobt3AEAAAAAAApFxQ8AAAAAAEChCPwAAAAAAAAUisAPAAAAAABAoQj8AAAAAAAA
 FIrADwAAAAAAQKEI/AAAAAAAABSKwA8AAAAAAEChCPwAAAAAAAAU6v8D6DmA2Y5zRrkAAAAASUVO
 RK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><code>data_availability</code> is a less noisy version of <code>days_since_last_available_data</code>.</p>
 <p>In order to discard the long periods with no data, we'll first find the points in time where data starts to be available, i.e. - switch points from <code>False</code> to <code>True</code>:</p>
@@ -6295,7 +6461,7 @@ RK5CYII=
 <div class="prompt input_prompt">In [13]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data_availability_shifted</span> <span class="o">=</span> <span class="n">data_availability</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data_availability_shifted</span> <span class="o">=</span> <span class="n">data_availability</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">availability_on_switch</span> <span class="o">=</span> <span class="p">((</span><span class="n">data_availability_shifted</span> <span class="o">==</span> <span class="bp">False</span><span class="p">)</span> <span class="o">&</span> <span class="p">(</span><span class="n">data_availability</span> <span class="o">==</span> <span class="bp">True</span><span class="p">))</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span> <span class="o">==</span> <span class="bp">True</span><span class="p">]</span>
 <span class="n">availability_on_switch</span>
 </pre></div>
@@ -6320,8 +6486,7 @@ dtype: bool</pre>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now we can discard these missing data periods:</p>
 </div>
@@ -6332,7 +6497,7 @@ dtype: bool</pre>
 <div class="prompt input_prompt">In [14]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">days_since_last_visit</span> <span class="o">=</span> <span class="n">count_days_since_most_recent_marker</span><span class="p">((</span><span class="n">is_jerusalem_daily</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">availability_on_switch</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">days_since_last_visit</span> <span class="o">=</span> <span class="n">count_days_since_most_recent_marker</span><span class="p">((</span><span class="n">is_jerusalem_daily</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">availability_on_switch</span><span class="p">)</span>
 <span class="n">days_since_last_visit</span> <span class="o">*=</span> <span class="n">data_availability</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">days_since_last_visit</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))</span>
@@ -6360,7 +6525,7 @@ dtype: bool</pre>
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHsAAADtCAYAAAAvIXmjAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3Xe4FeW1P/DvAhELRWxYULEX7L1zVKzYYkEFrBFvNIm5
 N9f8ojfeeIgx0VxzNSbxGs+mHKoI0lQEpBwEFJVmRVS69F6Vun5/vDOe2XNmZs/Mnl3P9/M8Ph5m
@@ -6863,15 +7028,14 @@ wHoROdu+JiJHpVg2IiIiotQx2ENERERNzRjzJoDfi8hKAP+F8jl7yj4a8vo4ABeLyHIRWQ3gjAYU
 k4iIiCg1fPQ6EREREREREVETYWYPEREREREREVETYbCHiIiIiIiIiKiJMNhDRERERERERNREGOwh
 IiIiIiIiImoiDPYQERERERERETURBnuIiIiIiIiIiJoIgz1ERERERERERE2EwR4iIiIiIiIioiby
 /8yZrUyx66ibAAAAAElFTkSuQmCC
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I plotted an horizontal line symbolizing the <em>grace period</em> - the amount of time I don't visit and my parents are ok with it.</p>
 <p>Let's analyze my parents sentiment regarding my visits frequency (which is occasionally above the grace period line).</p>
@@ -6884,7 +7048,7 @@ IiIiIiIiImoiDPYQERERERERETURBnuIiIiIiIiIiJoIgz1ERERERERERE2EwR4iIiIiIiIioiby
 <div class="prompt input_prompt">In [15]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">anger_with_grudge</span> <span class="o">=</span> <span class="n">days_since_last_visit</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">anger_with_grudge</span> <span class="o">=</span> <span class="n">days_since_last_visit</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">anger_with_grudge</span> <span class="o">=</span> <span class="p">(</span><span class="n">anger_with_grudge</span> <span class="o">-</span> <span class="n">grace_period</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="k">lambda</span> <span class="n">anger_with_grudge</span><span class="p">:</span> <span class="n">anger_with_grudge</span> <span class="o">>=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">anger_with_grudge</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">line</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'anger over time'</span><span class="p">)</span>
@@ -6902,7 +7066,7 @@ IiIiIiIiImoiDPYQERERERERETURBnuIiIiIiIiIiJoIgz1ERERERERERE2EwR4iIiIiIiIioiby
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHsAAADtCAYAAAAvIXmjAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XeYnGXV+PHvgVBEWkCSUEMHQaQFpLMQujRRQXh5RQFF
 lJfii9IUoi8C6k8RsKKIKCIQEcwmEUKAlSIlCSUJEIKU0EMJoSWQdv/+uGfNJGyZ3Z22s9/PdeXK
@@ -7149,15 +7313,14 @@ QrWPJElSr+A0LkmS1OjeAVYo3I6OdlxcSukd4JmI+Fzrtoj4ZBljkyRJKjuTPZIkqaGllGYA90TE
 ROBHLNqzZ5Fd29l+NHBcRDwcEZOBgysQpiRJUtm49LokSZIkSVIDsbJHkiRJkiSpgZjskSRJkiRJ
 aiAmeyRJkiRJkhqIyR5JkiRJkqQGYrJHkiRJkiSpgZjskSRJkiRJaiAmeyRJkiRJkhqIyR5JkiRJ
 kqQG8v8Bee7NmUoq93oAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's do the same graph, but with colors and labels so I can present it to my parents:</p>
 </div>
@@ -7168,7 +7331,7 @@ kqQG8v8Bee7NmUoq93oAAAAASUVORK5CYII=
 <div class="prompt input_prompt">In [16]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">max_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">anger_with_grudge</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">max_y</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">anger_with_grudge</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
 <span class="n">z</span> <span class="o">=</span> <span class="p">[[</span><span class="n">z</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">anger_with_grudge</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_y</span><span class="p">)]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_y</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span> <span class="p">[</span><span class="s1">'mildly angry'</span><span class="p">,</span> <span class="s1">'angry'</span><span class="p">,</span> <span class="s1">'furious'</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">anger_with_grudge</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_y</span><span class="p">),</span> <span class="n">z</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">'Reds'</span><span class="p">)</span>
@@ -7188,7 +7351,7 @@ kqQG8v8Bee7NmUoq93oAAAAASUVORK5CYII=
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABKwAAADSCAYAAABnwFjrAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xm8ZHdZ5/HvU3fp291JurOHEBIBwYggJARMBEyLOkYx
 bOIoKCCgw8w4gOIMMMKYBBnFYRQRBpdhFcSoMIQkQkLSpLOSvbvT6S2d7vS+993r1n6e+eN36nb1
@@ -7436,20 +7599,19 @@ JJ2f9L5JqD9SP5ZJ+j2F72brFYJoP5X0fmt139TclpoxreY1cvdMr5FuuaRoTOtTmLq7SeGz5uqk
 901aLhbvICBV4to3f+dhHi8AtC3GMwCdgvEMQCdhTEu/bpwSiJQzs/cqFDj/aNJtAYClYDwD0CkY
 zwB0Esa09kCGFQAAAAAAAFKFDCsAAAAAAACkCgErAAAAAAAApAoBKwAAAAAAAKQKASsAAAAAAACk
 CgErAAAAAAAApMr/B/x5XhTMUdz3AAAAAElFTkSuQmCC
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It seems like most of the time I'm kind of ok, and don't get my parents too upset with my visits frequency...</p>
 <p>But there's that huge red pick! It occurred around the birth of my first child, so I think it's reasonable I didn't drive all the way to Jerusalem to pay a visit... And the joy of being grandparents might be greater than the grudge, so I'm ok there.</p>
 <p>One more thing I didn't consider is the frequency of visits my parents conducted to Tel-Aviv. It's reasonable that I don't come to Jerusalem the day after they came visit me in Tel-Aviv. But I don't think my parents' phones have GPS turned on, so I can't extract their data...</p>
-<hr/>
+<hr>
 <p>To conclude:</p>
 <p>Mother, father - if you're reading this, I hope you don't hold a grudge against me (or just didn't understand this analysis).</p>
 </div>

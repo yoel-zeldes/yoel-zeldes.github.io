@@ -119,9 +119,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -200,12 +315,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -218,27 +341,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -434,7 +569,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -444,11 +581,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -696,6 +846,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -734,7 +887,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -856,6 +1009,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -872,16 +1029,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -897,6 +1062,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -947,8 +1117,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1087,8 +1264,7 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -1108,7 +1284,7 @@ While wandering around at <a href="https://www.kaggle.com/">kaggle.com</a>, I en
 <div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -1125,8 +1301,7 @@ While wandering around at <a href="https://www.kaggle.com/">kaggle.com</a>, I en
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>For the purpose of our research question, respondents who didn't specify their age have no value for us.
 On the contrary, respondents who did specify their age but didn't specify the job role do give us general information about the age of new coders.</p>
@@ -1138,7 +1313,7 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 <div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">'JobRoleInterest'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'JobRoleInterest'</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">'unspecified'</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">job</span><span class="p">:</span> <span class="n">job</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -1146,8 +1321,7 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's inspect the general ages of the respondents:</p>
 </div>
@@ -1158,7 +1332,7 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">'ages (N=</span><span class="si">%d</span><span class="s1">, mean=</span><span class="si">%.2f</span><span class="s1">, median=</span><span class="si">%.2f</span><span class="s1">)'</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()),</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">'ages (N=</span><span class="si">%d</span><span class="s1">, mean=</span><span class="si">%.2f</span><span class="s1">, median=</span><span class="si">%.2f</span><span class="s1">)'</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()),</span>
                      <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1174,7 +1348,7 @@ On the contrary, respondents who did specify their age but didn't specify the jo
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYkAAAEKCAYAAADn+anLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X2cVnWd//HXMIKBczE1dkGlJkH60dq00HQxE2zzhq0k
 q612s81uYDNSq9VK3dx2XbJS2STLVEC0X20WW2q5eJNsApVleLOx0kcU0S1NR2YYZgITZub3x/dc
@@ -1351,20 +1525,19 @@ pEuBxxhknA01uqnMecB1ZjYaWEs4APV2AfBi4AtmdjFhhMa5wNdzFucPgevN7B7C/4FzCNXmhTmL
 s1we/+aLCMdyJeGK90zCVXuujqW732ZmbzazXxOaRc4CNpCzOCMGxOf0zuPf/WvA4ugKfTTwecJV
 et6O5zrgEjO7iND3+FFC7SH18dS0HCIikqiRm5tERCRjShIiIpJISUJERBIpSYiISCIlCRERSaQk
 ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can see the data looks almost normal. The mean is greater than the median, which according to <a href="https://en.wikipedia.org/wiki/Nonparametric_skew">nonparametric skewness</a> definition implies the distribution has right skewness. It means there are more older people learning to code than younger people (compared to the mean age of about 29).</p>
 <p>An interesting thing to note is that my wife is also learning to code as I'm writing this post; and she's the age of 29, as the mean age. I guess it'll help me remember that...</p>
-<hr/>
-<h1 id="Drilling-down">Drilling down<a class="anchor-link" href="#Drilling-down">Â¶</a></h1><p>Let's explore the average age within the groups of respondents, where each group is defined by the job role of interest.</p>
+<hr>
+<h1 id="Drilling-down">Drilling down<a class="anchor-link" href="#Drilling-down">¶</a></h1><p>Let's explore the average age within the groups of respondents, where each group is defined by the job role of interest.</p>
 </div>
 </div>
 </div>
@@ -1373,7 +1546,7 @@ ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
 <div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">average_ages</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">average_ages</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([{</span>
             <span class="s1">'job'</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span>
             <span class="s1">'N'</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rows</span><span class="p">]),</span>
             <span class="s1">'average age'</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rows</span><span class="p">][</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1393,7 +1566,7 @@ ISIiiZQkREQkkZKEiIgk+v855P0osiwPGgAAAABJRU5ErkJggg==
 </div>
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAf8AAAEMCAYAAADK978JAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzs3XucTtX+wPHPjMFgBpFrbt18k6RSUiR0Vc6pTvo5qSSE
 pITKJaJCFCIll0QUup1uTiKXEtHtSFK+U7kLuaVhDOby+2Ot0TSeuTEzz/OY7/v1Oq95nv2svfZ3
@@ -1743,15 +1916,14 @@ gEG232nlegcAbWz/MQ/tPwr0KH3zYAnL7AQcbvvXeftcYJLtCxdxzpeAm2xvu6T1hmVT9PxDCMuy
 I4FjC6j3aeC4PAHvPuDEz5L4AfIFzKqS/pFHRTow/6z+ao4jtUEI84mefwghhNBgoucfQgghNJhI
 /iGEEEKDieQfQgghNJhI/iGEEEKDieQfQgghNJhI/iGEEEKD+Tc+iDbQeqMcuQAAAABJRU5ErkJg
 gg==
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Each group has a bar with a length equal to the group's mean age. The bigger the group is, the lighter the color of the bar gets.</p>
 <p>I chose to focus on the Quality Assurance engineers group. They have a mean age bigger than the rest of the groups, of about 32 years. It's interesting to see if this effect is due to chance, or maybe the desire to be a QA engineer is more likely to be associated with older people on average.</p>
@@ -1762,17 +1934,17 @@ gg==
 <li>They are different.</li>
 </ol>
 <p>The sample supports the second option, but it could be due to chance (especially because of the small QA sample size). Next, we'll use statistical tests to quantify how likely it is to observe such a difference due to chance.</p>
-<hr/>
-<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">Â¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option that can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
-<hr/>
-<h1 id="Z-Test">Z-Test<a class="anchor-link" href="#Z-Test">Â¶</a></h1><p>Assuming the ages are normally distributed, we can use the Z-Test (note that even if they're not normally distributed, we can harness the central limit theorem and use the fact that the mean age is approximately normally distributed).</p>
+<hr>
+<h1 id="Statistical-framework">Statistical framework<a class="anchor-link" href="#Statistical-framework">¶</a></h1><p>For the uninitiated reader, many statistical tests work as follows: one first states a null hypothesis, which is the default option that can describe the world. In our case, the null hypothesis is that there's no difference between QA engineers mean age and other new coders mean age. Then, an alternative hypothesis is stated. In our case the alternative is that a difference does exist. Afterwards, a test statistic (a function of the data) is calculated. Assuming the null hypothesis is true, the distribution of the test statistic is known, and the probability to observe the value at hand of the test statistic can be calculated. This probability is called p-value. If the p-value is smaller than a significance level we decide before running the experiment (e.g. 0.01), the null hypothesis is rejected in favor of the alternative hypothesis.</p>
+<hr>
+<h1 id="Z-Test">Z-Test<a class="anchor-link" href="#Z-Test">¶</a></h1><p>Assuming the ages are normally distributed, we can use the Z-Test (note that even if they're not normally distributed, we can harness the central limit theorem and use the fact that the mean age is approximately normally distributed).</p>
 <p>If we knew the mean age's standard deviation, we could normalize the mean age in the following way:</p>
 <p>$Z = \frac{\bar{X} - \mu}{\sigma}$</p>
 <p>$\bar{X}$ is the observed mean age. $\mu$ is the expected mean age given the null hypothesis is true. In our case, we choose the general new coders sample mean age of 29.18 to be $\mu$. Note there are better ways of estimating $\mu$ (and more suitable statistical tests, e.g. - two-sample T-Test, which I choose not to describe in this post to keep it simple), but for the sake of simplicity I'll stick to 29.18; since I have a lot of data I think it's a good enough estimator.</p>
 <p>$Z$ is a normalized normal random variable: $Z \sim Norm(0, 1)$. As such, given the observed value of the $\bar{X}$, we can calculate its probability, and see if it's below a reasonable threshold. If it does - we'll reject the null hypothesis.</p>
 <p>Z-Test assumes we know $\sigma$. Well, we don't. Despair not, T-Test for the rescue!</p>
-<hr/>
-<h1 id="T-Test">T-Test<a class="anchor-link" href="#T-Test">Â¶</a></h1><p>T-Test is the same as Z-test, with the difference of not knowing $\sigma$. It works as follows:</p>
+<hr>
+<h1 id="T-Test">T-Test<a class="anchor-link" href="#T-Test">¶</a></h1><p>T-Test is the same as Z-test, with the difference of not knowing $\sigma$. It works as follows:</p>
 <p>$T = \frac{\bar{X} - \mu}{\left.s \, \middle/ \sqrt{N} \right.}$</p>
 <p>$s$ is the sample standard deviation of the age. $\left.s \, \middle/ \sqrt{N} \right.$ is the sample standard deviation of the mean age (where $N$ is the number of samples). You can read how it's derived <a href="https://en.wikipedia.org/wiki/Variance#Sum_of_uncorrelated_variables_.28Bienaym.C3.A9_formula.29">here</a>.</p>
 <p>You can see this statistic is very similar to the one calculated at the Z-Test... The T statistic is distributed according to the <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">T distribution</a>. The T distribution arises whenever the variance of a normally distributed random variable is unknown.</p>
@@ -1787,7 +1959,7 @@ gg==
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">qa</span> <span class="o">=</span> <span class="n">average_ages</span><span class="p">[</span><span class="n">average_ages</span><span class="p">[</span><span class="s1">'job'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Quality Assurance Engineer'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">qa</span> <span class="o">=</span> <span class="n">average_ages</span><span class="p">[</span><span class="n">average_ages</span><span class="p">[</span><span class="s1">'job'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Quality Assurance Engineer'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">t_score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">qa</span><span class="p">[</span><span class="s1">'average age'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">qa</span><span class="p">[</span><span class="s1">'N'</span><span class="p">]))</span>
 <span class="n">degrees_of_freedom</span> <span class="o">=</span> <span class="n">qa</span><span class="p">[</span><span class="s1">'N'</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="n">p_value</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">degrees_of_freedom</span><span class="p">)</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">t_score</span><span class="p">)</span>
@@ -1809,8 +1981,7 @@ gg==
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This number is quite small. It means that there's less than tenth percent chance that the QA engineers mean age deviation from the total population's mean age is due to chance. If we would have chosen a significance level of 0.01 (which is a common choice), we'd reject the null hypothesis.</p>
 <p>To complicate the things a little bit, you should note that what I just did is called one sided test: we calculated the probability of observing a T score bigger than or equal to the observed value. We actually care for difference in either direction: if the QA engineers mean age was significantly smaller than the expected value (the null hypothesis) it would be interesting as well. In T test, testing for a significant difference in either direction is done by multiplying the calculated p-value by two (due to the distribution's symmetry), which gives us</p>
@@ -1822,7 +1993,7 @@ gg==
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s2">"The two sided test's p-value is"</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">*</span> <span class="mi">2</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s2">"The two sided test's p-value is"</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">*</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -1840,12 +2011,11 @@ gg==
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Still significant...</p>
-<hr/>
-<h1 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">Â¶</a></h1><p>Statisticians like statistical tests. They are powerful, but they have two big disadvantages:</p>
+<hr>
+<h1 id="Simulation">Simulation<a class="anchor-link" href="#Simulation">¶</a></h1><p>Statisticians like statistical tests. They are powerful, but they have two big disadvantages:</p>
 <ol>
 <li>They impose assumptions on the data. In our case, the sample mean age isn't really normal. It's approximately normal, so the T test result is an approximation (although quite a good one).</li>
 <li>Sometimes they make you test something that is similar but not exactly what you wish for. In our case it's not true: we were interested in the mean difference, and that's exactly what the T test provides. If we wanted to test something more complicated with no classical statistical test for the use case, we'd be in trouble.</li>
@@ -1861,7 +2031,7 @@ gg==
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">observed_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">qa</span><span class="p">[</span><span class="s1">'average age'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">observed_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">qa</span><span class="p">[</span><span class="s1">'average age'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 <span class="n">num_of_simulations</span> <span class="o">=</span> <span class="mi">100000</span>
 <span class="n">num_of_extreme_values</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">qa</span><span class="p">[</span><span class="s1">'N'</span><span class="p">])[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Age'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">>=</span> <span class="n">observed_diff</span>
                             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_of_simulations</span><span class="p">))</span>
@@ -1884,16 +2054,15 @@ gg==
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We got a similar result, but a little bit different. Note that the more simulations we run, the more exact the result will be (it'll tend to the true p-value).</p>
 <p>Why does it differ from the T test approach? Because the T test assumes the data is normal, while it's only approximately normal.</p>
 <p>In the old days where computers were slow and computing power was expensive, it didn't make a lot of sense to run simulations. Nowadays however, it does make sense (in some situations, anyway). It's a nice approach which should be kept in the back of our head in case of need. <a href="http://allendowney.blogspot.co.il/2011/05/there-is-only-one-test.html">Here</a> is a great post which further discusses the simulations approach.</p>
-<hr/>
-<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">Â¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that one group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
-<hr/>
-<h1 id="Implications">Implications<a class="anchor-link" href="#Implications">Â¶</a></h1><p>Are there any implications to this analysis? First, we should distinguish statistical significance from practical significance. It might be the case that there's a statistical significance, meaning that the observed data isn't just a result of chance, a difference truly exists. Practical significance means that the difference we observed has practical implications: one can act accordingly. Practical significance depends on the problem at hand. In our case I think there's not much to do with the observed mean age difference... If general new coders were 20 years old on average while QA were 40, we could have suggested, for example, that schools for new coders should alter the timetable for the QA track because the QA students probably have kids waiting for them back home.</p>
+<hr>
+<h1 id="Multiple-testing-problem">Multiple testing problem<a class="anchor-link" href="#Multiple-testing-problem">¶</a></h1><p>Some of you may have noticed that my analysis is problematic: it incurs the <a href="http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf">multiple testing problem</a>. Only after examining the data did I notice that the QA engineers mean age is higher than other groups' mean age. Then I ran a statistical test to see if it could be due to chance. The problem is that because we have multiple groups, the probability that one group will have a significant difference in mean age gets bigger the more groups we examine. There are plenty of methods to account for this problem. One option is to test an hypothesis on a dataset other than the dataset which suggested that hypothesis. Other options involve adjusting the significance level accordingly.</p>
+<hr>
+<h1 id="Implications">Implications<a class="anchor-link" href="#Implications">¶</a></h1><p>Are there any implications to this analysis? First, we should distinguish statistical significance from practical significance. It might be the case that there's a statistical significance, meaning that the observed data isn't just a result of chance, a difference truly exists. Practical significance means that the difference we observed has practical implications: one can act accordingly. Practical significance depends on the problem at hand. In our case I think there's not much to do with the observed mean age difference... If general new coders were 20 years old on average while QA were 40, we could have suggested, for example, that schools for new coders should alter the timetable for the QA track because the QA students probably have kids waiting for them back home.</p>
 </div>
 </div>
 </div>

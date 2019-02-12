@@ -118,9 +118,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -199,12 +314,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -217,27 +340,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -433,7 +568,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -443,11 +580,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -695,6 +845,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -733,7 +886,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -855,6 +1008,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -871,16 +1028,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -896,6 +1061,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -946,8 +1116,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1086,21 +1263,19 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Gated-Multimodal-Units-for-Information-Fusion">Gated Multimodal Units for Information Fusion<a class="anchor-link" href="#Gated-Multimodal-Units-for-Information-Fusion">Â¶</a></h1><p>Deep learning has proven its superiority in many domains, in a variety of tasks such as image classification and text generation. Dealing with tasks that involve inputs from multiple modalities is an interesting research area.</p>
+<h1 id="Gated-Multimodal-Units-for-Information-Fusion">Gated Multimodal Units for Information Fusion<a class="anchor-link" href="#Gated-Multimodal-Units-for-Information-Fusion">¶</a></h1><p>Deep learning has proven its superiority in many domains, in a variety of tasks such as image classification and text generation. Dealing with tasks that involve inputs from multiple modalities is an interesting research area.</p>
 <p>The Gated Multimodal Unit (GMU) is a new building block proposed by a <a href="https://arxiv.org/abs/1702.01992">recent paper</a>, which is presented in ICLR 2017 as a workshop. The goal of this building block is to fuse information from multiple different modalities in a smart way.</p>
 <p>In this post I'll describe the GMU, and illustrate how it works on a toy data set.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-architecture">The architecture<a class="anchor-link" href="#The-architecture">Â¶</a></h1><p>Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modalities for instance), the GMU block performs a form of self attention:
-<img alt="Drawing" src="images/gmu/gmu.png" style="width: 250px;"/></p>
+<h1 id="The-architecture">The architecture<a class="anchor-link" href="#The-architecture">¶</a></h1><p>Given two representations of different modalities, $x_v$ and $x_t$ (visual and textual modalities for instance), the GMU block performs a form of self attention:
+<img alt="Drawing" src="images/gmu/gmu.png" style="width: 250px;"></p>
 <p>The equations describing the GMU are relatively simple:</p>
 <p>(1)   $h_v = tanh(W_v \cdot x_v)$</p>
 <p>(2)   $h_t = tanh(W_t \cdot x_t)$</p>
@@ -1112,10 +1287,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Synthetic-data">Synthetic data<a class="anchor-link" href="#Synthetic-data">Â¶</a></h1><p>In the paper they describe a nice synthetic data set which demonstrates how the GMU works.</p>
+<h1 id="Synthetic-data">Synthetic data<a class="anchor-link" href="#Synthetic-data">¶</a></h1><p>In the paper they describe a nice synthetic data set which demonstrates how the GMU works.</p>
 <p>Here we'll implement the same data set, and find out for ourselves whether or not the GMU actually works (spoiler alert: it does).</p>
 <p>First, let's do the imports:</p>
 </div>
@@ -1126,7 +1300,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
@@ -1140,10 +1314,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Generate-the-data">Generate the data<a class="anchor-link" href="#Generate-the-data">Â¶</a></h1><p><img alt="Drawing" src="images/gmu/synthetic data.png" style="width: 400px;"/></p>
+<h1 id="Generate-the-data">Generate the data<a class="anchor-link" href="#Generate-the-data">¶</a></h1><p><img alt="Drawing" src="images/gmu/synthetic data.png" style="width: 400px;"></p>
 <p>Don't let the graph scare you - later on you'll find a visualization of the data generated by this graph.</p>
 <p>Basically what the graph says is that the target class $C$ depicts the values of the modalities $y_v$ and $y_t$ - with some randomness of course.</p>
 <p>In the next step the random variable $M$ decides which of the inputs $y_v$, $y_t$ to ignore, and instead to use a source of noise $\hat{y}_v$, $\hat{y}_t$.</p>
@@ -1157,7 +1330,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">400</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">400</span>
 <span class="n">p_c</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">p_m</span> <span class="o">=</span> <span class="mf">0.5</span>
 <span class="n">mu_v_0</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1185,7 +1358,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># if we don't normalize the inputs the model will have hard time training</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># if we don't normalize the inputs the model will have hard time training</span>
 <span class="n">x_v</span> <span class="o">=</span> <span class="n">x_v</span> <span class="o">-</span> <span class="n">x_v</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="n">x_t</span> <span class="o">=</span> <span class="n">x_t</span> <span class="o">-</span> <span class="n">x_t</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </pre></div>
@@ -1198,7 +1371,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_v</span><span class="p">,</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'blue'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">))</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_v</span><span class="p">,</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'blue'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'visual modality'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'textual modality'</span><span class="p">);</span>
 </pre></div>
@@ -1209,7 +1382,7 @@ h6:hover .anchor-link {
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYQAAAEKCAYAAAASByJ7AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnXeYFFXWxt8zsbsnkBdQRIIoIggqKCrmhAFzjmDAhGkN
 q+6uYTHgupjToq55zeiCoqCIkSRBBUSSghIUkCBhmHi+P97pr1NVd/VMz3TPzPk9Tz0zXfFWdfU9
@@ -1586,17 +1759,16 @@ DefWmA3gCDjJ9+v5eXOFOUN8lrteotxTXjvwcbB+A6yQwsHsR/zJyConV5CtAa1CR6iieWBRUofU
 KWojIjqS1kkbdQu4KoxfJW3U9/lao0u5Bv0ycAgI2H9vopQPs4+BR+CiMG0NaEp6AA6AsZLH7ABb
 ktrAZES0gV1gJCIuu30H6z+udmrWQ/L/CucRsf3fa7HqcSCY9QhJZ8AzMB0RL2Xjzb5zIJiZGeBD
 ZTMzyxwIZmYGOBDMzCxzIJiZGeBAMDOzzIFgZmYAvAHYqz3ohEgFBAAAAABJRU5ErkJggg==
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Create-the-model">Create the model<a class="anchor-link" href="#Create-the-model">Â¶</a></h1><p>I'll implement a basic version of the GMU - just to make it easier to comprehend.</p>
+<h1 id="Create-the-model">Create the model<a class="anchor-link" href="#Create-the-model">¶</a></h1><p>I'll implement a basic version of the GMU - just to make it easier to comprehend.</p>
 <p>Generalizing the code to handle more than two modalities is straightforward.</p>
 </div>
 </div>
@@ -1606,7 +1778,7 @@ ZTMzyxwIZmYGOBDMzCxzIJiZGeBAMDOzzIFgZmYAvAHYqz3ohEgFBAAAAABJRU5ErkJggg==
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">NUM_CLASSES</span> <span class="o">=</span> <span class="mi">2</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">NUM_CLASSES</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">HIDDEN_STATE_DIM</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># using 1 as dimensionality makes it easy to plot z, as we'll do later on</span>
 
 <span class="n">visual</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="bp">None</span><span class="p">])</span>
@@ -1649,10 +1821,9 @@ INFO:tensorflow:losses.dtype=<dtype: 'float32'>.
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Train-the-model">Train the model<a class="anchor-link" href="#Train-the-model">Â¶</a></h1>
+<h1 id="Train-the-model">Train the model<a class="anchor-link" href="#Train-the-model">¶</a></h1>
 </div>
 </div>
 </div>
@@ -1661,7 +1832,7 @@ INFO:tensorflow:losses.dtype=<dtype: 'float32'>.
 <div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">loss</span><span class="p">):</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
@@ -1684,7 +1855,7 @@ INFO:tensorflow:losses.dtype=<dtype: 'float32'>.
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXcAAAEICAYAAACktLTqAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xt8XHWd//HXZ2Zyb5o0TXpLadP0Rm/QSiiVYkUuSwGh
 6O4KuOrq+rB4gRVk/f1YRVHWdUV/i6DLiuBtRQUBBQoiyG2FZSmQAi29N73Qpte0Tdtcmsskn98f
@@ -1837,17 +2008,16 @@ bzj6se3RfEu3cE9lVqi0l+xr/imwwt1v77Kp64xXfw881te19RZ3/2d3H+nuFSSO6/Pu/nfACyRm
 1wv7Ox2oTh7vR4FBmXCsgW8CK4GlwH1ATtiON3A/iWsK7ST+Svv00Y4tYCTuBlwLvE3iTqIT/mwN
 PyAiEkLp1i0jIiIpULiLiISQwl1EJIQU7iIiIaRwFxEJIYW7iEgIKdxFRELo/wPVvkXtFTvYsQAA
 AABJRU5ErkJggg==
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Inspect-results">Inspect results<a class="anchor-link" href="#Inspect-results">Â¶</a></h1><p>The loss is looking good.</p>
+<h1 id="Inspect-results">Inspect results<a class="anchor-link" href="#Inspect-results">¶</a></h1><p>The loss is looking good.</p>
 <p>Let's look what $z$ and the predictions look like. The following visualizations appear in the paper as well.</p>
 </div>
 </div>
@@ -1857,7 +2027,7 @@ AABJRU5ErkJggg==
 <div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># create a mesh of points which will be used for inference</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># create a mesh of points which will be used for inference</span>
 <span class="n">resolution</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_v</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">x_v</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">resolution</span><span class="p">)</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x_t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">x_t</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">resolution</span><span class="p">)</span>
@@ -1876,7 +2046,7 @@ AABJRU5ErkJggg==
 <div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_evaluations</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_evaluations</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(((</span><span class="n">x_v</span> <span class="o">-</span> <span class="n">x_v</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">*</span> <span class="n">resolution</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_v</span> <span class="o">-</span> <span class="n">x_v</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
                 <span class="p">((</span><span class="n">x_t</span> <span class="o">-</span> <span class="n">x_t</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">*</span> <span class="n">resolution</span> <span class="o">/</span> <span class="p">(</span><span class="n">x_t</span> <span class="o">-</span> <span class="n">x_t</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
                 <span class="n">c</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">'blue'</span><span class="p">,</span> <span class="s1">'red'</span><span class="p">))</span>
@@ -1910,7 +2080,7 @@ AABJRU5ErkJggg==
 <div class="output">
 <div class="output_area">
 <div class="prompt"></div>
-<div class="output_png output_subarea ">
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABG8AAAG8CAYAAABgwYjXAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsvXeYHdWZ5/95b+isnBPKCQGKKIBAwmDCEIwxxgQRnMFh
 mBl7Znf2N7vj8fjnCTvenZn12gZjkwwYjA3YFiDAIIEkJFBEKOfYklood7e6bzj7x6nqrltdN3T3
@@ -4004,25 +4174,23 @@ A+CIUU4zH7hZ0mbgBNubgTuBA22v3NHvEBERETEg+ddW80n+FTGhyHa32xARfUbSjcAy27d3uy0R
 ERERE0Hyr4j+lsGbiNipJD0GvAacYvs3o9WPiIiIiB2T/Cui/2XwJiIiIiIiIiKih2XB4oiIiIiI
 iIiIHpbBm4iIiIiIiIiIHpbBm4iIiIiIiIiIHpbBm4iIiIiIiIiIHpbBm4iIiIiIiIiIHvb/r4Vl
 P8KHWUkAAAAASUVORK5CYII=
-"/>
+">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We can see $z$ behaves exactly as we want (left figure). What's nice about it is that the class of points that reside far from the boundary line are predicted using practically only one of the modalities. It means the model learned when to ignore the modality that contains pure unpredictive noise.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Why-not-to-use-simple-FF-(Feed Forward)?">Why not to use simple FF (Feed Forward)?<a class="anchor-link" href="#Why-not-to-use-simple-FF-(Feed Forward)?">Â¶</a></h1><p>If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.</p>
+<h1 id="Why-not-to-use-simple-FF-(Feed Forward)?">Why not to use simple FF (Feed Forward)?<a class="anchor-link" href="#Why-not-to-use-simple-FF-(Feed Forward)?">¶</a></h1><p>If we ignore the data generating process and just look at the data points, clearly there are 4 distinct clusters.</p>
 <p>These clusters aren't linearly separable. While the GMU gives capacity to the model in order to explain this non-linear behaviour, one could just throw another layer to the mixture instead, thus solving the problem with plain feed-forward (FF) network.</p>
 <blockquote><p>The universal approximation theorem states that a feed-forward network with a single hidden layer containing a finite number of neurons, can approximate continuous functions... (<a href="https://en.wikipedia.org/wiki/Universal_approximation_theorem">Wikipedia</a>)</p>
 </blockquote>
@@ -4031,10 +4199,9 @@ P8KHWUkAAAAASUVORK5CYII=
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">Â¶</a></h1><p>For real world problems involving multiple modalities, the authors claim the GMU achieves superior performance. They show cased their approach using the task of identifying a movie genre based on its plot and its poster.</p>
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h1><p>For real world problems involving multiple modalities, the authors claim the GMU achieves superior performance. They show cased their approach using the task of identifying a movie genre based on its plot and its poster.</p>
 <p>GMU is easy to implement, and it may be worthwhile to keep it in your tool belt in case you need to train a model to use multiple modalities as input. To this end, you can create a sub network for each modality. The sub networks need not be the same - you can for instance use a CNN for a visual modality and LSTM for a textual one. What matters is that each sub network outputs a dense representation of its modality. Then, feed these representations into a GMU block in order to fuse the information into one representation. The fused representation will be fed into another sub network whose output will be the final prediction.</p>
 </div>
 </div>
