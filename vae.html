@@ -120,9 +120,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -201,12 +316,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -219,27 +342,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -435,7 +570,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -445,11 +582,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -697,6 +847,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -735,7 +888,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -857,6 +1010,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -873,16 +1030,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -898,6 +1063,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -948,8 +1118,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1088,41 +1265,37 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Ever wondered how the Variational Autoencoder (VAE) model works? Do you want to know how VAE is able to generate new examples similar to the dataset it was trained on?</p>
 <p>After reading this post, you'll be equipped with the theoretical understanding of the inner workings of VAE, as well as being able to implement one yourself.</p>
 <p>In a future post I'll provide you with a working code of a VAE trained on a dataset of handwritten digits images, and we’ll have some fun generating new digits!</p>
-<hr/>
+<hr>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generative-models">Generative models<a class="anchor-link" href="#Generative-models">Â¶</a></h2><p>VAE is a generative model - it estimates the Probability Density Function (PDF) of the training data. If such a model is trained on natural looking images, it should assign a high probability value to an image of a lion. An image of random gibberish on the other hand should be assigned a low probability value.</p>
+<h2 id="Generative-models">Generative models<a class="anchor-link" href="#Generative-models">¶</a></h2><p>VAE is a generative model - it estimates the Probability Density Function (PDF) of the training data. If such a model is trained on natural looking images, it should assign a high probability value to an image of a lion. An image of random gibberish on the other hand should be assigned a low probability value.</p>
 <p>The VAE model can also sample examples from the learned PDF, which is the coolest part, since it’ll be able to generate new examples that look similar to the original dataset!</p>
 <p>I'll explain the VAE using the <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST</a> handwritten digits dataset. The input to the model is an image in $\mathbb{R}^{28×28}$. The model should estimate a high probability value if the input looks like a digit.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-challenge-of-modeling-images">The challenge of modeling images<a class="anchor-link" href="#The-challenge-of-modeling-images">Â¶</a></h2><p>The interactions between pixels pose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.</p>
+<h2 id="The-challenge-of-modeling-images">The challenge of modeling images<a class="anchor-link" href="#The-challenge-of-modeling-images">¶</a></h2><p>The interactions between pixels pose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.</p>
 <p>In digit images there are clear dependencies between pixels. If you look at the left half of an image and see the start of a 4, you’d be very surprised to see the right half is the end of a 0. But why?...</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Latent-space">Latent space<a class="anchor-link" href="#Latent-space">Â¶</a></h2><p>You know every image of a digit should contain, well, a single digit. An input in $\mathbb{R}^{28×28}$ doesn’t explicitly contain that information. But it must reside somewhere... That <em>somewhere</em> is the latent space.</p>
-<p><img alt="Photo by Samuel Zeller on Unsplash" src="images/vae/folders.jpg"/></p>
+<h2 id="Latent-space">Latent space<a class="anchor-link" href="#Latent-space">¶</a></h2><p>You know every image of a digit should contain, well, a single digit. An input in $\mathbb{R}^{28×28}$ doesn’t explicitly contain that information. But it must reside somewhere... That <em>somewhere</em> is the latent space.</p>
+<p><img alt="Photo by Samuel Zeller on Unsplash" src="images/vae/folders.jpg"></p>
 <p>You can think of the latent space as $\mathbb{R}^{k}$ where every vector contains $k$ pieces of essential information needed to draw an image. Let’s say the first dimension contains the number represented by the digit. The second dimension can be the width. The third - the angle. And so on.</p>
 <p>We can think of the process that generated the images as a two steps process. First the person decides - consciously or not - all the attributes of the digit he’s going to draw. Next, these decisions transform into brushstrokes.</p>
 <p>VAE tries to model this process: given an image $x$, we want to find at least one latent vector which is able to describe it; one vector that contains the instructions to generate $x$. Formulating it using the <a href="https://en.wikipedia.org/wiki/Law_of_total_probability">law of total probability</a>, we get $P(x) = \int P(x|z)P(z)dz$.</p>
@@ -1139,10 +1312,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-wonders-of-latent-space">The wonders of latent space<a class="anchor-link" href="#The-wonders-of-latent-space">Â¶</a></h1><p>There are two big problems with the latent space approach:</p>
+<h1 id="The-wonders-of-latent-space">The wonders of latent space<a class="anchor-link" href="#The-wonders-of-latent-space">¶</a></h1><p>There are two big problems with the latent space approach:</p>
 <ol>
 <li>What information does each dimension hold? Some dimensions might relate to abstract pieces of information, e.g. style. Even if it was easy to interpret all dimensions, we wouldn’t want to assign labels to the dataset. This approach wouldn't scale to new datasets.</li>
 <li>The latent space might be entangled, i.e. the dimensions might be correlated. A digit being drawn really fast, for instance, might result in both angled and thinner brushstrokes. Specifying these dependencies is hard.</li>
@@ -1151,10 +1323,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Deep-learning-to-the-rescue">Deep learning to the rescue<a class="anchor-link" href="#Deep-learning-to-the-rescue">Â¶</a></h1><p>It turns out every distribution can be generated by applying a sufficiently complicated function over a standard multivariate Gaussian.</p>
+<h1 id="Deep-learning-to-the-rescue">Deep learning to the rescue<a class="anchor-link" href="#Deep-learning-to-the-rescue">¶</a></h1><p>It turns out every distribution can be generated by applying a sufficiently complicated function over a standard multivariate Gaussian.</p>
 <p>Hence, we'll choose $P(z)$ to be a standard multivariate Gaussian. $f$, being modeled by a neural network, can thus be broken to two phases:</p>
 <ol>
 <li>The first layers will map the Gaussian to the true distribution over the latent space. We won't be able to interpret the dimensions, but it doesn't really matter.</li>
@@ -1164,10 +1335,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="So-how-do-we-train-this-beast?">So how do we train this beast?<a class="anchor-link" href="#So-how-do-we-train-this-beast?">Â¶</a></h1><p>The formula for $P(x)$ is intractable, so we’ll approximate it using Monte Carlo method:</p>
+<h1 id="So-how-do-we-train-this-beast?">So how do we train this beast?<a class="anchor-link" href="#So-how-do-we-train-this-beast?">¶</a></h1><p>The formula for $P(x)$ is intractable, so we’ll approximate it using Monte Carlo method:</p>
 <ol>
 <li>Sample $\{z_i\}_{i=1}^n$ from the prior $P(z)$.</li>
 <li>Approximate using $ P(x) \approx \frac{1}{n}\sum_{i=1}^n P(x|z_i)$.</li>
@@ -1179,10 +1349,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Let’s-take-a-shortcut!">Let’s take a shortcut!<a class="anchor-link" href="#Let’s-take-a-shortcut!">Â¶</a></h1><p><img alt="Photo by Stefan Steinbauer on Unsplash" src="images/vae/shortcut.jpg"/></p>
+<h1 id="Let’s-take-a-shortcut!">Let’s take a shortcut!<a class="anchor-link" href="#Let’s-take-a-shortcut!">¶</a></h1><p><img alt="Photo by Stefan Steinbauer on Unsplash" src="images/vae/shortcut.jpg"></p>
 <p>Most sampled $z$’s won’t contribute anything to $P(x)$ - they’ll be too off. If only we could know in advance where to sample from...</p>
 <p>We can introduce $Q(z|x)$. $Q$ will be trained to give high probability values to $z$’s that are likely to have generated $x$.
 Now we can calculate the Monte Carlo estimation using much fewer samples from $Q$.</p>
@@ -1191,10 +1360,9 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Variational-Inference">Variational Inference<a class="anchor-link" href="#Variational-Inference">Â¶</a></h1><p>Variational Inference is a topic for a post of its own, so I won’t elaborate here. All I’ll say is that the two do relate via this equation:</p>
+<h1 id="Variational-Inference">Variational Inference<a class="anchor-link" href="#Variational-Inference">¶</a></h1><p>Variational Inference is a topic for a post of its own, so I won’t elaborate here. All I’ll say is that the two do relate via this equation:</p>
 <p>$log P(X) - \mathcal{KL}[Q(z|x) || P(z|x)] = \mathbb{E}_{z \sim Q(z|x)}[log P(x|z)] - \mathcal{KL}[Q(z|x) || P(z)]$</p>
 <p>$\mathcal{KL}$ is the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler divergence</a>, which intuitively measures how similar two distributions are.</p>
 <p>In a moment you'll see how we can maximize the right side of the equation. By doing so, the left side will also be maximized:</p>
@@ -1218,10 +1386,9 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-reparameterization-trick">The reparameterization trick<a class="anchor-link" href="#The-reparameterization-trick">Â¶</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
+<h1 id="The-reparameterization-trick">The reparameterization trick<a class="anchor-link" href="#The-reparameterization-trick">¶</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
 <ol>
 <li>Sample from a standard (parameterless) Gaussian.</li>
 <li>Multiply the sample by the square root of $\Sigma_Q$.</li>
@@ -1233,13 +1400,12 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr/>
-<h1 id="Connecting-the-dots">Connecting the dots<a class="anchor-link" href="#Connecting-the-dots">Â¶</a></h1><p>The VAE model can be hard to grasp. We covered a lot of material here, and it can be overwhelming.</p>
+<hr>
+<h1 id="Connecting-the-dots">Connecting the dots<a class="anchor-link" href="#Connecting-the-dots">¶</a></h1><p>The VAE model can be hard to grasp. We covered a lot of material here, and it can be overwhelming.</p>
 <p>So let me summarize all the steps one needs to grasp in order to implement VAE.</p>
-<p><img alt="" src="images/vae/vae.png"/></p>
+<p><img alt="" src="images/vae/vae.png"></p>
 <p>On the left side we have the model definition:</p>
 <ol>
 <li>An input image is passed through an encoder network.</li>
@@ -1253,10 +1419,10 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 <li>$Q(z|x)$ should be similar to the prior (multivariate standard Gaussian).</li>
 </ol>
 <p>In order to generate new images, you can directly sample a latent vector from the prior distribution, and decode it into an image.</p>
-<hr/>
+<hr>
 <p>In the next post I'll provide you with a working code of a VAE. Additionally, I'll show you how you can use a neat trick to condition the latent vector such that you can decide which digit you want to generate an image for. So stay tuned :)</p>
-<hr/>
-<h4 id="Notes">Notes<a class="anchor-link" href="#Notes">Â¶</a></h4><p>This post is based on my intuition and these sources:</p>
+<hr>
+<h4 id="Notes">Notes<a class="anchor-link" href="#Notes">¶</a></h4><p>This post is based on my intuition and these sources:</p>
 <ul>
 <li><a href="https://pure.uva.nl/ws/files/17891313/Thesis.pdf">Variational Inference and Deep Learning: A New Synthesis</a></li>
 <li><a href="https://arxiv.org/abs/1606.05908">Tutorial on Variational Autoencoders</a></li>

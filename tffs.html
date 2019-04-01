@@ -118,9 +118,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -199,12 +314,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -217,27 +340,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -433,7 +568,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -443,11 +580,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -695,6 +845,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -733,7 +886,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -855,6 +1008,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -871,16 +1028,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -896,6 +1061,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -946,8 +1116,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1086,8 +1263,7 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Tensorflow is great. Really, I mean it. The problem is it’s great up to a point. Sometimes you want to do very simple things, but tensorflow is giving you a hard time. The motivation I had behind writing <a href="https://github.com/yoel-zeldes/tffs">TFFS</a> (TensorFlow File System) can be shared by anyone who has used tensorflow, including you.</p>
 <p>All I wanted was to know what the name of a specific tensor is; or what its input tensors are (ignoring operations).</p>
@@ -1099,20 +1275,18 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Filesystem-to-the-Rescue!">Filesystem to the Rescue!<a class="anchor-link" href="#Filesystem-to-the-Rescue!">Â¶</a></h1><p>The names of tensors have slashes — a big resemblance with the UNIX filesystem. Imagine a world with a tensorflow filesystem, where directories are analogous to tensorflow scopes, and files  -  to tensors. Given such a filesystem, we could use good old bash to do what we want. For instance, we could list all available scopes and tensors by running <code>find ~/tf</code> - assuming <code>~/tf</code> is where the tensorflow filesystem mounted. Want to list only tensors? No problem, just use <code>find ~/tf -type f</code>.</p>
+<h1 id="Filesystem-to-the-Rescue!">Filesystem to the Rescue!<a class="anchor-link" href="#Filesystem-to-the-Rescue!">¶</a></h1><p>The names of tensors have slashes — a big resemblance with the UNIX filesystem. Imagine a world with a tensorflow filesystem, where directories are analogous to tensorflow scopes, and files  -  to tensors. Given such a filesystem, we could use good old bash to do what we want. For instance, we could list all available scopes and tensors by running <code>find ~/tf</code> - assuming <code>~/tf</code> is where the tensorflow filesystem mounted. Want to list only tensors? No problem, just use <code>find ~/tf -type f</code>.</p>
 <p>Hey, we’ve got files, right? What should their content be? Let’s run <code>cat ~/tf/.../tensor_name</code>. Wow! We got the tensor’s value  - nice... This will work only if the tensor doesn’t depend on placeholders, for obvious reasons.</p>
 <p>What about getting the inputs to a tensor? Well, you can run <code>~/tf/bin/inputs -d 3 ~/tf/.../tensor_name</code>. This special script will print a tree view of the inputs with recursion depth of 3. Nice...</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img alt="" src="../images/tffs/lets_do_it.jpg"/></p>
+<p><img alt="" src="../images/tffs/lets_do_it.jpg"></p>
 <p><strong>OK, I’m in. How do we implement it?</strong> That’s a fine question. We can use Filesystem in Userspace (FUSE). It’s a technology that allows us to implement a filesystem in user space. It saves us the trouble of going into the <em>low level</em> realm, which is really hard if you’ve never done it before (and slow to implement). It includes writing code in C  - the horror! We’ll use a python binding called <a href="https://github.com/fusepy/fusepy">fusepy</a>.</p>
 <p>In this post I’ll explain only the interesting parts of the implementation. The entire code can be found <a href="https://github.com/yoel-zeldes/tffs">here</a>. Including documentation, it’s only 345 lines of code.</p>
 <p>First we need to load a tensorflow model:</p>
@@ -1128,7 +1302,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
     <span class="sd">"""</span>
 <span class="sd">    Load a tensorflow model from the given path.</span>
 <span class="sd">    It's assumed the path is either a directory containing a .meta file, or the .meta file itself.</span>
@@ -1158,10 +1332,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Mapping-Tensors-to-Files">Mapping Tensors to Files<a class="anchor-link" href="#Mapping-Tensors-to-Files">Â¶</a></h1><p>Next, I’ll describe the main class. There are several interesting things in the constructor. First, we call <code>_load_model</code>. Then, we map each tensor in the graph into a path in the filesystem. Say a tensor has the name <code>a/b/c:0</code> - it will be mapped to the path <code>~/tf/a/b/c:0</code>, assuming the mount point is <code>~/tf</code>.</p>
+<h1 id="Mapping-Tensors-to-Files">Mapping Tensors to Files<a class="anchor-link" href="#Mapping-Tensors-to-Files">¶</a></h1><p>Next, I’ll describe the main class. There are several interesting things in the constructor. First, we call <code>_load_model</code>. Then, we map each tensor in the graph into a path in the filesystem. Say a tensor has the name <code>a/b/c:0</code> - it will be mapped to the path <code>~/tf/a/b/c:0</code>, assuming the mount point is <code>~/tf</code>.</p>
 <p>Each directory and file is created using the <code>_create_dir</code> and <code>_create_tensor_file</code> functions. These functions return a simple python dict with metadata about the directory or file.</p>
 <p>We also call <code>_populate_bin</code>, which I'll touch on later.</p>
 </div>
@@ -1172,7 +1345,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">TfFs</span><span class="p">(</span><span class="n">fuse</span><span class="o">.</span><span class="n">Operations</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">TfFs</span><span class="p">(</span><span class="n">fuse</span><span class="o">.</span><span class="n">Operations</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mount_point</span><span class="p">,</span> <span class="n">model_path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1201,10 +1374,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Working-with-fusepy">Working with <code>fusepy</code><a class="anchor-link" href="#Working-with-fusepy">Â¶</a></h1><p>fusepy requires you to implement a class that extends <code>fuse.Operations</code>. This class implements the operations the filesystem supports. In our case, we want to support reading files, so we'll implement the <code>read</code> function. when called, this function will evaluate the tensor associated with the given path.</p>
+<h1 id="Working-with-fusepy">Working with <code>fusepy</code><a class="anchor-link" href="#Working-with-fusepy">¶</a></h1><p>fusepy requires you to implement a class that extends <code>fuse.Operations</code>. This class implements the operations the filesystem supports. In our case, we want to support reading files, so we'll implement the <code>read</code> function. when called, this function will evaluate the tensor associated with the given path.</p>
 </div>
 </div>
 </div>
@@ -1213,7 +1385,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># ...</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># ...</span>
 
 <span class="k">def</span> <span class="nf">_eval_tensor_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
     <span class="sd">"""</span>
@@ -1243,18 +1415,16 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Worried about the <code>printoptions</code> part? When implementing a filesystem you need to know the size of the files. We could evaluate all tensors in order to know the sizes, but this would take time and memory. Instead, we can examine each tensor’s shape. Given its shape, and given we use a formatter that outputs a fixed amount of characters per entry in the result (this is where <code>_fixed_val_length</code> comes in), we can calculate the size.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Getting-Inputs-and-Outputs">Getting Inputs and Outputs<a class="anchor-link" href="#Getting-Inputs-and-Outputs">Â¶</a></h1><p>While tensorflow scopes have a structure that resembles a filesystem, tensor inputs and outputs don’t. So instead of using a filesystem to get inputs and outputs, we can write a script that can be executed as follows:</p>
+<h1 id="Getting-Inputs-and-Outputs">Getting Inputs and Outputs<a class="anchor-link" href="#Getting-Inputs-and-Outputs">¶</a></h1><p>While tensorflow scopes have a structure that resembles a filesystem, tensor inputs and outputs don’t. So instead of using a filesystem to get inputs and outputs, we can write a script that can be executed as follows:</p>
 <pre><code>~/tf/bin/outputs --depth 3 ~/tf/a:0</code></pre>
 <p>The result will look like this:</p>
 <pre><code>~/tf/a:0
@@ -1276,10 +1446,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="cat-./final_thoughts">cat ./final_thoughts<a class="anchor-link" href="#cat-./final_thoughts">Â¶</a></h1><p>We did it! We mapped a tensorflow model to a filesystem. TFFS was a fun small project, and I learned about FUSE while doing so, which is neat.</p>
+<h1 id="cat-./final_thoughts">cat ./final_thoughts<a class="anchor-link" href="#cat-./final_thoughts">¶</a></h1><p>We did it! We mapped a tensorflow model to a filesystem. TFFS was a fun small project, and I learned about FUSE while doing so, which is neat.</p>
 <p>TFFS is a cute tool, but it's not a replacement for good old python shell. With python, you can easily import a tensorflow model and inspect the tensors manually. I just wish I could remember how to do so, even after doing it hundreds of times...</p>
 </div>
 </div>

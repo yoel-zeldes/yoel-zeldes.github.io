@@ -119,9 +119,124 @@
 * IPython notebook
 *
 */
-/* CSS font colors for translated ANSI colors. */
+/* CSS font colors for translated ANSI escape sequences */
+/* The color values are a mix of
+   http://www.xcolors.net/dl/baskerville-ivorylight and
+   http://www.xcolors.net/dl/euphrasia */
+.ansi-black-fg {
+  color: #3E424D;
+}
+.ansi-black-bg {
+  background-color: #3E424D;
+}
+.ansi-black-intense-fg {
+  color: #282C36;
+}
+.ansi-black-intense-bg {
+  background-color: #282C36;
+}
+.ansi-red-fg {
+  color: #E75C58;
+}
+.ansi-red-bg {
+  background-color: #E75C58;
+}
+.ansi-red-intense-fg {
+  color: #B22B31;
+}
+.ansi-red-intense-bg {
+  background-color: #B22B31;
+}
+.ansi-green-fg {
+  color: #00A250;
+}
+.ansi-green-bg {
+  background-color: #00A250;
+}
+.ansi-green-intense-fg {
+  color: #007427;
+}
+.ansi-green-intense-bg {
+  background-color: #007427;
+}
+.ansi-yellow-fg {
+  color: #DDB62B;
+}
+.ansi-yellow-bg {
+  background-color: #DDB62B;
+}
+.ansi-yellow-intense-fg {
+  color: #B27D12;
+}
+.ansi-yellow-intense-bg {
+  background-color: #B27D12;
+}
+.ansi-blue-fg {
+  color: #208FFB;
+}
+.ansi-blue-bg {
+  background-color: #208FFB;
+}
+.ansi-blue-intense-fg {
+  color: #0065CA;
+}
+.ansi-blue-intense-bg {
+  background-color: #0065CA;
+}
+.ansi-magenta-fg {
+  color: #D160C4;
+}
+.ansi-magenta-bg {
+  background-color: #D160C4;
+}
+.ansi-magenta-intense-fg {
+  color: #A03196;
+}
+.ansi-magenta-intense-bg {
+  background-color: #A03196;
+}
+.ansi-cyan-fg {
+  color: #60C6C8;
+}
+.ansi-cyan-bg {
+  background-color: #60C6C8;
+}
+.ansi-cyan-intense-fg {
+  color: #258F8F;
+}
+.ansi-cyan-intense-bg {
+  background-color: #258F8F;
+}
+.ansi-white-fg {
+  color: #C5C1B4;
+}
+.ansi-white-bg {
+  background-color: #C5C1B4;
+}
+.ansi-white-intense-fg {
+  color: #A1A6B2;
+}
+.ansi-white-intense-bg {
+  background-color: #A1A6B2;
+}
+.ansi-default-inverse-fg {
+  color: #FFFFFF;
+}
+.ansi-default-inverse-bg {
+  background-color: #000000;
+}
+.ansi-bold {
+  font-weight: bold;
+}
+.ansi-underline {
+  text-decoration: underline;
+}
+/* The following styles are deprecated an will be removed in a future version */
 .ansibold {
   font-weight: bold;
+}
+.ansi-inverse {
+  outline: 0.5px dotted;
 }
 /* use dark versions for foreground, to improve visibility */
 .ansiblack {
@@ -200,12 +315,20 @@ div.cell {
   /* This acts as a spacer between cells, that is outside the border */
   margin: 0px;
   outline: none;
-  border-left-width: 1px;
-  padding-left: 5px;
-  background: linear-gradient(to right, transparent -40px, transparent 1px, transparent 1px, transparent 100%);
+  position: relative;
+  overflow: visible;
+}
+div.cell:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: transparent;
 }
 div.cell.jupyter-soft-selected {
-  border-left-color: #90CAF9;
   border-left-color: #E3F2FD;
   border-left-width: 1px;
   padding-left: 5px;
@@ -218,27 +341,39 @@ div.cell.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected {
+div.cell.selected,
+div.cell.selected.jupyter-soft-selected {
   border-color: #ababab;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 5px, transparent 5px, transparent 100%);
+}
+div.cell.selected:before,
+div.cell.selected.jupyter-soft-selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #42A5F5;
 }
 @media print {
-  div.cell.selected {
+  div.cell.selected,
+  div.cell.selected.jupyter-soft-selected {
     border-color: transparent;
   }
 }
-div.cell.selected.jupyter-soft-selected {
-  border-left-width: 0;
-  padding-left: 6px;
-  background: linear-gradient(to right, #42A5F5 -40px, #42A5F5 7px, #E3F2FD 7px, #E3F2FD 100%);
-}
 .edit_mode div.cell.selected {
   border-color: #66BB6A;
-  border-left-width: 0px;
-  padding-left: 6px;
-  background: linear-gradient(to right, #66BB6A -40px, #66BB6A 5px, transparent 5px, transparent 100%);
+}
+.edit_mode div.cell.selected:before {
+  position: absolute;
+  display: block;
+  top: -1px;
+  left: -1px;
+  width: 5px;
+  height: calc(100% +  2px);
+  content: '';
+  background: #66BB6A;
 }
 @media print {
   .edit_mode div.cell.selected {
@@ -434,7 +569,9 @@ div.input_area > div.highlight > pre {
 .CodeMirror-lines {
   /* In CM2, this used to be 0.4em, but in CM3 it went to 4px. We need the em value because */
   /* we have set a different line-height and want this to scale with that. */
-  padding: 0.4em;
+  /* Note that this should set vertical padding only, since CodeMirror assumes
+       that horizontal padding will be set on CodeMirror pre */
+  padding: 0.4em 0;
 }
 .CodeMirror-linenumber {
   padding: 0 8px 0 4px;
@@ -444,11 +581,24 @@ div.input_area > div.highlight > pre {
   border-top-left-radius: 2px;
 }
 .CodeMirror pre {
-  /* In CM3 this went to 4px from 0 in CM2. We need the 0 value because of how we size */
-  /* .CodeMirror-lines */
-  padding: 0;
+  /* In CM3 this went to 4px from 0 in CM2. This sets horizontal padding only,
+    use .CodeMirror-lines for vertical */
+  padding: 0 0.4em;
   border: 0;
   border-radius: 0;
+}
+.CodeMirror-cursor {
+  border-left: 1.4px solid black;
+}
+@media screen and (min-width: 2138px) and (max-width: 4319px) {
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+}
+@media screen and (min-width: 4320px) {
+  .CodeMirror-cursor {
+    border-left: 4px solid black;
+  }
 }
 /*
 
@@ -696,6 +846,9 @@ div.output_area img.unconfined,
 div.output_area svg.unconfined {
   max-width: none;
 }
+div.output_area .mglyph > img {
+  max-width: none;
+}
 /* This is needed to protect the pre formating from global settings such
    as that of bootstrap */
 .output {
@@ -734,7 +887,7 @@ div.output_area svg.unconfined {
 }
 div.output_area pre {
   margin: 0;
-  padding: 0;
+  padding: 1px 0 1px 0;
   border: 0;
   vertical-align: baseline;
   color: black;
@@ -856,6 +1009,10 @@ div.output_unrecognized a:hover {
 .rendered_html h6:first-child {
   margin-top: 1em;
 }
+.rendered_html ul:not(.list-inline),
+.rendered_html ol:not(.list-inline) {
+  padding-left: 2em;
+}
 
 
 
@@ -872,16 +1029,24 @@ div.output_unrecognized a:hover {
 }
 
 
+
+
+
 .rendered_html pre,
+
 
 
 
 .rendered_html tr,
 .rendered_html th,
 
-.rendered_html td,
 
-
+.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
 .rendered_html * + table {
   margin-top: 1em;
 }
@@ -897,6 +1062,11 @@ div.output_unrecognized a:hover {
 
 .rendered_html img.unconfined,
 
+
+.rendered_html * + .alert {
+  margin-top: 1em;
+}
+[dir="rtl"] 
 div.text_cell {
   /* Old browsers */
   display: -webkit-box;
@@ -947,8 +1117,15 @@ h6:hover .anchor-link {
   display: none;
 }
 .text_cell.rendered 
+.text_cell.rendered .rendered_html tr,
+.text_cell.rendered .rendered_html th,
+.text_cell.rendered 
 .text_cell.unrendered .text_cell_render {
   display: none;
+}
+.text_cell .dropzone .input_area {
+  border: 2px dashed #bababa;
+  margin: -1px;
 }
 .cm-header-1,
 .cm-header-2,
@@ -1087,10 +1264,9 @@ h6:hover .anchor-link {
 .ansi-bold { font-weight: bold; }
 </style>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Word-Morphing">Word Morphing<a class="anchor-link" href="#Word-Morphing">Â¶</a></h1><p>I assume you're familiar with <a href="https://en.wikipedia.org/wiki/Morphing">image morphing</a> - the process of changing one image into another through a seamless transition. So how would <em>word morphing</em> look like? If we want to do a seamless transition from one word into another, through which words would it pass?</p>
+<h1 id="Word-Morphing">Word Morphing<a class="anchor-link" href="#Word-Morphing">¶</a></h1><p>I assume you're familiar with <a href="https://en.wikipedia.org/wiki/Morphing">image morphing</a> - the process of changing one image into another through a seamless transition. So how would <em>word morphing</em> look like? If we want to do a seamless transition from one word into another, through which words would it pass?</p>
 <p>In this post I'll describe how I employed word2vec's embeddings and $A^*$ search algorithm to morph between words.</p>
 <p>In order to perform word morphing, we'll define a graph $G$ where the set of nodes $N$ represent words, and there's some weight function $f : N \times N \rightarrow \mathbb{R}_{\geq 0}$. Given a start word $n_{\text{start}}$ and an end word $n_{\text{end}}$, our goal is to find a path within the graph which minimizes the sum of weights induced by $f$:</p>
 <p>$\text{argmin}_{\langle n_1, ..., n_k \rangle : k \in \mathbb{N}, n_1, ..., n_k \in N, n_1 = n_{\text{start}}, n_k = n_{\text{end}}}\sum_{i=1}^{k-1} f(n_i, n_{i+1})$</p>
@@ -1103,10 +1279,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Word-Semantics">Word Semantics<a class="anchor-link" href="#Word-Semantics">Â¶</a></h1><p>In order to capture word semantics we'll use pretrained word2vec embeddings. To those of you who are not familiar with the algorithm, here's an excerpt from <a href="https://en.wikipedia.org/wiki/Word2vec">Wikipedia</a>:</p>
+<h1 id="Word-Semantics">Word Semantics<a class="anchor-link" href="#Word-Semantics">¶</a></h1><p>In order to capture word semantics we'll use pretrained word2vec embeddings. To those of you who are not familiar with the algorithm, here's an excerpt from <a href="https://en.wikipedia.org/wiki/Word2vec">Wikipedia</a>:</p>
 <blockquote><p>Word2vec takes as its input a large corpus of text and produces a vector space, typically of several hundred dimensions, with each unique word in the corpus being assigned a corresponding vector in the space. Word vectors are positioned in the vector space such that words that share common contexts in the corpus are located in close proximity to one another in the space.</p>
 </blockquote>
 <p>It means every node in the graph can be associated with some vector in high dimensionality space (300 in our case). Therefore, we can naturally define a distance function between every two nodes. We'll use cosine similarity, since this is the metric usually used when one wants to semantically compare between word embeddings. From now on, I'll overload a node symbol $n$ to be its associated word's embedding vector.</p>
@@ -1119,7 +1294,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -1136,7 +1311,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">download_file_from_google_drive</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">download_file_from_google_drive</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
     <span class="n">drive_url</span> <span class="o">=</span> <span class="s1">'https://docs.google.com/uc?export=download'</span>
 
     <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
@@ -1187,10 +1362,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Choosing-the-Weight-Function">Choosing the Weight Function<a class="anchor-link" href="#Choosing-the-Weight-Function">Â¶</a></h1><p>Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.</p>
+<h1 id="Choosing-the-Weight-Function">Choosing the Weight Function<a class="anchor-link" href="#Choosing-the-Weight-Function">¶</a></h1><p>Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.</p>
 <p>However, using this approach we'll face a problem: the best path might include edges with high weight, which will result in successive words that aren't semantically similar.</p>
 <p>To tackle this, we can change $f$ to be</p>
 <p>$f(n_1, n_2) = \begin{cases}
@@ -1202,10 +1376,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="$A^*$-Search">$A^*$ Search<a class="anchor-link" href="#$A^*$-Search">Â¶</a></h1><p>Now that we have our graph defined, we'll use a well known search algorithm called $A^*$.</p>
+<h1 id="$A^*$-Search">$A^*$ Search<a class="anchor-link" href="#$A^*$-Search">¶</a></h1><p>Now that we have our graph defined, we'll use a well known search algorithm called $A^*$.</p>
 <p>In this algorithm, every node has a cost composed of two terms - $g(n) + h(n)$.</p>
 <p>$g(n)$ is the cost of the shortest path from $n_{\text{start}}$ to $n$, and $h(n)$ is a heuristic estimating the cost of the shortest path from $n$ to $n_{\text{end}}$. In our case, the heuristic function will be $f$.</p>
 <p>The search algorithm maintains a data structure called <em>the open set</em>. Initially this set contains $n_{\text{start}}$, and at each iteration of the algorithm we pop out the node in the open set with the minimal cost $g(n) + h(n)$, and add its neighbors to the open set. The algorithm stops when the node with the minimal cost is $n_{\text{end}}$.</p>
@@ -1223,7 +1396,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
 </pre></div>
 </div>
 </div>
@@ -1234,7 +1407,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">neighbors_fnct</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">,</span> <span class="n">dilute_factor</span><span class="p">):</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">neighbors_fnct</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">,</span> <span class="n">dilute_factor</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">neighbor</span> <span class="k">for</span> <span class="n">neighbor</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">similar_by_word</span><span class="p">(</span>
         <span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span> <span class="o">*</span> <span class="n">dilute_factor</span><span class="p">)][</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">dilute_factor</span><span class="p">]</span>
 
@@ -1263,8 +1436,7 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I chose $neighbors(n)$ to include its 1000 nearest nodes. However, in order to make the search more efficient, we can dilute these using <code>dilute_factor</code> of 10: we pick the nearest neighbor, the 10'th nearest neighbor, the 20'th, and so on - until we have 100 nodes. The intuition behind it is that the best path from some intermediate node to $n_{\text{end}}$ might pass through its nearest neighbor. If it doesn't, it might be the case that it won't pass through the second neighbor neither, since the first and second neighbors might be almost the same. So to save some computations, we just skip some of the nearest neighbors.</p>
 <p>And here comes the fun part:</p>
@@ -1276,7 +1448,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'tooth'</span><span class="p">,</span> <span class="s1">'light'</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'tooth'</span><span class="p">,</span> <span class="s1">'light'</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'John'</span><span class="p">,</span>  <span class="s1">'perfect'</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'pillow'</span><span class="p">,</span> <span class="s1">'car'</span><span class="p">)</span>
 </pre></div>
@@ -1298,10 +1470,9 @@ h6:hover .anchor-link {
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
+</div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">Â¶</a></h1><p>Implementing the word morphing project was fun, but not as fun as playing around and trying this tool on whatever pair of words I could have thought of. I encourage you to go ahead and <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/word%20morph/word-morph.ipynb">play with it</a> yourself. Let me know in the comments what interesting and surprising morphings you have found :)</p>
+<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">¶</a></h1><p>Implementing the word morphing project was fun, but not as fun as playing around and trying this tool on whatever pair of words I could have thought of. I encourage you to go ahead and <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/word%20morph/word-morph.ipynb">play with it</a> yourself. Let me know in the comments what interesting and surprising morphings you have found :)</p>
 </div>
 </div>
 </div>
