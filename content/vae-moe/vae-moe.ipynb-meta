@@ -1,0 +1,8 @@
+Title: Mixture of Variational Autoencoders - a Fusion Between MoE and VAE
+Slug: vae-moe
+Date: 2019-04-01 23:00
+Category: posts
+Tags: deep-learning, generative, unsupervised
+Summary: An unsupervised approach to digit classification and generation.
+header_cover: images/vae-moe/cover.png
+
