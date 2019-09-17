@@ -2,7 +2,7 @@ Title: about me
 Slug: about
 header_cover: images/about_cover.jpg
 
-My name is Yoel Zeldes. I am an applied scientist at the Alexa Shopping group @ Amazon.
+My name is Yoel Zeldes. I am an algorithm engineer @ [AI21 Labs](https://www.ai21.com).
 
 I completed my M.Sc. and B.Sc in computer science at the Hebrew University of Jerusalem.
 
