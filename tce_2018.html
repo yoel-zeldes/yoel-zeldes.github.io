@@ -84,8 +84,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -125,7 +123,7 @@
 <h1>Efficient Deep Learning with Humans in the Loop</h1>
 <p>In the next talk, Zachary Chase Lipton from Carnegie Mellon University discussed a series of works, each aimed at increasing the efficiency of learning from human interactions.</p>
 <p>In the RL (Reinforcement Learning) setting, the model is exposed to enormous amount of examples while training. The agent can choose how to explore the state-action space. The goal is to explore what reward the possible actions will yield while exploiting the known good actions.</p>
-<p>This tradeoff can be solved using the simple <span class="math">\(\epsilon\)</span>-greedy algorithm: with probability <span class="math">\(1 - \epsilon\)</span> the agent chooses the action which is expected to yield the maximal reward, and with probability <span class="math">\(\epsilon\)</span> a random action is chosen. Usually one anneals down <span class="math">\(\epsilon\)</span> while training.</p>
+<p>This tradeoff can be solved using the simple $\epsilon$-greedy algorithm: with probability $1 - \epsilon$ the agent chooses the action which is expected to yield the maximal reward, and with probability $\epsilon$ a random action is chosen. Usually one anneals down $\epsilon$ while training.</p>
 <p>This algorithm is obviously not the optimal one. For instance, let's say that in the current state the agent has ten actions to choose from, and it knows that action A is the best with probability 0.5, and so is action B. All the other actions are bad with probability 1.0. If it wants to explore, it'd be wiser to randomly choose only between A and B.</p>
 <p>This is the motivation behind the Thompson Sampling algorithm. For it to work the model has to estimate uncertainty. One way to do it is to use Bayesian Neural Network. In this model, instead of using numbers for the model's weights, we use distributions. In the forward pass we sample from the weights distribution in order to get a point estimate prediction. In the backward pass we update the parameters of the weights distributions using the reparameterization trick. At test time we do inference by sampling from the weights distributions multiple times, thus getting a distribution over the predictions.</p>
 <p>Another interesting topic was how to choose what examples to annotate. One idea was to exploit hierarchies among the labels, and actively select binary questions to ask the annotator. This is similar to the <a href="https://en.wikipedia.org/wiki/Twenty_Questions">twenty questions game</a>.</p>
@@ -134,12 +132,12 @@
 <p>Prof. Michal Irani from Weizmann Institute of Science talked about using deep learning for super resolution.</p>
 <p>She explained about the recurrences inside natural images - both inside the same image and across different scales of that image. This is important for super resolution, since one can downscale a given image, find recurrences across the two images, and then learn how to upscale the original image.</p>
 <p>This approach has been done in the past using classical algorithms, and in this talk Michal introduced how to do it using deep learning using only the given image.</p>
-<p><img alt="" src="images/tce/unsupervised_internal_learning.jpg" /></p>
+<p><img alt="" src="images/tce/unsupervised_internal_learning.jpg"></p>
 <p>In her approach, the image is first downscaled. Then, a CNN model is trained to reconstruct the original image. The same model is then used to upscale the original image.</p>
 <p>Michal claims that this <em>internal</em> learning - as opposed to <em>external</em> learning where super resolution is trained using a dataset - can work with a smaller model. This is due to the fact that one image has lower entropy compared to the entire dataset. Consequently, the training process completes under eight seconds, which is impressive.</p>
 <h1>Transformative Generative Models</h1>
 <p>Prof. Lior Wolf from Tel-Aviv University and FAIR described generative models in various domains. Specifically he described in depth a model that can transform musical item performed by one instrument to be performed by another.</p>
-<p><img alt="" src="images/tce/transformative_generative_models.jpg" /></p>
+<p><img alt="" src="images/tce/transformative_generative_models.jpg"></p>
 <p>The idea behind the architecture is to use an autoencoder model for all the instrument types. The encoder component is shared across all the instruments, while the decoder is specific for each one.</p>
 <p>At training time, the model gets a different instrument example every time. It uses the unified encoder and the specific decoder of the instrument, and tries to reconstruct the signal.</p>
 <p>Since the encoder is shared across the instruments, it must learn to encode information that is agnostic to the actual instrument. Thus, the encoded information will contain only the musical information, e.g. <em>which</em> notes are played, and not <em>how</em> they sound. It's the decoder's job to make them sound like the specific instrument.</p>
@@ -150,16 +148,16 @@
 <p>We could theoretically train a model using medical records. But what if wealthier patients tend to take more often medication A over B? If we don't measure wealth, any algorithm might be fooled to think A is better than B, even if that's not true. In this case, wealth is called a confounder.</p>
 <p>There's no way to know the truth unless we perform RCT (Randomized Controlled Trials). This way, we can randomly assign treatments to patients, thus eliminating the effect of the confounders. Unfortunately, in many real life scenarios performing experiments is costly or impossible to do due to ethical reasons among other reasons.</p>
 <p>Uri then introduced TARNet (Treatment-Agnostic Representation Network):</p>
-<p><img alt="" src="images/tce/causal_inference.jpg" /></p>
-<p>The first key idea of the architecture is that every example was treated either with treatment <span class="math">\(T = 0\)</span> or treatment <span class="math">\(T = 1\)</span>. Hence, after transformed into a representation <span class="math">\(\Phi\)</span>, one of two paths is chosen based on <span class="math">\(T\)</span>, which could be thought of as a switch.</p>
-<p>The second key idea is that the distributions of samples of the two treatments differ. Thus, if we want to infer the outcome of giving treatment <span class="math">\(T = 1\)</span> to a patient in the training set that got <span class="math">\(T = 0\)</span> we would be in trouble, since that would be extrapolation.</p>
-<p>To tackle this, the model encourages the representation <span class="math">\(\Phi\)</span> to act as if the distributions are the same. In other words, the model has a regularization in a form of penalizing treatment distributional distance in representation space.</p>
+<p><img alt="" src="images/tce/causal_inference.jpg"></p>
+<p>The first key idea of the architecture is that every example was treated either with treatment $T = 0$ or treatment $T = 1$. Hence, after transformed into a representation $\Phi$, one of two paths is chosen based on $T$, which could be thought of as a switch.</p>
+<p>The second key idea is that the distributions of samples of the two treatments differ. Thus, if we want to infer the outcome of giving treatment $T = 1$ to a patient in the training set that got $T = 0$ we would be in trouble, since that would be extrapolation.</p>
+<p>To tackle this, the model encourages the representation $\Phi$ to act as if the distributions are the same. In other words, the model has a regularization in a form of penalizing treatment distributional distance in representation space.</p>
 <p>At the end of the talk Uri introduced another model - CEVAE (Casual Effect Variational Autoencoders). I really love VAE flavors, which is why I mention it. If you enjoy this kind of models too, I encourage you to read about it.</p>
 <h1>Theoretical and Empirical Investigation of Several Common Practices in Deep Learning</h1>
 <p>In the next talk, Daniel Soudry from Technion University mentioned several interesting ideas. First, he explained why sometimes when the model starts to overfit (test loss increases) the actual test accuracy might still be improving.</p>
-<p>Take logistic loss for example. After training for <span class="math">\(t\)</span> epochs, the weights vector <span class="math">\(w\)</span> will tend to <span class="math">\(\hat{w} \cdot log(t) + \rho(t)\)</span>, where <span class="math">\(\hat{w}\)</span> is the L2 max margin vector and <span class="math">\(\|\rho\| = O(log(log(t)))\)</span>. In simpler words, the learned <span class="math">\(w\)</span> will tend towards the vector achieved by SVM - the one that maximizes the margin. The length of the vector will tend to infinity.</p>
-<p><img alt="" src="images/tce/theoretical_and_empirical_investigation.jpg" /></p>
-<p>Additionally, the test loss increases in the rate of <span class="math">\(\Omega(log(t))\)</span>. This is due to the fact that some examples in the test set are misclassified. Since the length of <span class="math">\(w\)</span> tends to infinity, the loss of the misclassified test examples will also tend to infinity. This is true even though the model might increase its test accuracy.</p>
+<p>Take logistic loss for example. After training for $t$ epochs, the weights vector $w$ will tend to $\hat{w} \cdot log(t) + \rho(t)$, where $\hat{w}$ is the L2 max margin vector and $|\rho| = O(log(log(t)))$. In simpler words, the learned $w$ will tend towards the vector achieved by SVM - the one that maximizes the margin. The length of the vector will tend to infinity.</p>
+<p><img alt="" src="images/tce/theoretical_and_empirical_investigation.jpg"></p>
+<p>Additionally, the test loss increases in the rate of $\Omega(log(t))$. This is due to the fact that some examples in the test set are misclassified. Since the length of $w$ tends to infinity, the loss of the misclassified test examples will also tend to infinity. This is true even though the model might increase its test accuracy.</p>
 <h1>Trying to Understand Recurrent Neural Networks for Language Processing</h1>
 <p>In the last talk, Yoav Goldberg from Bar-Ilan University tried to shed some light into the different flavors of RNN architectures and what they are capable of.</p>
 <p>First, he showed the performance differences between LSTM and CBOW on three simple tasks - sentence length prediction, words containment (is w inside a given sentence), and words order (is w1 before w2 in a given sentence).</p>
@@ -168,69 +166,14 @@
 <p>CBOW performed better on the words containment task, but LSTM showed advantage on the words order task.</p>
 <p>Interestingly, LSTM doesn't rely on language-naturalness, while skip-thought model does.</p>
 <p>Next, Yoav showed that LSTM, as opposed to GRU, can count:</p>
-<p><img alt="" src="images/tce/trying_to_understand_recurrent_neural_networks.jpg" /></p>
+<p><img alt="" src="images/tce/trying_to_understand_recurrent_neural_networks.jpg"></p>
 <p>When trained using a hidden state size of 10, we can see that in LSTM one of the dimensions learned to count. This is possible due to the gating nature of the model: one can manually set the values of the weights to enable counting.</p>
 <p>Although the counting task is pretty simple, and usually is not what a typical DL application performs, it's interesting to understand some of the limitations of the building blocks we use in our everyday modeling life.</p>
 <h1>Some final thoughts</h1>
-<p><img alt="" src="images/tce/panel.jpg" /></p>
+<p><img alt="" src="images/tce/panel.jpg"></p>
 <p>The conference ended with a panel. It was both amusing and thought-provoking, as most of the speakers were aware of the hype DL has gained over the last years.</p>
 <p>Many of them thought DL has drawn too much attention, and classical ML deserves the spotlight too. However, they still participate in the DL game - either theoretically or practically. I think that every practitioner should keep in mind the limitations of DL, and that not everything works like black magic.</p>
 <p>This is especially important in critical applications such as in the medical and educational domains, and in applications where we don't want the model to be biased, such as in the banking domain.</p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'Loading awesomeness...'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
     </article>
 
         <div class="tags">

@@ -84,8 +84,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -120,11 +118,11 @@ for it in your code — to find out what its name is. Then it hits you — you
 forgot to give it a name. You also forgot to wrap the logical code block with a
 named scope. It means you’ll have a hard time getting a reference to the tensor.
 It holds for python scripts as well as TensorBoard:</p>
-<p><img alt="" src="images/tf-scope/bad_structure.png" /></p>
+<p><img alt="" src="images/tf-scope/bad_structure.png"></p>
 <p>Can you see that small red circle lost in the sea of tensors? Finding it is
 hard...</p>
 <p>That’s a bummer! It would have been much better if it looked more like this:</p>
-<p><img alt="" src="images/tf-scope/good_structure.png" /></p>
+<p><img alt="" src="images/tf-scope/good_structure.png"></p>
 <p>That’s more like it! Each set of tensors which form a logical unit is wrapped
 inside a named scope.</p>
 <p>Why can’t the graph be automatically constructed in a way that resembles your
@@ -138,9 +136,9 @@ model would automatically be constructed in a way that the name of the tensor
 would be <code>g/f/x</code>?</p>
 <p>Come to think of it, it’s pretty simple to do. All you have to do is go over all
 your functions and add a single line of code:</p>
-<div class="highlight"><pre><span></span>def f():
-    with tensorflow.name_scope(‘f’):
-        # define tensors
+<div class="highlight"><pre><span></span><span class="n">def</span> <span class="n">f</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tensorflow</span><span class="p">.</span><span class="n">name_scope</span><span class="p">(</span><span class="err">‘</span><span class="n">f</span><span class="err">’</span><span class="p">):</span>
+        <span class="o">#</span> <span class="n">define</span> <span class="n">tensors</span>
 </pre></div>
 
 
@@ -175,10 +173,10 @@ decorators to the rescue!</p>
 
 <p>How does it work? The <code>@</code> is a syntactic sugar. It’s equivalent to the
 following:</p>
-<div class="highlight"><pre><span></span>def foo():
-    # define tensors
+<div class="highlight"><pre><span></span><span class="n">def</span> <span class="n">foo</span><span class="p">():</span>
+    <span class="o">#</span> <span class="n">define</span> <span class="n">tensors</span>
 
-foo = name_scope(foo)
+<span class="n">foo</span> <span class="o">=</span> <span class="n">name_scope</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 
 
@@ -189,9 +187,9 @@ named scope. The name of the scope will be the name of the original function
 (“foo”) — thanks to <code>f.__name__</code>.</p>
 <p>One small problem is that while function names might start with “_”, tensorflow
 scope names can’t. This is why we have to use <code>re</code>.</p>
-<hr />
+<hr>
 <h1>Why is it that important?</h1>
-<p><img alt="" src="images/tf-scope/maintenance.jpg" /></p>
+<p><img alt="" src="images/tf-scope/maintenance.jpg"></p>
 <p>The challenge of writing clean tensorflow code is negligible compared to the
 research challenge of actually making the model any good.</p>
 <p>Thus, it’s easy to be tempted to just focus on the research aspects of your job.
@@ -200,7 +198,7 @@ readability of your code, including those of your graph.</p>
 <p>The decorator approach make my job a little easier, and I hope you’ll benefit
 from it too. Do you have other tips you’d like to share? Drop a line in the
 comments!</p>
-<hr />
+<hr>
 <p><em>Originally published by me at
 <a href="https://engineering.taboola.com/tensorflow-scope-software-engineering">engineering.taboola.com</a>.</em></p>
     </article>

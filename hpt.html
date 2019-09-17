@@ -84,8 +84,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -153,7 +151,7 @@ The requirements were:</p>
 <h3>Enrich experiments with metrics</h3>
 <p>Our training process generates many metrics, such as MSE, loss and training time. You can choose whichever you want, and they will show in the results.</p>
 <h3>Save results to the cloud</h3>
-<p><img alt="" src="images/hpt/results.png" /></p>
+<p><img alt="" src="images/hpt/results.png"></p>
 <p>Results are saved as a CSV file in Google Cloud Storage, which enables us to launch the script from any machine, and watch the results from our laptops.</p>
 <p>The results are continuously uploaded, so we don't have to wait for all the experiments to finish to start inspecting the results.</p>
 <p>The models themselves are also saved.</p>
@@ -166,7 +164,7 @@ The requirements were:</p>
 <p>When you run hundreds of experiments, the best ones usually have negligible differences. How can you know it's statistically significant?</p>
 <p>One way to tackle this problem, assuming you have enough data, is to train the same model on several date-ranges. If one model is better than the others in all of the date-ranges, you can be more confident it's real.</p>
 <p>Let's say today is June, and you run the script. Here are the date-ranges the script will choose:</p>
-<p><img alt="" src="images/hpt/date_ranges.png" /></p>
+<p><img alt="" src="images/hpt/date_ranges.png"></p>
 <p>Note that the script chooses a new set of date-ranges if you run it on a different month. This is important, since otherwise you could accidentally overfit your models due to extensive hyperparameter tuning.</p>
 <h1>I don't have time for this</h1>
 <p>Who has the time to run every experiment three times? It's nice that you can get reliable results, but it means you'll end up running fewer different experiments.</p>
@@ -180,7 +178,7 @@ The requirements were:</p>
 <p>To answer this, we performed some experiments, each using a different amount of data ranging from one week to three months. We found out that one month had a good tradeoff between MSE and training time.</p>
 <p>(Did you notice we used the hyperparameter tuning script to tune the hyperparameter script? How cool is that?)</p>
 <p>To investigate what the right number of epochs would be, we analyzed the MSE on TensorBoard.</p>
-<p><img alt="" src="images/hpt/short_mode_analysis.png" /></p>
+<p><img alt="" src="images/hpt/short_mode_analysis.png"></p>
 <p>Each plot in the graph represents a different model trained on a different amount of data. After 20 epochs all of the models have almost converged, so it's safe to stop there.</p>
 <h1>C'mon script, do the job for me!</h1>
 <p>At this point we decided the script should choose the hyperparameter values for you.
@@ -192,7 +190,7 @@ We started with the learning rate related hyperparameters: initial learning rate
 </ul>
 <p>The new mode of the script uses hard-coded ranges of values that are reasonable for our models.</p>
 <p>Then came the next demand:</p>
-<p><img alt="" src="images/hpt/tune_everything.jpg" /></p>
+<p><img alt="" src="images/hpt/tune_everything.jpg"></p>
 <p>The next version of the script did just that: provided with an architecture name, it automatically generates experiments for you. You don't need to specify any hyperparameter values.</p>
 <h1>Let's go random</h1>
 <p>Although being worse than random search in <a href="http://www.jmlr.org/papers/volume13/bergstra12a/bergstra12a.pdf">some cases</a>, grid search is easier to analyze: every value is used by multiple experiments, so it's easy to spot trends.</p>

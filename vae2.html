@@ -85,8 +85,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -1271,15 +1269,16 @@ h6:hover .anchor-link {
 <p>In this post I'll explain the VAE in more detail, or in other words - I'll provide some code :)</p>
 <p>After reading this post, you'll understand the technical details needed to implement VAE.</p>
 <p>As a bonus point, I'll show you how by imposing a special role to some of the latent vector's dimensions, the model can generate images conditioned on the digit type.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [1]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">from</span> <span class="nn">tensorflow.examples.tutorials.mnist</span> <span class="kn">import</span> <span class="n">input_data</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -1289,64 +1288,72 @@ h6:hover .anchor-link {
 
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The model will be trained on <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST</a> - handwritten digits dataset. The input is an image in $\mathbb{R}^{28×28}$.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [2]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s1">'MNIST_data'</span><span class="p">)</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">mnist</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">read_data_sets</span><span class="p">(</span><span class="s1">&#39;MNIST_data&#39;</span><span class="p">)</span>
 <span class="n">input_size</span> <span class="o">=</span> <span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span>
 <span class="n">num_digits</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Next we'll define the hyperparameters we're going to use.</p>
 <p>Feel free to play with different values to get a feeling of how the model is affected. The notebook can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/vae2/vae2.ipynb">here</a>.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [3]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'encoder_layers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>                <span class="c1"># the encoder will be implemented using a simple feed forward network</span>
-    <span class="s1">'decoder_layers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>                <span class="c1"># and so will the decoder (CNN will be better, but I want to keep the code simple)</span>
-    <span class="s1">'digit_classification_layers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>   <span class="c1"># this is for the conditioning. I'll explain it later on</span>
-    <span class="s1">'activation'</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">,</span>            <span class="c1"># the activation function used by all sub-networks</span>
-    <span class="s1">'decoder_std'</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>                     <span class="c1"># the standard deviation of P(x|z) discussed in the previous post</span>
-    <span class="s1">'z_dim'</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>                            <span class="c1"># the dimension of the latent space</span>
-    <span class="s1">'digit_classification_weight'</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>    <span class="c1"># this is for the conditioning. I'll explain it later on</span>
-    <span class="s1">'epochs'</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="s1">'batch_size'</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="s1">'learning_rate'</span><span class="p">:</span> <span class="mf">0.001</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;encoder_layers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>                <span class="c1"># the encoder will be implemented using a simple feed forward network</span>
+    <span class="s1">&#39;decoder_layers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>                <span class="c1"># and so will the decoder (CNN will be better, but I want to keep the code simple)</span>
+    <span class="s1">&#39;digit_classification_layers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">128</span><span class="p">],</span>   <span class="c1"># this is for the conditioning. I&#39;ll explain it later on</span>
+    <span class="s1">&#39;activation&#39;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">,</span>            <span class="c1"># the activation function used by all sub-networks</span>
+    <span class="s1">&#39;decoder_std&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>                     <span class="c1"># the standard deviation of P(x|z) discussed in the previous post</span>
+    <span class="s1">&#39;z_dim&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>                            <span class="c1"># the dimension of the latent space</span>
+    <span class="s1">&#39;digit_classification_weight&#39;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">,</span>    <span class="c1"># this is for the conditioning. I&#39;ll explain it later on</span>
+    <span class="s1">&#39;epochs&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="mf">0.001</span>
 <span class="p">}</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-Model">The Model<a class="anchor-link" href="#The-Model">¶</a></h1><p><img alt="" src="images/vae2/model.jpg"></p>
+<h1 id="The-Model">The Model<a class="anchor-link" href="#The-Model">&#182;</a></h1><p><img src="images/vae2/model.jpg" alt=""></p>
 <p>The model is composed of three sub-networks:</p>
 <ol>
 <li>Given $x$ (image), encode it into a distribution over the latent space - referred to as $Q(z|x)$ in the previous post.</li>
@@ -1368,21 +1375,22 @@ h6:hover .anchor-link {
 </ol>
 <p>Since we want to support the first option too, we can't provide the model with the digit as input, since we won't know it in test time. Hence, the model must learn to predict it.</p>
 <p>Now that we understand all the sub-networks composing the model, we can code them. The mathematical details behind the encoder and decoder can be found in the previous post.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [4]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
                             <span class="n">layer</span><span class="p">,</span>
-                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'activation'</span><span class="p">])</span>
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">'z_dim'</span><span class="p">])</span>
-    <span class="n">var</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">'z_dim'</span><span class="p">]))</span>
+                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;z_dim&#39;</span><span class="p">])</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="mf">1e-5</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;z_dim&#39;</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">mu</span><span class="p">,</span> <span class="n">var</span>
 
 
@@ -1390,7 +1398,7 @@ h6:hover .anchor-link {
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">z</span><span class="p">,</span>
                             <span class="n">layer</span><span class="p">,</span>
-                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'activation'</span><span class="p">])</span>
+                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
 
@@ -1399,56 +1407,60 @@ h6:hover .anchor-link {
     <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
                             <span class="n">layer</span><span class="p">,</span>
-                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">'activation'</span><span class="p">])</span>
+                            <span class="n">activation</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;activation&#39;</span><span class="p">])</span>
     <span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_digits</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">logits</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [5]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">images</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">input_size</span><span class="p">])</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">images</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">input_size</span><span class="p">])</span>
 <span class="n">digits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="p">[</span><span class="bp">None</span><span class="p">])</span>
 
 <span class="c1"># encode an image into a distribution over the latent space</span>
 <span class="n">encoder_mu</span><span class="p">,</span> <span class="n">encoder_var</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">images</span><span class="p">,</span>
-                                  <span class="n">params</span><span class="p">[</span><span class="s1">'encoder_layers'</span><span class="p">])</span>
+                                  <span class="n">params</span><span class="p">[</span><span class="s1">&#39;encoder_layers&#39;</span><span class="p">])</span>
 
 <span class="c1"># sample a latent vector from the latent space - using the reparameterization trick</span>
 <span class="n">eps</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">images</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
-                              <span class="n">params</span><span class="p">[</span><span class="s1">'z_dim'</span><span class="p">]],</span>
+                              <span class="n">params</span><span class="p">[</span><span class="s1">&#39;z_dim&#39;</span><span class="p">]],</span>
                        <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                        <span class="n">stddev</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">encoder_mu</span> <span class="o">+</span> <span class="n">tf</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">encoder_var</span><span class="p">)</span> <span class="o">*</span> <span class="n">eps</span>
 
 <span class="c1"># classify the digit</span>
 <span class="n">digit_logits</span> <span class="o">=</span> <span class="n">digit_classifier</span><span class="p">(</span><span class="n">images</span><span class="p">,</span>
-                                <span class="n">params</span><span class="p">[</span><span class="s1">'digit_classification_layers'</span><span class="p">])</span>
+                                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;digit_classification_layers&#39;</span><span class="p">])</span>
 <span class="n">digit_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">digit_logits</span><span class="p">)</span>
 
 <span class="c1"># decode the latent vector - concatenated to the digits classification - into an image</span>
 <span class="n">decoded_images</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">z</span><span class="p">,</span> <span class="n">digit_prob</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-                         <span class="n">params</span><span class="p">[</span><span class="s1">'decoder_layers'</span><span class="p">])</span>
+                         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;decoder_layers&#39;</span><span class="p">])</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [6]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># the loss is composed of how well we can reconstruct the image</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># the loss is composed of how well we can reconstruct the image</span>
 <span class="n">loss_reconstruction</span> <span class="o">=</span> <span class="o">-</span><span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
     <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">Normal</span><span class="p">(</span>
         <span class="n">decoded_images</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">[</span><span class="s1">'decoder_std'</span><span class="p">]</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;decoder_std&#39;</span><span class="p">]</span>
     <span class="p">)</span><span class="o">.</span><span class="n">log_prob</span><span class="p">(</span><span class="n">images</span><span class="p">),</span>
     <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
 <span class="p">)</span>
@@ -1468,8 +1480,8 @@ h6:hover .anchor-link {
 <span class="p">)</span>
 
 <span class="c1"># digit_classification_weight is used to weight between the two losses,</span>
-<span class="c1"># since there's a tension between them</span>
-<span class="n">loss_digit_classifier</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">'digit_classification_weight'</span><span class="p">]</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
+<span class="c1"># since there&#39;s a tension between them</span>
+<span class="n">loss_digit_classifier</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;digit_classification_weight&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span>
     <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sparse_softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">digits</span><span class="p">,</span>
                                                    <span class="n">logits</span><span class="o">=</span><span class="n">digit_logits</span><span class="p">),</span>
     <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
@@ -1477,16 +1489,18 @@ h6:hover .anchor-link {
 
 <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_auto_encode</span> <span class="o">+</span> <span class="n">loss_digit_classifier</span>
 
-<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">'learning_rate'</span><span class="p">])</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+<span class="n">train_op</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;learning_rate&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Training">Training<a class="anchor-link" href="#Training">¶</a></h1><p><img alt="" src="images/vae2/training.jpg"></p>
+<h1 id="Training">Training<a class="anchor-link" href="#Training">&#182;</a></h1><p><img src="images/vae2/training.jpg" alt=""></p>
 <p>We'll train the model to optimize the two losses - the VAE loss and the classification loss - using <a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">SGD</a>.</p>
 <p>At the end of every epoch we'll sample latent vectors and decode them into images, so we can visualize how the generative power of the model improves over the epochs. The sampling method is as follows:</p>
 <ol>
@@ -1494,22 +1508,23 @@ h6:hover .anchor-link {
 <li>Randomly sample the other dimensions according to the prior - a multivariate Gaussian. We'll use these sampled values for all the different digits we generate in a given epoch. This way we can have a feeling of what is encoded in the other dimensions, for example stroke style.</li>
 </ol>
 <p>The intuition behind step 1 is that after convergence the model should be able to classify the digit in an input image using these dimensions. On the other hand, these dimensions are also used in the decoding step to generate the image. It means the decoder sub-network learns that when these dimensions have the values corresponding to the digit 2, it should generate an image of that digit. Therefore, if we manually set these dimensions to contain the information of the digit 2, we'll get a generated image of that digit.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [7]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">losses_auto_encode</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">losses_digit_classifier</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
-    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">'epochs'</span><span class="p">]):</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">num_examples</span> <span class="o">/</span> <span class="n">params</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">]):</span>
-            <span class="n">batch_images</span><span class="p">,</span> <span class="n">batch_digits</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">next_batch</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;epochs&#39;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">num_examples</span> <span class="o">/</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]):</span>
+            <span class="n">batch_images</span><span class="p">,</span> <span class="n">batch_digits</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">next_batch</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">])</span>
             <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">train_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">images</span><span class="p">:</span> <span class="n">batch_images</span><span class="p">,</span> <span class="n">digits</span><span class="p">:</span> <span class="n">batch_digits</span><span class="p">})</span>
         
         <span class="n">train_loss_auto_encode</span><span class="p">,</span> <span class="n">train_loss_digit_classifier</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
@@ -1519,45 +1534,57 @@ h6:hover .anchor-link {
         <span class="n">losses_auto_encode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss_auto_encode</span><span class="p">)</span>
         <span class="n">losses_digit_classifier</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss_digit_classifier</span><span class="p">)</span>
         
-        <span class="n">sample_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">'z_dim'</span><span class="p">]),</span> <span class="n">reps</span><span class="o">=</span><span class="p">[</span><span class="n">num_digits</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">sample_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;z_dim&#39;</span><span class="p">]),</span> <span class="n">reps</span><span class="o">=</span><span class="p">[</span><span class="n">num_digits</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">gen_samples</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">decoded_images</span><span class="p">,</span>
                                <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">z</span><span class="p">:</span> <span class="n">sample_z</span><span class="p">,</span> <span class="n">digit_prob</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_digits</span><span class="p">)})</span>
         <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_samples</span><span class="p">)</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's verify both losses look good, that is - decreasing:</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [8]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses_auto_encode</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'VAE loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;VAE loss&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">losses_digit_classifier</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'digit classifier loss'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;digit classifier loss&#39;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 <div class="output_wrapper">
 <div class="output">
+
+
 <div class="output_area">
-<div class="prompt"></div>
-<div class="output_png output_subarea">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAagAAAEYCAYAAAAJeGK1AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xl8nGW5//HPN3ubpW2aSdIl6UYXSikFQguyF2UTTkUR
 AUFUPBUEDyqu6EGPwjl6+AGKKJwqyGLZlEWEilQpm0BXutCV7nvTvemWZrl+f8yTMoSk2SaZZ5Lr
@@ -1825,25 +1852,30 @@ rxVC3aa8PbVdmNpUPNpTmBPUTGCopEGSMoDLgecTHNNhSXQzueeBa4LH1wB/SWAsH1L3hxq4hAT+
 J3pZX0V0fOFaojfC+yfwPvAPID9EsT0KLADmB3+4fRL4uzuNaHfDfGBu8HVhWH5/cXyfoWxT3p7i
 Fl8o2lS82pNvdeSccy6UwtzF55xzrgvzBOWccy6UPEE555wLJU9QzjnnQskTlHPOuVDyBOWccy6U
 PEE555wLpf8POTtvuXW4SfcAAAAASUVORK5CYII=
-">
+"
+>
+</div>
+
+</div>
+
 </div>
 </div>
-</div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Additionally, let's plot the generated images to see if indeed the model was able to generate images of digits:</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [9]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
-<div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">plot_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
     <span class="n">IMAGE_WIDTH</span> <span class="o">=</span> <span class="mf">0.7</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">IMAGE_WIDTH</span> <span class="o">*</span> <span class="n">num_digits</span><span class="p">,</span>
                         <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">IMAGE_WIDTH</span><span class="p">))</span>
@@ -1853,13 +1885,13 @@ PEE555wLpf8POTtvuXW4SfcAAAAASUVORK5CYII=
                         <span class="n">num_digits</span><span class="p">,</span>
                         <span class="n">epoch</span> <span class="o">*</span> <span class="n">num_digits</span> <span class="o">+</span> <span class="n">digit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
-                       <span class="n">cmap</span><span class="o">=</span><span class="s1">'Greys_r'</span><span class="p">)</span>
+                       <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys_r&#39;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">digit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks</span><span class="p">([])</span>
-                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'epoch {}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                           <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span>
-                           <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;epoch {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                           <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                           <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
                            <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                            <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1868,14 +1900,23 @@ PEE555wLpf8POTtvuXW4SfcAAAAASUVORK5CYII=
                 
 <span class="n">plot_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 </pre></div>
+
+    </div>
 </div>
 </div>
-</div>
+
 <div class="output_wrapper">
 <div class="output">
+
+
 <div class="output_area">
-<div class="prompt"></div>
-<div class="output_png output_subarea">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAdwAAAMOCAYAAAC0yrf4AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsvWmQXNl1Hvjd3Pc9s1bUvqAbjW6gQXSjm80m1c1VDIvU
 yNKMLI/D81PyD8nW2CEppB8zYVsKj2IUirHF8BKexaEJhYMKijI9VJC0qGa30Bt6qcJSBaD2Jaty
@@ -5584,21 +5625,28 @@ xVZwPH+J5HI5WSEfj8cJh8P09/cTj8d/9J7ZSMGXJ+EpQ7KmkO+M5nI5ZmdnmZ2dNU3DXhlchUKh
 gl/yvYWtPz5AVSkrFAqFQmEKqkpZoVAoFAoTUAZXoVAoFAoTUAZXoVAoFAoTUAZXoVAoFAoTUAZX
 oVAoFAoTUAZXoVAoFAoTUAZXoVAoFAoTUAZXoVAoFAoTUAZXoVAoFAoT+F9j1IlbpVsm2AAAAABJ
 RU5ErkJggg==
-">
+"
+>
+</div>
+
+</div>
+
 </div>
 </div>
-</div>
-</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">¶</a></h1><p>It's nice to see that using a simple feed forward network (no fancy convolutions) we're able to generate nice looking images after merely 20 epochs. The model learned to use the special digit dimensions quite fast - at epoch 9 we already see the sequence of digits we were trying to generate.</p>
+<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">&#182;</a></h1><p>It's nice to see that using a simple feed forward network (no fancy convolutions) we're able to generate nice looking images after merely 20 epochs. The model learned to use the special digit dimensions quite fast - at epoch 9 we already see the sequence of digits we were trying to generate.</p>
 <p>Every epoch used different random values for the other dimensions, so we can see how the style differs between epochs, and is similar inside every epoch - at least for some of the epochs. At epoch 18 for instance all the digits are bolder compared to epoch 20.</p>
 <p>I invite you to open <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/vae2/vae2.ipynb">this notebook</a> and play around with the VAE. The hyperparameter values for instance have a great effect over the generated images. Have fun :)</p>
+
 </div>
 </div>
 </div>
+ 
+
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');

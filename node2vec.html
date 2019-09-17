@@ -85,8 +85,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -152,20 +150,20 @@ neighbor. Each random walk forms a sentence that can be fed into word2vec. This
 algorithm is called <a href="https://snap.stanford.edu/node2vec/">node2vec</a>. There are
 more details in the process, which you can read about in the <a href="https://arxiv.org/abs/1607.00653">original
 paper</a>.</p>
-<hr />
+<hr>
 <h1>Case study</h1>
 <p>Taboola’s content recommender system gathers lots of data, some of which can be
 represented in a graphical manner. Let’s inspect one type of data as a case
 study for using node2vec.</p>
 <p>Taboola recommends articles in a widget shown in publishers’ websites:</p>
-<p><img alt="" src="images/node2vec/widget.png" /></p>
+<p><img alt="" src="images/node2vec/widget.png"></p>
 <p>Each article has named entities — the entities described by the title. For
 example, the item “the cutest dogs on the planet” contains the entities “dog”
 and “planet”. Each named entity can appear in many different items.</p>
 <p>We can describe this relationship using a graph in the following way: each node
 will be a named entity, and there will be an edge between two nodes if the two
 named entities appear in the same item:</p>
-<p><img alt="" src="images/node2vec/named-entities-graph.png" /></p>
+<p><img alt="" src="images/node2vec/named-entities-graph.png"></p>
 <p>Now that we are able to describe our data in a graphical manner, let’s run
 node2vec to see what insights we can learn out of the data. You can find the
 working code <a href="https://github.com/taboola/node2vec-example">here</a>.</p>
@@ -175,7 +173,7 @@ model, it’ll be hard to understand the qualities learned by node2vec.</p>
 <p>Another option would be to cluster similar embeddings together using
 <a href="https://en.wikipedia.org/wiki/K-means_clustering">K-means</a>, and color the nodes
 according to their associated cluster:</p>
-<p><img alt="" src="images/node2vec/node2vec-clusters.png" /></p>
+<p><img alt="" src="images/node2vec/node2vec-clusters.png"></p>
 <p>Cool! The clusters captured by node2vec seem to be homogeneous. In other words,
 nodes that are close to each other in the graph are also close to each other in
 the embedding space. Take for instance the orange cluster — all of its named
@@ -199,28 +197,28 @@ which is valid, and node2vec?</p>
 walk in the graph we’ve defined earlier. node2vec also defines walks on the same
 graph. So they are the same, right? Let’s have a look at the clusters we get by
 the word2vec approach:</p>
-<p><img alt="" src="images/node2vec/word2vec-clusters.png" /></p>
+<p><img alt="" src="images/node2vec/word2vec-clusters.png"></p>
 <p>Now the “basketball” cluster is less homogenous — it contains both orange and
 blue nodes. The named entity “Basketball” for example was colored orange, while
 the basketball players “Lebron James” and “Kobe Bryant” were colored blue!</p>
-<p><img alt="" src="images/node2vec/word2vec-labeled.png" /></p>
+<p><img alt="" src="images/node2vec/word2vec-labeled.png"></p>
 <p>But why did this happen?</p>
 <p>In this approach each walk in the graph is composed only of named entities that
 appear together in a single item. It means we are limited to walks that don’t go
 further than distance 1 from the starting node. In node2vec, we don’t have that
-limit.<br />
+limit.<br>
 Since each approach uses a different kind of walks, the learned
 embeddings capture a different kind of information.</p>
 <p>To make it more concrete, consider the following example: say we have two items
 — one with named entities A, B, C and another with D, B, E. These items induce
 the following graph:</p>
-<p><img alt="" src="images/node2vec/graph.png" /></p>
+<p><img alt="" src="images/node2vec/graph.png"></p>
 <p>In the simple word2vec approach we’ll generate the following sentences: [A, B,
 C] and [D, B, E]. In the node2vec approach we could also get sentences like [A,
 B, E]. If we fetch the latter into the training process, we’ll learn that E and
 C are interchangeable: the prefix [A, B] will be able to predict both C and E.
 Therefore, C and E will get similar embeddings, and will be clustered together.</p>
-<hr />
+<hr>
 <h1>Takeway</h1>
 <p>Using the right data structure to represent your data is important. Each data
 structure implies a different learning algorithm, or in other words — introduces
@@ -229,7 +227,7 @@ a different inductive bias.</p>
 the job, might be challenging.</p>
 <p>Since so many real world datasets are naturally represented as graphs, we think
 Graph Neural Networks are a must-have in our tool box as data scientists.</p>
-<hr />
+<hr>
 <p><em>Originally published at
 </em><a href="https://engineering.taboola.com/think-data-different">engineering.taboola.com</a>
 by me and <a href="https://medium.com/@kozohar">Zohar Komarovsky</a>.</p>

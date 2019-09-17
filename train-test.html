@@ -83,8 +83,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -116,7 +114,7 @@
         <p>About a year ago we incorporated a new type of feature into one of our models
 used for recommending content items to our users. I’m talking about the
 thumbnail of the content item:</p>
-<p><img alt="" src="images/train-test/new-feature.png" /></p>
+<p><img alt="" src="images/train-test/new-feature.png"></p>
 <p>Up until that point we used the item’s title and metadata features. The title is
 easier to work with compared to the thumbnail — machine learning wise.</p>
 <p>Our model has matured and it was time to add the thumbnail to the party. This
@@ -153,7 +151,7 @@ appears either in train or in test. So what seems to be the problem?</p>
 the title-only model to the model that also uses the thumbnail, we used the new
 split for the title-only model too. It shouldn’t really make an impact on it’s
 performance, right? But then we got the following results:
-<img alt="" src="images/train-test/accuracy.png" /></p>
+<img alt="" src="images/train-test/accuracy.png"></p>
 <p>In the top row we see what we already know: the title-only model has higher
 accuracy on train set, and accuracy isn’t significantly affected by the ratio of
 the split.</p>
@@ -161,18 +159,18 @@ the split.</p>
 expected to see similar results, but the title-only model was better on test.
 What?... It shouldn’t be like that. Additionally, the performance is greatly
 affected by the ratio. Something is suspicious...</p>
-<p><img alt="" src="images/train-test/suspicious.jpg" /></p>
+<p><img alt="" src="images/train-test/suspicious.jpg"></p>
 <h2>So where does the problem lurk?</h2>
 <p>You can think of our dataset as a bipartite graph, where one side is the
 thumbnails, and the other is the titles. There is an edge between a thumbnail
 and a title if there is an item with that thumbnail and title.
-<img alt="" src="images/train-test/bipartile-graph.png" /></p>
+<img alt="" src="images/train-test/bipartile-graph.png"></p>
 <p>What we effectively did in our new split is making sure each connected component
 resides in its entirety either in train or test set.</p>
 <p>It turns out that the split is biased. It tends to select big components for the
 test set. Say the test set should contain 15% of the rows. You’d expect it to
 contain 15% of the components, but what we got was 4%.</p>
-<p><img alt="" src="images/train-test/second-try.jpg" /></p>
+<p><img alt="" src="images/train-test/second-try.jpg"></p>
 <h2>Second try</h2>
 <p>What was the problem with what we did? When you randomly sample a row, the
 probability of getting a row from a specific component is proportional to the
@@ -203,7 +201,7 @@ experience it yourself:</p>
 </pre></div>
 
 
-<p><img alt="" src="images/train-test/sizes-distribution.png" /></p>
+<p><img alt="" src="images/train-test/sizes-distribution.png"></p>
 <p>The components size distribution is different between the train and test set.</p>
 <p>Now that we formalized better what we were doing by means of bipartite graph, we
 can implement the split by randomly sampling connected components, instead of
@@ -222,7 +220,7 @@ the past. Both are important.</p>
 you’ll have to construct a test set that contains both completely new items, and
 items that appear in the train set. What is the right proportion? Hard to say... I
 guess it can be a topic for another post on another day 🙂</p>
-<hr />
+<hr>
 <p><em>Originally published by me at
 <a href="https://engineering.taboola.com/story-of-bad-train-test-split">engineering.taboola.com</a>.</em></p>
     </article>

@@ -84,8 +84,6 @@
                 <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://anotherdatum.com">Posts</a></li>
 
-                            <li><a href="http://anotherdatum.com/pages/about.html">about me</a></li>
-                            <li><a href="http://anotherdatum.com/pages/resources.html">Resources</a></li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -115,7 +113,7 @@
     <!-- Post Content -->
     <article>
         <p><em>This is a joint post with <a href="https://medium.com/@inbarnaor">Inbar Naor</a>. Originally published at <a href="https://engineering.taboola.com/neural-networks-bayesian-perspective">engineering.taboola.com</a>.</em></p>
-<hr />
+<hr>
 <p>Understanding what a model doesn’t know is important both from the
 practitioner’s perspective and for the end users of many different machine
 learning applications. In <a href="https://engineering.taboola.com/using-uncertainty-interpret-model">our previous blog
@@ -129,32 +127,32 @@ Networks. Let’s start by looking at neural networks from a Bayesian perspectiv
 and our prior knowledge about the world. This is often contrasted with
 frequentist statistics which only consider evidence. The prior knowledge
 captures our belief on which model generated the data, or what the weights of
-that model are. We can represent this belief using a <em>prior distribution</em> <span class="math">\(p(w)\)</span>
+that model are. We can represent this belief using a <em>prior distribution</em> $p(w)$
 over the model’s weights.</p>
 <p>As we collect more data we update the prior distribution and turn in into a
 <em>posterior distribution</em> using Bayes’ law, in a process called <em>Bayesian
 updating</em>:</p>
-<p><span class="math">\(p(w|X,Y) = \frac{p(Y|X,w) p(w)}{p(Y|X)}\)</span></p>
+<p>$p(w|X,Y) = \frac{p(Y|X,w) p(w)}{p(Y|X)}$</p>
 <p>This equation introduces another key player in Bayesian learning — the
-<em>likelihood</em>, defined as <span class="math">\(p(y|x,w)\)</span>. This term represents how likely the data is,
-given the model’s weights <span class="math">\(w\)</span>.</p>
+<em>likelihood</em>, defined as $p(y|x,w)$. This term represents how likely the data is,
+given the model’s weights $w$.</p>
 <h1>Neural networks from a Bayesian perspective</h1>
-<p>A neural network’s goal is to estimate the likelihood <span class="math">\(p(y|x,w)\)</span>. This is true
+<p>A neural network’s goal is to estimate the likelihood $p(y|x,w)$. This is true
 even when you’re not explicitly doing that, e.g. <a href="https://www.jessicayung.com/mse-as-maximum-likelihood">when you minimize
 MSE</a>.</p>
 <p>To find the best model weights we can use <em>Maximum Likelihood Estimation</em> (MLE):</p>
-<div class="math">\begin{split}
-w^{MLE} &amp;= \text{argmax}_{w}\text{log}P(D|w) \\
-&amp; = \text{argmax}_{w}\sum_i \text{log}P(y_i|x_i,w)
-\end{split}</div>
+<p>\begin{split}
+w^{MLE} &amp;= \text{argmax}<em w>{w}\text{log}P(D|w) \
+&amp; = \text{argmax}</em>\sum_i \text{log}P(y_i|x_i,w)
+\end{split}</p>
 <p>Alternatively, we can use our prior knowledge, represented as a prior
 distribution over the weights, and maximize the posterior distribution. This
 approach is called <em>Maximum Aposteriori Estimation</em> (MAP):</p>
-<div class="math">\begin{split}
-w^{MAP} &amp;= \text{argmax}_{w}\text{log}P(w|D) \\
-&amp; = \text{argmax}_{w}\text{log}P(D|w) + \text{log}P(w)
-\end{split}</div>
-<p>The term <span class="math">\(\text{log}P(w)\)</span>, which represents our prior, acts as a regularization term.
+<p>\begin{split}
+w^{MAP} &amp;= \text{argmax}<em w>{w}\text{log}P(w|D) \
+&amp; = \text{argmax}</em>\text{log}P(D|w) + \text{log}P(w)
+\end{split}</p>
+<p>The term $\text{log}P(w)$, which represents our prior, acts as a regularization term.
 Choosing a Gaussian distribution with mean 0 as the prior, you’ll get the
 mathematical equivalence of L2 regularization.</p>
 <p>Now that we start thinking about neural networks as probabilistic creatures, we
@@ -171,10 +169,10 @@ marginalization).</p>
 posterior distribution (or the likelihood, if we’re working with MLE), we
 consider all possible weights, weighted by their probability. This is achieved
 using an integral:</p>
-<p><span class="math">\(p(y|x,X,Y) = {\displaystyle \int} p(y|x,w)p(w|X,Y)dw\)</span></p>
-<p><span class="math">\(x\)</span> is a data point for which we want to infer <span class="math">\(y\)</span>, and <span class="math">\(X\)</span>,<span class="math">\(Y\)</span> are training
-data. The first term <span class="math">\(p(y|x,w)\)</span> is our good old likelihood, and the second term
-<span class="math">\(p(w|X,Y)\)</span> is the posterior probability of the model’s weights given the data.</p>
+<p>$p(y|x,X,Y) = {\displaystyle \int} p(y|x,w)p(w|X,Y)dw$</p>
+<p>$x$ is a data point for which we want to infer $y$, and $X$,$Y$ are training
+data. The first term $p(y|x,w)$ is our good old likelihood, and the second term
+$p(w|X,Y)$ is the posterior probability of the model’s weights given the data.</p>
 <p>We can think about it as an ensemble of models weighted by the probability of
 each model. Indeed this is equivalent to an ensemble of infinite number of
 neural networks, with the same architecture but with different weights.</p>
@@ -185,7 +183,7 @@ This is because the posterior probability cannot be evaluated analytically.</p>
 problem in many cases of Bayesian learning, and many methods to overcome this
 have been developed over the years. We can divide these methods into two
 families: variational inference and sampling methods.</p>
-<p><img alt="" src="images/uncertainty_paper/BNN/methods.png" /></p>
+<p><img alt="" src="images/uncertainty_paper/BNN/methods.png"></p>
 <h3>Monte Carlo sampling</h3>
 <p>We have a problem. The posterior distribution is intractable. What if instead of
 computing the integral over the true distribution we’ll approximate it with the
@@ -197,23 +195,23 @@ distribution.</p>
 <p>Another solution is to approximate the true intractable distribution with a
 different distribution from a tractable family. To measure the similarity of the
 two distribution we can use KL divergence:</p>
-<p><span class="math">\(D_{KL}(p||q) = {\displaystyle \int}_{-\infty}^{\infty} p(x) log \frac{p(x)}{q(x)}dx\)</span></p>
-<p>Let <span class="math">\(q\)</span> be a variational distribution parameterized by <span class="math">\(\theta\)</span>. We want to find the
-value of <span class="math">\(\theta\)</span> that minimizes the KL divergence:</p>
-<div class="math">\begin{split}
-\theta^* &amp;= \text{argmin}_\theta D_{KL}(q_\theta(w)||p(w|X,Y)) \\
-&amp; = \text{argmin}_\theta {\displaystyle \int} q_\theta(w) log \frac{q_\theta(w)p(X,Y)}{p(X,Y|w)p(w)}dw \\
-&amp; = \text{argmin}_\theta {\displaystyle \int} q_\theta(w) log \frac{q_\theta(w)}{p(w)}dw - {\displaystyle \int} q_\theta(w) log (p(X,Y|w))dw \\
-&amp; = \text{argmin}_\theta D_{KL}(q_\theta(w)||p(w)) - \mathbb{E}_{q_\theta(w)} log(p(X,Y|w))
-\end{split}</div>
+<p>$D_{KL}(p||q) = {\displaystyle \int}_{-\infty}^{\infty} p(x) log \frac{p(x)}{q(x)}dx$</p>
+<p>Let $q$ be a variational distribution parameterized by $\theta$. We want to find the
+value of $\theta$ that minimizes the KL divergence:</p>
+<p>\begin{split}
+\theta^* &amp;= \text{argmin}<em KL>\theta D</em>(q_\theta(w)||p(w|X,Y)) \
+&amp; = \text{argmin}<em>\theta {\displaystyle \int} q</em>\theta(w) log \frac{q_\theta(w)p(X,Y)}{p(X,Y|w)p(w)}dw \
+&amp; = \text{argmin}<em>\theta {\displaystyle \int} q</em>\theta(w) log \frac{q_\theta(w)}{p(w)}dw - {\displaystyle \int} q_\theta(w) log (p(X,Y|w))dw \
+&amp; = \text{argmin}<em KL>\theta D</em>(q_\theta(w)||p(w)) - \mathbb{E}<em>{q</em>\theta(w)} log(p(X,Y|w))
+\end{split}</p>
 <p>Look at what we’ve got: the first term is the KL divergence between the
 variational distribution and the prior distribution. The second term is the
-likelihood with regards to <span class="math">\(q_\theta\)</span>. So we’re looking for <span class="math">\(q_\theta\)</span> that explains the
+likelihood with regards to $q_\theta$. So we’re looking for $q_\theta$ that explains the
 data best, but on the other hand is as close as possible to the prior
 distribution. This is just another way to introduce regularization into neural
 networks!</p>
-<p>Now that we have <span class="math">\(q_\theta\)</span> we can use it to make predictions:</p>
-<p><span class="math">\(q_\theta(y|x) = {\displaystyle \int} p(y|x,w)q_\theta(w)dw\)</span></p>
+<p>Now that we have $q_\theta$ we can use it to make predictions:</p>
+<p>$q_\theta(y|x) = {\displaystyle \int} p(y|x,w)q_\theta(w)dw$</p>
 <p>The above formulation comes from a <a href="http://proceedings.mlr.press/v37/blundell15.html">work by
 DeepMind</a> in 2015. Similar
 ideas were presented by
@@ -225,7 +223,7 @@ evolved over the years.</p>
 <p>OK, but what if we don’t want to train a model from scratch? What if we have a
 trained model that we want to get uncertainty estimation from? Can we do that?</p>
 <p>It turns out that if we use dropout during training, we actually can.</p>
-<p><img alt="" src="images/uncertainty_paper/BNN/data_scientists.jpg" />
+<p><img alt="" src="images/uncertainty_paper/BNN/data_scientists.jpg">
 <em>Professional data scientists contemplating the uncertainty of their model — an
 illustration</em></p>
 <h3>Dropout as a mean for uncertainty</h3>
@@ -237,14 +235,14 @@ specific nodes, which might imply overfitting.</p>
 that if you apply dropout at inference time as well, you can easily get an
 uncertainty estimator:</p>
 <ol>
-<li>Infer <span class="math">\(y|x\)</span> multiple times, each time sample a different set of nodes to drop out.</li>
-<li>Average the predictions to get the final prediction <span class="math">\(\mathbb{E}(y|x)\)</span>.</li>
+<li>Infer $y|x$ multiple times, each time sample a different set of nodes to drop out.</li>
+<li>Average the predictions to get the final prediction $\mathbb{E}(y|x)$.</li>
 <li>Calculate the sample variance of the predictions.</li>
 </ol>
 <p>That’s it! You got an estimate of the variance! The
 <a href="http://www.cs.ox.ac.uk/people/yarin.gal/website/blog_3d801aa532c1ce.html">intuition</a>
 behind this approach is that the training process can be thought of as training
-<span class="math">\(2^m\)</span> different models simultaneously — where m is the number of nodes in the
+$2^m$ different models simultaneously — where m is the number of nodes in the
 network: each subset of nodes that is not dropped out defines a new model. All
 models share the weights of the nodes they don’t drop out. At every batch, a
 randomly sampled set of these models is trained.</p>
@@ -260,7 +258,7 @@ bias. However, it’s stable, with low variance.</p>
 <p>Sampling methods on the other hand have low bias, because we don’t make
 assumptions about the distribution. This comes at the price of high variance,
 since the result is dependent on the samples we draw.</p>
-<hr />
+<hr>
 <h1>Final thoughts</h1>
 <p>Being able to estimate the model uncertainty is a hot topic. It’s important to
 be aware of it in high risk applications such as medical assistants and
@@ -272,67 +270,12 @@ uncertain about it, go ahead and look for more data 🙂</p>
 <p>In the next post we’ll show you how to use uncertainty in recommender systems,
 and specifically — how to tackle the <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit">exploration-exploitation
 challenge</a>. Stay tuned.</p>
-<hr />
+<hr>
 <p><em>This is the second post of a series related to a paper we’re presenting in a
 workshop in this year KDD conference: <a href="https://arxiv.org/abs/1711.02487">deep density networks and uncertainty in
 recommender systems</a></em>.</p>
 <p><em>The first post can be found
 <a href="https://engineering.taboola.com/using-uncertainty-interpret-model">here</a>.</em></p>
-<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
-    var align = "center",
-        indent = "0em",
-        linebreak = "false";
-
-    if (false) {
-        align = (screen.width < 768) ? "left" : align;
-        indent = (screen.width < 768) ? "0em" : indent;
-        linebreak = (screen.width < 768) ? 'true' : linebreak;
-    }
-
-    var mathjaxscript = document.createElement('script');
-    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
-    mathjaxscript.type = 'text/javascript';
-    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
-    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
-        "MathJax.Hub.Config({" +
-        "    config: ['MMLorHTML.js']," +
-        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
-        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
-        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
-        "    displayAlign: '"+ align +"'," +
-        "    displayIndent: '"+ indent +"'," +
-        "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
-        "    tex2jax: { " +
-        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
-        "        displayMath: [ ['$$','$$'] ]," +
-        "        processEscapes: true," +
-        "        preview: 'Loading awesomeness...'," +
-        "    }, " +
-        "    'HTML-CSS': { " +
-        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
-        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
-        "    }, " +
-        "}); " +
-        "if ('default' !== 'default') {" +
-            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
-                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
-                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
-                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
-                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
-                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
-            "});" +
-        "}";
-    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
-}
-</script>
     </article>
 
         <div class="tags">
