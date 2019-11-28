@@ -1223,78 +1223,38 @@ h6:hover .anchor-link {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
-.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
-<style type="text/css">
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-</style>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Word-Morphing">Word Morphing<a class="anchor-link" href="#Word-Morphing">&#182;</a></h1><p>I assume you're familiar with <a href="https://en.wikipedia.org/wiki/Morphing">image morphing</a> - the process of changing one image into another through a seamless transition. So how would <em>word morphing</em> look like? If we want to do a seamless transition from one word into another, through which words would it pass?</p>
+<h1 id="Word-Morphing">Word Morphing<a class="anchor-link" href="#Word-Morphing">¶</a></h1><p>I assume you're familiar with <a href="https://en.wikipedia.org/wiki/Morphing">image morphing</a> - the process of changing one image into another through a seamless transition. So how would <em>word morphing</em> look like? If we want to do a seamless transition from one word into another, through which words would it pass?</p>
 <p>In this post I'll describe how I employed word2vec's embeddings and $A^*$ search algorithm to morph between words.</p>
 <p>In order to perform word morphing, we'll define a graph $G$ where the set of nodes $N$ represent words, and there's some weight function $f : N \times N \rightarrow \mathbb{R}_{\geq 0}$. Given a start word $n_{\text{start}}$ and an end word $n_{\text{end}}$, our goal is to find a path within the graph which minimizes the sum of weights induced by $f$:</p>
 <p>$\text{argmin}_{\langle n_1, ..., n_k \rangle : k \in \mathbb{N}, n_1, ..., n_k \in N, n_1 = n_{\text{start}}, n_k = n_{\text{end}}}\sum_{i=1}^{k-1} f(n_i, n_{i+1})$</p>
 <p>Usually when people talk about word morphing they mean searching for a path between $n_{\text{start}}$ and $n_{\text{end}}$ where there's an edge only between words such that one can be achieved from the other by changing one letter, as can be seen <a href="http://wordmorph.sarangconsulting.com/faq.php#1.2">here</a>. In this case, $f(n_1, n_2)$ is 1 when such a change exists, and $\infty$ otherwise.</p>
-<p>In this post I'll show you how to morph between semantically similar words, i.e. $f$ will be related to semantics. Here's an example to illustrate the difference between the two approaches: given $n_{\text{start}} = \text{tooth}$, $n_{\text{end}} = \text{light}$, the approach of changing one character at a time <a href="http://wordmorph.sarangconsulting.com/?source=tooth&amp;target=light&amp;submit=MORPH+WORDS">can result</a> in</p>
+<p>In this post I'll show you how to morph between semantically similar words, i.e. $f$ will be related to semantics. Here's an example to illustrate the difference between the two approaches: given $n_{\text{start}} = \text{tooth}$, $n_{\text{end}} = \text{light}$, the approach of changing one character at a time <a href="http://wordmorph.sarangconsulting.com/?source=tooth&target=light&submit=MORPH+WORDS">can result</a> in</p>
 <p><code>tooth, booth, boots, botts, bitts, bitos, bigos, bigot, bight, light</code></p>
 <p>while the semantics approach which will be defined in this post results in</p>
 <p><code>tooth, retina, X_ray, light</code></p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Word-Semantics">Word Semantics<a class="anchor-link" href="#Word-Semantics">&#182;</a></h1><p>In order to capture word semantics we'll use pretrained word2vec embeddings. To those of you who are not familiar with the algorithm, here's an excerpt from <a href="https://en.wikipedia.org/wiki/Word2vec">Wikipedia</a>:</p>
+<h1 id="Word-Semantics">Word Semantics<a class="anchor-link" href="#Word-Semantics">¶</a></h1><p>In order to capture word semantics we'll use pretrained word2vec embeddings. To those of you who are not familiar with the algorithm, here's an excerpt from <a href="https://en.wikipedia.org/wiki/Word2vec">Wikipedia</a>:</p>
 <blockquote><p>Word2vec takes as its input a large corpus of text and produces a vector space, typically of several hundred dimensions, with each unique word in the corpus being assigned a corresponding vector in the space. Word vectors are positioned in the vector space such that words that share common contexts in the corpus are located in close proximity to one another in the space.</p>
 </blockquote>
 <p>It means every node in the graph can be associated with some vector in high dimensionality space (300 in our case). Therefore, we can naturally define a distance function between every two nodes. We'll use cosine similarity, since this is the metric usually used when one wants to semantically compare between word embeddings. From now on, I'll overload a node symbol $n$ to be its associated word's embedding vector.</p>
 <p>To use the word2vec embeddings, we'll download Google's pretrained embeddings, and use <code>gensim</code> package to access them.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -1302,26 +1262,24 @@ h6:hover .anchor-link {
 <span class="kn">import</span> <span class="nn">astar</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">download_file_from_google_drive</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
-    <span class="n">drive_url</span> <span class="o">=</span> <span class="s1">&#39;https://docs.google.com/uc?export=download&#39;</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">download_file_from_google_drive</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+    <span class="n">drive_url</span> <span class="o">=</span> <span class="s1">'https://docs.google.com/uc?export=download'</span>
 
     <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">},</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">file_id</span><span class="p">},</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">get_confirm_token</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s1">&#39;confirm&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s1">'confirm'</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     
     <span class="n">save_response_content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>    
@@ -1329,14 +1287,14 @@ h6:hover .anchor-link {
     
 <span class="k">def</span> <span class="nf">get_confirm_token</span><span class="p">(</span><span class="n">response</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">cookies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;download_warning&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'download_warning'</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">value</span>
 
         
 <span class="k">def</span> <span class="nf">save_response_content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
     <span class="n">CHUNK_SIZE</span> <span class="o">=</span> <span class="mi">32768</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">CHUNK_SIZE</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>  <span class="c1"># filter out keep-alive new chunks</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
@@ -1345,77 +1303,71 @@ h6:hover .anchor-link {
 <span class="k">def</span> <span class="nf">download_word2vec_if_needed</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dest</span><span class="p">):</span>
         <span class="k">return</span>
-    <span class="n">word2vec_file_id</span> <span class="o">=</span> <span class="s1">&#39;0B7XkCwpI5KDYNlNUTTlSS21pQmM&#39;</span>
-    <span class="n">zip_path</span> <span class="o">=</span> <span class="s1">&#39;word2vec.bin.gz&#39;</span>
+    <span class="n">word2vec_file_id</span> <span class="o">=</span> <span class="s1">'0B7XkCwpI5KDYNlNUTTlSS21pQmM'</span>
+    <span class="n">zip_path</span> <span class="o">=</span> <span class="s1">'word2vec.bin.gz'</span>
     <span class="n">download_file_from_google_drive</span><span class="p">(</span><span class="n">word2vec_file_id</span><span class="p">,</span> <span class="n">zip_path</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_zip</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_dest</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_zip</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_dest</span><span class="p">:</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_zip</span><span class="p">,</span> <span class="n">f_dest</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">zip_path</span><span class="p">)</span>
         
 
-<span class="n">word2vec_filename</span> <span class="o">=</span> <span class="s1">&#39;word2vec.bin&#39;</span>
+<span class="n">word2vec_filename</span> <span class="o">=</span> <span class="s1">'word2vec.bin'</span>
 <span class="n">download_word2vec_if_needed</span><span class="p">(</span><span class="n">word2vec_filename</span><span class="p">)</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="n">word2vec_filename</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Choosing-the-Weight-Function">Choosing the Weight Function<a class="anchor-link" href="#Choosing-the-Weight-Function">&#182;</a></h1><p>Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.</p>
+<h1 id="Choosing-the-Weight-Function">Choosing the Weight Function<a class="anchor-link" href="#Choosing-the-Weight-Function">¶</a></h1><p>Given the cosine similarity distance function, we can define our $f$ function to be $f(n_1, n_2) = 1 - \cos(n_1, n_2) = 1 - \frac{n_1 \cdot n_2}{||n_1|| \cdot ||n_2||}$.</p>
 <p>However, using this approach we'll face a problem: the best path might include edges with high weight, which will result in successive words that aren't semantically similar.</p>
 <p>To tackle this, we can change $f$ to be</p>
 <p>$f(n_1, n_2) = \begin{cases}
-  1 - \cos(n_1, n_2) &amp; \text{if } n_2 \in \text{neighbors}(n_1) \\
-  \infty &amp; \text{otherwise}
+  1 - \cos(n_1, n_2) & \text{if } n_2 \in \text{neighbors}(n_1) \\
+  \infty & \text{otherwise}
 \end{cases}$</p>
 <p>where $\text{neighbors}(n_1)$ denotes the nearest nodes in the graph to $n_1$ in terms of cosine similarity. The number of neighbors is configurable.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="$A^*$-Search">$A^*$ Search<a class="anchor-link" href="#$A^*$-Search">&#182;</a></h1><p>Now that we have our graph defined, we'll use a well known search algorithm called $A^*$.</p>
+<h1 id="$A^*$-Search">$A^*$ Search<a class="anchor-link" href="#$A^*$-Search">¶</a></h1><p>Now that we have our graph defined, we'll use a well known search algorithm called $A^*$.</p>
 <p>In this algorithm, every node has a cost composed of two terms - $g(n) + h(n)$.</p>
 <p>$g(n)$ is the cost of the shortest path from $n_{\text{start}}$ to $n$, and $h(n)$ is a heuristic estimating the cost of the shortest path from $n$ to $n_{\text{end}}$. In our case, the heuristic function will be $f$.</p>
 <p>The search algorithm maintains a data structure called <em>the open set</em>. Initially this set contains $n_{\text{start}}$, and at each iteration of the algorithm we pop out the node in the open set with the minimal cost $g(n) + h(n)$, and add its neighbors to the open set. The algorithm stops when the node with the minimal cost is $n_{\text{end}}$.</p>
 <p>This algorithm works with whatever heuristic function we choose. But in order to actually find the optimal path, the heuristic function must be admissible, meaning it can't overestimate the true cost. Unfortunately, $f$ is not admissible. However, we'll use the <a href="https://en.wikipedia.org/wiki/Cosine_similarity#Properties">observation</a> that if the vectors have length 1, then the cosine similarity can be obtained using a monotonic transformation over the euclidean distance. It means the two are interchangeable in terms of ranking words by similarity. The euclidean distance is admissible (you can prove it using the <a href="https://en.wikipedia.org/wiki/Triangle_inequality">triangle inequality</a>), so we can use that instead, by defining</p>
 <p>$f(n_1, n_2) = \begin{cases}
-  ||n_1 - n_2|| &amp; \text{if } n_2 \in \text{neighbors}(n_1) \\
-  \infty &amp; \text{otherwise}
+  ||n_1 - n_2|| & \text{if } n_2 \in \text{neighbors}(n_1) \\
+  \infty & \text{otherwise}
 \end{cases}$</p>
 <p>So to sum up, we'll normalize the word embeddings, use the euclidean distance as a mean to find semantically similar words, and the same euclidean distance to direct $A^*$ search process in order to find the optimal path.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">neighbors_fnct</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">,</span> <span class="n">dilute_factor</span><span class="p">):</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">neighbors_fnct</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">,</span> <span class="n">dilute_factor</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">neighbor</span> <span class="k">for</span> <span class="n">neighbor</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">similar_by_word</span><span class="p">(</span>
         <span class="n">node</span><span class="p">,</span> <span class="n">n_neighbors</span> <span class="o">*</span> <span class="n">dilute_factor</span><span class="p">)][</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">dilute_factor</span><span class="p">]</span>
 
@@ -1425,7 +1377,7 @@ h6:hover .anchor-link {
 
 
 <span class="k">def</span> <span class="nf">is_goal_reached_fnct</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">euclidean_dist</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">goal</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.1</span>
+    <span class="k">return</span> <span class="n">euclidean_dist</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">goal</span><span class="p">)</span> <span class="o"><</span> <span class="mf">0.1</span>
 
 
 <span class="k">def</span> <span class="nf">morph</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dilute_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
@@ -1439,66 +1391,51 @@ h6:hover .anchor-link {
         <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I chose $neighbors(n)$ to include its 1000 nearest nodes. However, in order to make the search more efficient, we can dilute these using <code>dilute_factor</code> of 10: we pick the nearest neighbor, the 10'th nearest neighbor, the 20'th, and so on - until we have 100 nodes. The intuition behind it is that the best path from some intermediate node to $n_{\text{end}}$ might pass through its nearest neighbor. If it doesn't, it might be the case that it won't pass through the second neighbor neither, since the first and second neighbors might be almost the same. So to save some computations, we just skip some of the nearest neighbors.</p>
 <p>And here comes the fun part:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">&#39;tooth&#39;</span><span class="p">,</span> <span class="s1">&#39;light&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">,</span>  <span class="s1">&#39;perfect&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">&#39;pillow&#39;</span><span class="p">,</span> <span class="s1">&#39;car&#39;</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'tooth'</span><span class="p">,</span> <span class="s1">'light'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'John'</span><span class="p">,</span>  <span class="s1">'perfect'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'pillow'</span><span class="p">,</span> <span class="s1">'car'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;tooth&#39;, u&#39;retina&#39;, u&#39;X_ray&#39;, u&#39;light&#39;]
-[&#39;John&#39;, u&#39;George&#39;, u&#39;Frank_Sinatra&#39;, u&#39;Wonderful&#39;, u&#39;perfect&#39;]
-[&#39;pillow&#39;, u&#39;plastic_bag&#39;, u&#39;pickup_truck&#39;, u&#39;car&#39;]
+<pre>['tooth', u'retina', u'X_ray', u'light']
+['John', u'George', u'Frank_Sinatra', u'Wonderful', u'perfect']
+['pillow', u'plastic_bag', u'pickup_truck', u'car']
 </pre>
 </div>
 </div>
-
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">&#182;</a></h1><p>Implementing the word morphing project was fun, but not as fun as playing around and trying this tool on whatever pair of words I could have thought of. I encourage you to go ahead and <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/word%20morph/word-morph.ipynb">play with it</a> yourself. Let me know in the comments what interesting and surprising morphings you have found :)</p>
-
+<h1 id="Final-thoughts">Final thoughts<a class="anchor-link" href="#Final-thoughts">¶</a></h1><p>Implementing the word morphing project was fun, but not as fun as playing around and trying this tool on whatever pair of words I could have thought of. I encourage you to go ahead and <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/blob/source/content/word%20morph/word-morph.ipynb">play with it</a> yourself. Let me know in the comments what interesting and surprising morphings you have found :)</p>
 </div>
 </div>
 </div>
- 
-
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');

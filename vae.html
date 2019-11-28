@@ -1224,79 +1224,38 @@ h6:hover .anchor-link {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
-.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
-<style type="text/css">
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-</style>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Ever wondered how the Variational Autoencoder (VAE) model works? Do you want to know how VAE is able to generate new examples similar to the dataset it was trained on?</p>
 <p>After reading this post, you'll be equipped with the theoretical understanding of the inner workings of VAE, as well as being able to implement one yourself.</p>
 <p>In a future post I'll provide you with a working code of a VAE trained on a dataset of handwritten digits images, and we’ll have some fun generating new digits!</p>
-<hr>
-
+<hr/>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generative-models">Generative models<a class="anchor-link" href="#Generative-models">&#182;</a></h2><p>VAE is a generative model - it estimates the Probability Density Function (PDF) of the training data. If such a model is trained on natural looking images, it should assign a high probability value to an image of a lion. An image of random gibberish on the other hand should be assigned a low probability value.</p>
+<h2 id="Generative-models">Generative models<a class="anchor-link" href="#Generative-models">¶</a></h2><p>VAE is a generative model - it estimates the Probability Density Function (PDF) of the training data. If such a model is trained on natural looking images, it should assign a high probability value to an image of a lion. An image of random gibberish on the other hand should be assigned a low probability value.</p>
 <p>The VAE model can also sample examples from the learned PDF, which is the coolest part, since it’ll be able to generate new examples that look similar to the original dataset!</p>
 <p>I'll explain the VAE using the <a href="https://en.wikipedia.org/wiki/MNIST_database">MNIST</a> handwritten digits dataset. The input to the model is an image in $\mathbb{R}^{28×28}$. The model should estimate a high probability value if the input looks like a digit.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-challenge-of-modeling-images">The challenge of modeling images<a class="anchor-link" href="#The-challenge-of-modeling-images">&#182;</a></h2><p>The interactions between pixels pose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.</p>
+<h2 id="The-challenge-of-modeling-images">The challenge of modeling images<a class="anchor-link" href="#The-challenge-of-modeling-images">¶</a></h2><p>The interactions between pixels pose a great challenge. If the pixels were independent of each other, we would have needed to learn the PDF of every pixel independently, which is easy. The sampling would have been a breeze too - we would have just sampled each pixel independently.</p>
 <p>In digit images there are clear dependencies between pixels. If you look at the left half of an image and see the start of a 4, you’d be very surprised to see the right half is the end of a 0. But why?...</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Latent-space">Latent space<a class="anchor-link" href="#Latent-space">&#182;</a></h2><p>You know every image of a digit should contain, well, a single digit. An input in $\mathbb{R}^{28×28}$ doesn’t explicitly contain that information. But it must reside somewhere... That <em>somewhere</em> is the latent space.</p>
-<p><img src="images/vae/folders.jpg" alt="Photo by Samuel Zeller on Unsplash"></p>
+<h2 id="Latent-space">Latent space<a class="anchor-link" href="#Latent-space">¶</a></h2><p>You know every image of a digit should contain, well, a single digit. An input in $\mathbb{R}^{28×28}$ doesn’t explicitly contain that information. But it must reside somewhere... That <em>somewhere</em> is the latent space.</p>
+<p><img alt="Photo by Samuel Zeller on Unsplash" src="images/vae/folders.jpg"/></p>
 <p>You can think of the latent space as $\mathbb{R}^{k}$ where every vector contains $k$ pieces of essential information needed to draw an image. Let’s say the first dimension contains the number represented by the digit. The second dimension can be the width. The third - the angle. And so on.</p>
 <p>We can think of the process that generated the images as a two steps process. First the person decides - consciously or not - all the attributes of the digit he’s going to draw. Next, these decisions transform into brushstrokes.</p>
 <p>VAE tries to model this process: given an image $x$, we want to find at least one latent vector which is able to describe it; one vector that contains the instructions to generate $x$. Formulating it using the <a href="https://en.wikipedia.org/wiki/Law_of_total_probability">law of total probability</a>, we get $P(x) = \int P(x|z)P(z)dz$.</p>
@@ -1309,39 +1268,36 @@ h6:hover .anchor-link {
 <p>The VAE training objective is to maximize $P(x)$. We’ll model $P(x|z)$ using a multivariate Gaussian $\mathcal{N}(f(z), \sigma^2 \cdot I)$.</p>
 <p>$f(z)$ will be modeled using a neural network. $\sigma$ is a hyperparameter that multiplies the identity matrix $I$.</p>
 <p>You should keep in mind that $f$ is what we'll be using when generating new images using a trained model. Imposing a Gaussian distribution serves for training purposes only. If we'd use a Dirac delta function (i.e. $x = f(z)$ deterministically), we wouldn't be able to train the model using gradient descent!</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-wonders-of-latent-space">The wonders of latent space<a class="anchor-link" href="#The-wonders-of-latent-space">&#182;</a></h1><p>There are two big problems with the latent space approach:</p>
+<h1 id="The-wonders-of-latent-space">The wonders of latent space<a class="anchor-link" href="#The-wonders-of-latent-space">¶</a></h1><p>There are two big problems with the latent space approach:</p>
 <ol>
 <li>What information does each dimension hold? Some dimensions might relate to abstract pieces of information, e.g. style. Even if it was easy to interpret all dimensions, we wouldn’t want to assign labels to the dataset. This approach wouldn't scale to new datasets.</li>
 <li>The latent space might be entangled, i.e. the dimensions might be correlated. A digit being drawn really fast, for instance, might result in both angled and thinner brushstrokes. Specifying these dependencies is hard.</li>
 </ol>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Deep-learning-to-the-rescue">Deep learning to the rescue<a class="anchor-link" href="#Deep-learning-to-the-rescue">&#182;</a></h1><p>It turns out every distribution can be generated by applying a sufficiently complicated function over a standard multivariate Gaussian.</p>
+<h1 id="Deep-learning-to-the-rescue">Deep learning to the rescue<a class="anchor-link" href="#Deep-learning-to-the-rescue">¶</a></h1><p>It turns out every distribution can be generated by applying a sufficiently complicated function over a standard multivariate Gaussian.</p>
 <p>Hence, we'll choose $P(z)$ to be a standard multivariate Gaussian. $f$, being modeled by a neural network, can thus be broken to two phases:</p>
 <ol>
 <li>The first layers will map the Gaussian to the true distribution over the latent space. We won't be able to interpret the dimensions, but it doesn't really matter.</li>
 <li>The later layers will then map from the latent space to $P(x|z)$.</li>
 </ol>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="So-how-do-we-train-this-beast?">So how do we train this beast?<a class="anchor-link" href="#So-how-do-we-train-this-beast?">&#182;</a></h1><p>The formula for $P(x)$ is intractable, so we’ll approximate it using Monte Carlo method:</p>
+<h1 id="So-how-do-we-train-this-beast?">So how do we train this beast?<a class="anchor-link" href="#So-how-do-we-train-this-beast?">¶</a></h1><p>The formula for $P(x)$ is intractable, so we’ll approximate it using Monte Carlo method:</p>
 <ol>
 <li>Sample $\{z_i\}_{i=1}^n$ from the prior $P(z)$.</li>
 <li>Approximate using $ P(x) \approx \frac{1}{n}\sum_{i=1}^n P(x|z_i)$.</li>
@@ -1349,26 +1305,24 @@ h6:hover .anchor-link {
 <p>Great! So we just sample a bunch of $z$’s and let the backpropagation party begin!</p>
 <p>Unfortunately, since $x$ has high dimensionality, many samples are needed to get a reasonable approximation. I mean, if you sample $z$'s, what are the chances you’ll end up with an image that looks anything to do with x? This, by the way, explains why $P(x|z)$ must assign a positive probability value to any possible image, or otherwise the model won’t be able to learn: a sampled $z$ will result with an image that is almost surely different from $x$, and if the probability will be 0 the gradients won’t propagate.</p>
 <p>So how do we solve this mess?</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Let&#8217;s-take-a-shortcut!">Let&#8217;s take a shortcut!<a class="anchor-link" href="#Let&#8217;s-take-a-shortcut!">&#182;</a></h1><p><img src="images/vae/shortcut.jpg" alt="Photo by Stefan Steinbauer on Unsplash"></p>
+<h1 id="Let’s-take-a-shortcut!">Let’s take a shortcut!<a class="anchor-link" href="#Let’s-take-a-shortcut!">¶</a></h1><p><img alt="Photo by Stefan Steinbauer on Unsplash" src="images/vae/shortcut.jpg"/></p>
 <p>Most sampled $z$’s won’t contribute anything to $P(x)$ - they’ll be too off. If only we could know in advance where to sample from...</p>
 <p>We can introduce $Q(z|x)$. $Q$ will be trained to give high probability values to $z$’s that are likely to have generated $x$.
 Now we can calculate the Monte Carlo estimation using much fewer samples from $Q$.</p>
 <p>Unfortunately, a new problem arises! Instead of maximizing $P(x) = \int P(x|z)P(z)dz = \mathbb{E}_{z \sim P(z)} P(x|z)$, we’ll be maximizing $\mathbb{E}_{z \sim Q(z|x)} P(x|z)$. How do the two relate to each other?</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Variational-Inference">Variational Inference<a class="anchor-link" href="#Variational-Inference">&#182;</a></h1><p>Variational Inference is a topic for a post of its own, so I won’t elaborate here. All I’ll say is that the two do relate via this equation:</p>
+<h1 id="Variational-Inference">Variational Inference<a class="anchor-link" href="#Variational-Inference">¶</a></h1><p>Variational Inference is a topic for a post of its own, so I won’t elaborate here. All I’ll say is that the two do relate via this equation:</p>
 <p>$log P(X) - \mathcal{KL}[Q(z|x) || P(z|x)] = \mathbb{E}_{z \sim Q(z|x)}[log P(x|z)] - \mathcal{KL}[Q(z|x) || P(z)]$</p>
 <p>$\mathcal{KL}$ is the <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler divergence</a>, which intuitively measures how similar two distributions are.</p>
 <p>In a moment you'll see how we can maximize the right side of the equation. By doing so, the left side will also be maximized:</p>
@@ -1388,14 +1342,13 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </ul>
 <p>The KL divergence then becomes analytically solvable, which is great for us (and the gradients).</p>
 <p>The <em>decoder</em> part is a bit trickier. Naively, we’d tackle the fact it’s intractable by using Monte Carlo. But sampling $z$’s from $Q$ won’t allow the gradients to propagate through $Q$, because sampling is not a differentiable operation. This is problematic, since the weights of the layers that output $\Sigma_Q$ and $\mu_Q$ won’t be updated.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-reparameterization-trick">The reparameterization trick<a class="anchor-link" href="#The-reparameterization-trick">&#182;</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
+<h1 id="The-reparameterization-trick">The reparameterization trick<a class="anchor-link" href="#The-reparameterization-trick">¶</a></h1><p>We can substitute $Q$ with a deterministic parameterized transformation of a parameterless random variable:</p>
 <ol>
 <li>Sample from a standard (parameterless) Gaussian.</li>
 <li>Multiply the sample by the square root of $\Sigma_Q$.</li>
@@ -1403,17 +1356,16 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 </ol>
 <p>The result will have a distribution equal to $Q$. Now the sampling operation will be from the standard Gaussian. Hence, the gradients will be able to propagate through $\Sigma_Q$ and $\mu_Q$, since these are deterministic paths now.</p>
 <p>The result? The model will be able to learn how to adjust $Q$’s parameters: it’ll concentrate around good $z$’s that are able to produce $x$.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h1 id="Connecting-the-dots">Connecting the dots<a class="anchor-link" href="#Connecting-the-dots">&#182;</a></h1><p>The VAE model can be hard to grasp. We covered a lot of material here, and it can be overwhelming.</p>
+<hr/>
+<h1 id="Connecting-the-dots">Connecting the dots<a class="anchor-link" href="#Connecting-the-dots">¶</a></h1><p>The VAE model can be hard to grasp. We covered a lot of material here, and it can be overwhelming.</p>
 <p>So let me summarize all the steps one needs to grasp in order to implement VAE.</p>
-<p><img src="images/vae/vae.png" alt=""></p>
+<p><img alt="" src="images/vae/vae.png"/></p>
 <p>On the left side we have the model definition:</p>
 <ol>
 <li>An input image is passed through an encoder network.</li>
@@ -1427,20 +1379,17 @@ Now we can calculate the Monte Carlo estimation using much fewer samples from $Q
 <li>$Q(z|x)$ should be similar to the prior (multivariate standard Gaussian).</li>
 </ol>
 <p>In order to generate new images, you can directly sample a latent vector from the prior distribution, and decode it into an image.</p>
-<hr>
+<hr/>
 <p>In the next post I'll provide you with a working code of a VAE. Additionally, I'll show you how you can use a neat trick to condition the latent vector such that you can decide which digit you want to generate an image for. So stay tuned :)</p>
-<hr>
-<h4 id="Notes">Notes<a class="anchor-link" href="#Notes">&#182;</a></h4><p>This post is based on my intuition and these sources:</p>
+<hr/>
+<h4 id="Notes">Notes<a class="anchor-link" href="#Notes">¶</a></h4><p>This post is based on my intuition and these sources:</p>
 <ul>
 <li><a href="https://pure.uva.nl/ws/files/17891313/Thesis.pdf">Variational Inference and Deep Learning: A New Synthesis</a></li>
 <li><a href="https://arxiv.org/abs/1606.05908">Tutorial on Variational Autoencoders</a></li>
 </ul>
-
 </div>
 </div>
 </div>
- 
-
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');

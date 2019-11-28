@@ -1223,48 +1223,10 @@ h6:hover .anchor-link {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
-.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
-<style type="text/css">
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-</style>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Neural-Networks-gone-wild!-They-can-sample-from-discrete-distributions-now!">Neural Networks gone wild! They can sample from discrete distributions now!<a class="anchor-link" href="#Neural-Networks-gone-wild!-They-can-sample-from-discrete-distributions-now!">&#182;</a></h1><p>Training deep neural networks usually boils down to defining your model's architecture and a loss function, and watching the gradients propagate.</p>
+<h1 id="Neural-Networks-gone-wild!-They-can-sample-from-discrete-distributions-now!">Neural Networks gone wild! They can sample from discrete distributions now!<a class="anchor-link" href="#Neural-Networks-gone-wild!-They-can-sample-from-discrete-distributions-now!">¶</a></h1><p>Training deep neural networks usually boils down to defining your model's architecture and a loss function, and watching the gradients propagate.</p>
 <p>However, sometimes it's not that simple: some architectures incorporate a random component. The forward pass is no longer a deterministic function of the input and weights. The random component introduces stochasticity, by means of sampling from it.</p>
 <p>When would that happen, you ask? Whenever we want to approximate an intractable sum or integral. Then, we can form a Monte Carlo estimate. A good example is <a href="https://arxiv.org/abs/1312.6114">the variational autoencoder</a>. Basically, it's an autoencoder on steroids: the encoder's job is to learn a <em>distribution</em> over the latent space. The loss function contains an intractable expectation over that distribution, so we sample from it.</p>
 <p>As with any architecture, the gradients need to propagate to the weights of the model. Some of the weights are responsible for transforming the input into the parameters of the distribution from which we sample. Here we face a problem: the gradients can't propagate through random nodes! Hence, these weights won't be updated.</p>
@@ -1279,7 +1241,7 @@ h6:hover .anchor-link {
 <li>how the weights that affect the distribution's parameters can be trained</li>
 <li>how to use all of that in a toy example (with code)</li>
 </ul>
-<h1 id="The-Gumbel-distribution">The Gumbel distribution<a class="anchor-link" href="#The-Gumbel-distribution">&#182;</a></h1><p>The Gumbel distribution has two parameters - $\mu$ and $\beta$. The standard Gumbel distribution, where $\mu$ and $\beta$ are 0 and 1 respectively, has PDF of $e^{-(x + e^{-x})}$.</p>
+<h1 id="The-Gumbel-distribution">The Gumbel distribution<a class="anchor-link" href="#The-Gumbel-distribution">¶</a></h1><p>The Gumbel distribution has two parameters - $\mu$ and $\beta$. The standard Gumbel distribution, where $\mu$ and $\beta$ are 0 and 1 respectively, has PDF of $e^{-(x + e^{-x})}$.</p>
 <p>Why should you care about this distribution? Consider the setting where you have a discrete random variable whose logits are $\{\alpha_i\}_{i=1}^k$. The logits are a function of the input and weights that need to be trained.</p>
 <p>What I'm going to describe next is called the Gumbel-max trick. Using this trick, you can sample from the discrete distribution. The process is as follows:</p>
 <ol>
@@ -1290,29 +1252,28 @@ h6:hover .anchor-link {
 <p>The result will be a random sample of your original distribution. You can read the proof <a href="https://hips.seas.harvard.edu/blog/2013/04/06/the-gumbel-max-trick-for-discrete-distributions/">here</a>.</p>
 <p>Great! So we were able to substitute our distribution with a deterministic transformation of a parameterless distribution! So if we plug it into our model, the gradients will be able to propagate to the weights of the logits, right?</p>
 <p>Well, not so fast! Gradients can't propagate through argmax...</p>
-<h1 id="Gumbel-softmax-trick-to-the-rescue!">Gumbel-softmax trick to the rescue!<a class="anchor-link" href="#Gumbel-softmax-trick-to-the-rescue!">&#182;</a></h1><p><img src="images/gumbel-gan/gumbel-softmax.jpg" alt="Photo by Radu Florin on Unsplash"></p>
+<h1 id="Gumbel-softmax-trick-to-the-rescue!">Gumbel-softmax trick to the rescue!<a class="anchor-link" href="#Gumbel-softmax-trick-to-the-rescue!">¶</a></h1><p><img alt="Photo by Radu Florin on Unsplash" src="images/gumbel-gan/gumbel-softmax.jpg"/></p>
 <p>Using argmax is equivalent to using one hot vector where the entry corresponding to the maximal value is 1.</p>
 <p>So instead of using a hard one hot vector, we can approximate it using a soft one - softmax.</p>
 <p>The process is the same as the process described above, except now you apply softmax instead of argmax.</p>
 <p>And voila! Gradients can propagate to the weights of the logits.</p>
 <p>There's one hyperparameter I didn't tell you about (yet) - the temperature:</p>
 <p>$\frac{\text{exp}((\log(\alpha_i)+z_i) \cdot \tau^{-1})}{\sum_{j=1}^k \text{exp}((\log(\alpha_j)+z_j) \cdot \tau^{-1})}$</p>
-<p>By dividing by a temperature $\tau &gt; 0$, we can control how close the approximation will be to argmax. When $\tau \to 0$ the entry corresponding to the maximal value will tend to 1, and the other entries will tend to 0. When $\tau \to \infty$ the result will tend to uniform. The smaller $\tau$ is the better the approximation gets. The problem with setting $\tau$ to small values is that the variance of the gradients will be too high. This will make it difficult for the training. A good practice is to start with big temperature and then anneal it towards small values.</p>
+<p>By dividing by a temperature $\tau > 0$, we can control how close the approximation will be to argmax. When $\tau \to 0$ the entry corresponding to the maximal value will tend to 1, and the other entries will tend to 0. When $\tau \to \infty$ the result will tend to uniform. The smaller $\tau$ is the better the approximation gets. The problem with setting $\tau$ to small values is that the variance of the gradients will be too high. This will make it difficult for the training. A good practice is to start with big temperature and then anneal it towards small values.</p>
 <p>You can read more about the Gumbel-softmax trick <a href="https://arxiv.org/abs/1611.01144">here</a> and <a href="https://arxiv.org/abs/1611.00712">here</a>.</p>
-<h1 id="Enough-theory---it's-code-time!">Enough theory - it's code time!<a class="anchor-link" href="#Enough-theory---it's-code-time!">&#182;</a></h1><p><img src="images/gumbel-gan/code.jpg" alt="Photo by Blake Connally on Unsplash"></p>
+<h1 id="Enough-theory---it's-code-time!">Enough theory - it's code time!<a class="anchor-link" href="#Enough-theory---it's-code-time!">¶</a></h1><p><img alt="Photo by Blake Connally on Unsplash" src="images/gumbel-gan/code.jpg"/></p>
 <p>To show that the theory works in real life, I'll use a toy problem. The data is a stream of numbers in the range 0 to 4. Each number has a different probability to come up in the stream. Your mission, should you choose to accept it, is to find out what the distribution over the 5 numbers is.</p>
 <p>A simple solution would be to count, but we're going to do something much cooler (and ridiculously too complicated for this task): we'll train a <a href="https://arxiv.org/abs/1406.2661">GAN</a>. The generator will generate numbers from a distribution which should converge to the real one.</p>
 <p>Here's an intuition of why it should work: let's say the true probability associated with the number 0 is 0. The discriminator will learn that 0's never come with the label REAL. Therefore, the generator will incur a big loss whenever it generates 0's. This will encourage the generator to stop generating 0's.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
@@ -1321,52 +1282,46 @@ h6:hover .anchor-link {
 
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>These are all the hyperparameters we're going to use:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">BATCHS_IN_EPOCH</span> <span class="o">=</span> <span class="mi">100</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">BATCHS_IN_EPOCH</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">200</span>  <span class="c1"># the stream is infinite so one epoch will be defined as BATCHS_IN_EPOCH * BATCH_SIZE</span>
-<span class="n">GENERATOR_TRAINING_FACTOR</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># for every training of the disctiminator we&#39;ll train the generator 10 times</span>
+<span class="n">GENERATOR_TRAINING_FACTOR</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># for every training of the disctiminator we'll train the generator 10 times</span>
 <span class="n">LEARNING_RATE</span> <span class="o">=</span> <span class="mf">0.0007</span>
 <span class="n">TEMPERATURE</span> <span class="o">=</span> <span class="mf">0.001</span>  <span class="c1"># we use a constant, but for harder problems we should anneal it</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We'll define the stream of data using <code>tf.data.Dataset.from_generator</code>. The underlying generator continuously samples numbers according to a predefined distribution:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">number_to_prob</span> <span class="o">=</span> <span class="p">{</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">number_to_prob</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">0</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="mi">1</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
     <span class="mi">2</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
@@ -1387,39 +1342,34 @@ h6:hover .anchor-link {
 <span class="n">value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">number_to_prob</span><span class="p">))</span>
 <span class="n">value</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-model-architecture">The model architecture<a class="anchor-link" href="#The-model-architecture">&#182;</a></h1><p><img src="images/gumbel-gan/architecture.jpg" alt="Photo by Dmitri Popov on Unsplash"></p>
+<h1 id="The-model-architecture">The model architecture<a class="anchor-link" href="#The-model-architecture">¶</a></h1><p><img alt="Photo by Dmitri Popov on Unsplash" src="images/gumbel-gan/architecture.jpg"/></p>
 <p>The core of the generator is the Gumbel distribution. Tensorflow already has an implementation for it - <code>RelaxedOneHotCategorical</code>. We'll follow the same process described above: sample from the standard Gumbel distribution, add the result to the logits, and apply softmax. The logits are what the generator has to learn.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">&#39;generator&#39;</span><span class="p">):</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;logits&#39;</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">number_to_prob</span><span class="p">)]))</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">'generator'</span><span class="p">):</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">'logits'</span><span class="p">,</span> <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">number_to_prob</span><span class="p">)]))</span>
         <span class="n">gumbel_dist</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">RelaxedOneHotCategorical</span><span class="p">(</span><span class="n">TEMPERATURE</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">)</span>
         <span class="n">probs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
         <span class="n">generated</span> <span class="o">=</span> <span class="n">gumbel_dist</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">generated</span><span class="p">,</span> <span class="n">probs</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -1429,41 +1379,37 @@ h6:hover .anchor-link {
 <li>choosing a good schedule for the temperature annealing.</li>
 <li>smoothing the real data from the stream, or otherwise the discriminator would be able to learn that smooth vectors mean FAKE, and hard vectors mean REAL.</li>
 </ul>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">discriminator</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">&#39;discriminator&#39;</span><span class="p">,</span> <span class="n">reuse</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">AUTO_REUSE</span><span class="p">):</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">discriminator</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">variable_scope</span><span class="p">(</span><span class="s1">'discriminator'</span><span class="p">,</span> <span class="n">reuse</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">AUTO_REUSE</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">contrib</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">fully_connected</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
                                                  <span class="n">num_outputs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                                  <span class="n">activation_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Next, we're going to define the usual GAN loss and training ops - one for the discriminator and one for the generator.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">generated_outputs</span><span class="p">,</span> <span class="n">generated_probs</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">generated_outputs</span><span class="p">,</span> <span class="n">generated_probs</span> <span class="o">=</span> <span class="n">generator</span><span class="p">()</span>
 <span class="n">discriminated_real</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 <span class="n">discriminated_generated</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">generated_outputs</span><span class="p">)</span>
 
@@ -1480,32 +1426,29 @@ h6:hover .anchor-link {
                                             <span class="n">labels</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">discriminated_generated</span><span class="p">)))</span>
 
 <span class="n">all_vars</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">()</span>
-<span class="n">g_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_vars</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;generator&#39;</span><span class="p">)]</span>
-<span class="n">d_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_vars</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;discriminator&#39;</span><span class="p">)]</span>
+<span class="n">g_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_vars</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'generator'</span><span class="p">)]</span>
+<span class="n">d_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_vars</span> <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'discriminator'</span><span class="p">)]</span>
 
 <span class="n">d_train_opt</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">LEARNING_RATE</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">d_loss</span><span class="p">,</span> <span class="n">var_list</span><span class="o">=</span><span class="n">d_vars</span><span class="p">)</span>
 <span class="n">g_train_opt</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">(</span><span class="n">LEARNING_RATE</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">g_loss</span><span class="p">,</span> <span class="n">var_list</span><span class="o">=</span><span class="n">g_vars</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Train,-baby,-train!">Train, baby, train!<a class="anchor-link" href="#Train,-baby,-train!">&#182;</a></h1><p><img src="images/gumbel-gan/training.jpg" alt="Photo by Steven Lelham on Unsplash"></p>
-
+<h1 id="Train,-baby,-train!">Train, baby, train!<a class="anchor-link" href="#Train,-baby,-train!">¶</a></h1><p><img alt="Photo by Steven Lelham on Unsplash" src="images/gumbel-gan/training.jpg"/></p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
     <span class="n">learned_probs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">):</span>
@@ -1515,55 +1458,43 @@ h6:hover .anchor-link {
                 <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">g_train_opt</span><span class="p">)</span>
         <span class="n">learned_probs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">generated_probs</span><span class="p">))</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>After each epoch we evaluate <code>generated_probs</code>. At the beginning it's random, and as training progresses it should (hopefully) converge towards the real distribution defined by <code>number_to_prob</code>.</p>
 <p>To see if it happens, we can plot the difference between the two distributions:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">prob_errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">learned_prob</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">number_to_prob</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
                <span class="k">for</span> <span class="n">learned_prob</span> <span class="ow">in</span> <span class="n">learned_probs</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">prob_errors</span><span class="p">),</span>
-           <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;bwr&#39;</span><span class="p">,</span>
-           <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+           <span class="n">cmap</span><span class="o">=</span><span class="s1">'bwr'</span><span class="p">,</span>
+           <span class="n">aspect</span><span class="o">=</span><span class="s1">'auto'</span><span class="p">,</span>
            <span class="n">vmin</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>
            <span class="n">vmax</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'epoch'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">'number'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]);</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiQAAACeCAYAAAACPRFKAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAFDRJREFUeJzt3X2QZFd53/Hvb0YSECQjEApRdiWvMLIrNgFJWUQqAls2
 kSMcjIiDE4EtY+PKxhUwqOyUjSAJFH/ZxhAnFRKziZTIsSwZGylWURgkHCGicgTaVTaWV0LxIi/F
@@ -1657,38 +1588,30 @@ JvmrAElekOS76XzP39jUeTNwZ1U9Bnwjyaub8iuBO6rqCeBIkjc0bTwryV/Z0l5I2pb8D0eaE1V1
 X5J/AdyaZAH4DvA24FvARc17j9A5zgTgLcBvNwnHgxy/o++VwEeSvL9p4ye3sBuStinv9ivNuSRP
 VtWpbcchScM4ZSNJklrnCIkkSWqdIySSJKl1JiSSJKl1JiSSJKl1JiSSJKl1JiSSJKl1JiSSJKl1
 /x+nMDxo9lsN6QAAAABJRU5ErkJggg==
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Red means the generator erroneously output too big probability, and blue means too small. White means it converged.</p>
 <p>We can see that by the end of the training all the entries have pretty much converged. Sweet!</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h1><p>In this post you learned what the Gumbel-softmax trick is.</p>
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">¶</a></h1><p>In this post you learned what the Gumbel-softmax trick is.</p>
 <p>Using this trick, you can sample from a discrete distribution and let the gradients propagate to the weights that affect the distribution's parameters.</p>
 <p>This trick opens doors to many interesting applications. For start, you can find an example of text generation in the paper <a href="https://arxiv.org/abs/1611.04051">GANS for Sequences of Discrete Elements with the Gumbel-softmax Distribution</a>.</p>
 <p>Feel free to drop a line in the comments if you find more interesting use cases!</p>
-
 </div>
 </div>
 </div>
- 
-
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');

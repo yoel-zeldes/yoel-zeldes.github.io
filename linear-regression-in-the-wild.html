@@ -1224,61 +1224,22 @@ h6:hover .anchor-link {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
-.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
-<style type="text/css">
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-</style>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In one of my job interviews for data scientist position, I encountered a home assignment I'd like to share.</p>
 <p>The interviewer sent me a csv file containing samples of measured quantities $x$ and $y$, where $y$ is a response variable which can be written as an explicit function of $x$. It is known that the technique used for measuring $x$ is twice as better than that for measuring $y$ in the sense of standard deviation.</p>
 <p>The task: model $y$ as a function of $x$.</p>
 <p>Here are all the imports I'll need:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">probplot</span>
@@ -1286,127 +1247,97 @@ h6:hover .anchor-link {
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">])</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data.csv'</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">])</span>
 <span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[2]:</div>
-
-
-
+<div class="prompt output_prompt">Out[2]:</div>
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
 <table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>x</th>
-      <th>y</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>12.209516</td>
-      <td>36.021575</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>62.623142</td>
-      <td>162.746072</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-14.712353</td>
-      <td>166.459738</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>130.624579</td>
-      <td>551.308062</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>121.652246</td>
-      <td>208.207596</td>
-    </tr>
-  </tbody>
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>x</th>
+<th>y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>12.209516</td>
+<td>36.021575</td>
+</tr>
+<tr>
+<th>1</th>
+<td>62.623142</td>
+<td>162.746072</td>
+</tr>
+<tr>
+<th>2</th>
+<td>-14.712353</td>
+<td>166.459738</td>
+</tr>
+<tr>
+<th>3</th>
+<td>130.624579</td>
+<td>551.308062</td>
+</tr>
+<tr>
+<th>4</th>
+<td>121.652246</td>
+<td>208.207596</td>
+</tr>
+</tbody>
 </table>
 </div>
 </div>
-
-</div>
-
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let's visualize the data, to see if it's easy to capture the pattern by eye:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'data'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[3]:</div>
-
-
-
-
+<div class="prompt output_prompt">Out[3]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0xa1b0320&gt;</pre>
+<pre><matplotlib.axes._subplots.AxesSubplot at 0xa1b0320></pre>
 </div>
-
 </div>
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZ4AAAEZCAYAAACnyUNvAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xt0VeW97vHvAyQQBRS3CIqaaBXFvXVI3FD38RaqeBvd
 1WpVbLtba/RgUWs9vQi1u3BsR1VaK1421tpY8VLQXUe97M1BZUh62lMvOQWlPUbFbRcKIqTeKuWS
@@ -1576,62 +1507,41 @@ krpySbtL+pOkI4pdL7NC8cgFZr2ApOuAivTxZkTcWOQqmRWMg8esF5BURjKA63rgv4V/Ma2EuanN
 rHfYm2T64SHAoCLXxaygfMZj1gtIehSYSzKS9n4RcWWRq2RWMLv0RHBmpUDSvwDNETFPUj/g/0iq
 iYj6IlfNrCB8xmNmZpnyNR4zM8uUg8fMzDLl4DEzs0w5eMzMLFMOHjMzy5SDx8zMMuXgMTOzTDl4
 zMwsU/8fmH9cZ/b38AMAAAAASUVORK5CYII=
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It clearly looks like linear regression case. First I'll manually remove the outliers:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">]</span>
-<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;data without outliers&#39;</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span> <span class="o"><</span> <span class="mi">600</span><span class="p">]</span>
+<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'data without outliers'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[4]:</div>
-
-
-
-
+<div class="prompt output_prompt">Out[4]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0xa2256a0&gt;</pre>
+<pre><matplotlib.axes._subplots.AxesSubplot at 0xa2256a0></pre>
 </div>
-
 </div>
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZUAAAEZCAYAAABfKbiYAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+cXHV97/HXJySbHUg2P3QBISbBQiBYLQndiBVlgwmg
 vQUfVvnRqqBbLhiQXHutJGpvorUteB+9CGokQiDQGoLWKthSCClZLFbYLQRiTYLxxwYSIBl+GIsu
@@ -1828,64 +1738,43 @@ JMTMvgDkwsfT7n5tykUSiZ2CikhCzGwcwUSe/cAfuP7zSRNS9ZdIcl5PsNztRKA15bKI1IUyFZGE
 mNldwB0EMzMf4+6fSLlIIrFriEW6RBqdmX0Y2Ofua81sDPBDM+t09+6UiyYSK2UqIiISG7WpiIhI
 bBRUREQkNgoqIiISGwUVERGJjYKKiIjERkFFRERio6AiIiKxUVAREZHY/H+iR1EA6XQcPgAAAABJ
 RU5ErkJggg==
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I'll use <code>LinearRegression</code> to fit the best line:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">]],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">])</span>
-<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;linear regression&#39;</span><span class="p">)</span>
-<span class="n">lr_predicted_y</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">]])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">lr_predicted_y</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">[[</span><span class="s1">'x'</span><span class="p">]],</span> <span class="n">data</span><span class="p">[</span><span class="s1">'y'</span><span class="p">])</span>
+<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'linear regression'</span><span class="p">)</span>
+<span class="n">lr_predicted_y</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">data</span><span class="p">[[</span><span class="s1">'x'</span><span class="p">]])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span> <span class="n">lr_predicted_y</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[5]:</div>
-
-
-
-
+<div class="prompt output_prompt">Out[5]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre>[&lt;matplotlib.lines.Line2D at 0xb251320&gt;]</pre>
+<pre>[<matplotlib.lines.Line2D at 0xb251320>]</pre>
 </div>
-
 </div>
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZUAAAEZCAYAAABfKbiYAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+cXHV97/HXJySbHUiyEFxAfiRBIRJUYEMTtVLZYALY
 WrD+wMTrL1y5IKK53FZJtLdJW2vBPnoV0ECE8ENLEtBWwStCyCVrH1Rxc5NAwPwgrW5CIrCjYFRc
@@ -2098,65 +1987,44 @@ ROKmEfUidWJmfwekwsez7n5DwkUSiZ2CikidmNkEgok8+4E/dv3nk1FI1V8i9fMqguVuJwOtCZdF
 pCaUqYjUiZndD6whmJn5RHf/VMJFEoldUyzSJdLszOxDwIC7rzWzccB/mFmnu3cnXDSRWClTERGR
 2KhNRUREYqOgIiIisVFQERGR2CioiIhIbBRUREQkNgoqIiISGwUVERGJjYKKiIjE5v8D4W4ZFRUy
 bZcAAAAASUVORK5CYII=
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Visually it looks compelling, but I'll validate linear regression assumptions to be assured I'm using the right model.</p>
-<p>If you're not familiar with the linear regression assumptions, you can read about it in the article <a href="https://www.analyticsvidhya.com/blog/2016/07/deeper-regression-analysis-assumptions-plots-solutions/">Going Deeper into Regression Analysis with Assumptions, Plots &amp; Solutions</a>.</p>
+<p>If you're not familiar with the linear regression assumptions, you can read about it in the article <a href="https://www.analyticsvidhya.com/blog/2016/07/deeper-regression-analysis-assumptions-plots-solutions/">Going Deeper into Regression Analysis with Assumptions, Plots & Solutions</a>.</p>
 <p>Let's plot the residual errors:</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">residuals</span> <span class="o">=</span> <span class="n">lr_predicted_y</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">residuals</span> <span class="o">=</span> <span class="n">lr_predicted_y</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">lr_predicted_y</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">residuals</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;residuals&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'residuals'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[6]:</div>
-
-
-
-
+<div class="prompt output_prompt">Out[6]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.text.Text at 0xb4e6080&gt;</pre>
+<pre><matplotlib.text.Text at 0xb4e6080></pre>
 </div>
-
 </div>
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYkAAAEKCAYAAADn+anLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3X+UXHWZ5/H3A0knDUknYWxBE+iggAQZJXES2HXm0FGD
 qCvgzh4IehSkDytGJMOsSiKzS1yGI7CuGN1BQBlBl/xgZWaBFQnkkJrd2RG65YcwdID4o5sEJd0r
@@ -2328,15 +2196,11 @@ Sxx/D/BE/Ltri34No17P6USjhbYBq4qOJyXG9wKvE42+ejR+308HDiNabuVp4D5g9nifRcGv41T2
 j25qmNiBdxN9oXgM+Dui0U2NFP8VcSyPE3X6Tg05fmAd8GvgVaIk92lgTq3xFlXupMRfl3JTk+lE
 RCRVEM1NIiISJiUJERFJpSQhIiKplCRERCSVkoSIiKRSkhARkVRKEiIikkpJQkREUv1/1J1uydqp
 4IMAAAAASUVORK5CYII=
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -2350,34 +2214,24 @@ RCRVEM1NIiISJiUJERFJpSQhIiKplCRERCSVkoSIiKRSkhARkVRKEiIikkpJQkREUv1/1J1uydqp
 </li>
 <li>Residuals should be normally distributed: I'll verify that using QQ-plot:</li>
 </ul>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">probplot</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">probplot</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAY4AAAEZCAYAAACAZ8KHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzt3XmczfX+wPHX264hWjRlrHdabkJXXUspjSKtlm4kJLT9
 qkvpKrnuXDQVlaLcdkVCkYoWZCyTki0p2bJ0DMZOwtjN+/fH93vMmTEzzsycM2eZ9/Px8HDOdzvv
@@ -2634,60 +2488,46 @@ itNktAFoII7qOEvCApyJs+b2frcG4c9svvvd8/LyG1BFRJq4sZTyWWSnhqp+CzztXqeCn7doTIFZ
 +nlBRH4GlgJXubWPsSLyixvDq6q6LwD3bUyebFp1Y/zgftv/CGinqj+HOh5jQskShzHGmHyxpipj
 jDH5YonDGGNMvljiMMYYky+WOIwxxuSLJQ5jjDH5YonDGGNMvljiMMYYky//D06NQnIGidNzAAAA
 AElFTkSuQmCC
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It looks reasonably normal...</p>
 <p>I'll conclude that the relationship between $x$ and $y$ assuming linear relationship is best modeled as</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">&#39;y = </span><span class="si">%f</span><span class="s1"> + </span><span class="si">%f</span><span class="s1">*x&#39;</span>  <span class="o">%</span> <span class="p">(</span><span class="n">lr</span><span class="o">.</span><span class="n">intercept_</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">'y = </span><span class="si">%f</span><span class="s1"> + </span><span class="si">%f</span><span class="s1">*x'</span>  <span class="o">%</span> <span class="p">(</span><span class="n">lr</span><span class="o">.</span><span class="n">intercept_</span><span class="p">,</span> <span class="n">lr</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>y = 70.023655 + 2.973585*x
 </pre>
 </div>
 </div>
-
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
+<hr/>
 <p>We got a consistent estimator of the parameters required for calculating $y$ given $x$ (where both have measurement errors), or in other words, the line's coefficients.</p>
 <p>Up until now all I've done is plain old linear regression. The interesting thing about this task is that $x$ has measurement error (which is typical in real world use cases).</p>
 <p>If we want to estimate the parameters required for calculating $y$ given the exact $x$ value (without measurement error), we need to use a different approach. Using simple linear regression without accounting for $x$ being random with noise results in line slope slightly smaller than the <em>true</em> line slope (the line describing $x$ without measurement errors). You can read <a href="https://en.wikipedia.org/wiki/Errors-in-variables_models#Motivational_example">this wiki page</a> for learning why.</p>
@@ -2696,112 +2536,83 @@ AElFTkSuQmCC
 </blockquote>
 <p>So in our settings, $\delta$ is 2 squared.</p>
 <p>Using the formulas found in the <a href="https://en.wikipedia.org/wiki/Deming_regression#Solution">wiki page</a>, we get</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cov</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
-<span class="n">mean_x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">mean_y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">s_xx</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
-<span class="n">s_yy</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
-<span class="n">s_xy</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">cov</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
+<span class="n">mean_x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">mean_y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'y'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">s_xx</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">'x'</span><span class="p">][</span><span class="s1">'x'</span><span class="p">]</span>
+<span class="n">s_yy</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">'y'</span><span class="p">][</span><span class="s1">'y'</span><span class="p">]</span>
+<span class="n">s_xy</span> <span class="o">=</span> <span class="n">cov</span><span class="p">[</span><span class="s1">'x'</span><span class="p">][</span><span class="s1">'y'</span><span class="p">]</span>
 <span class="n">delta</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span>
 
 <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_yy</span>  <span class="o">-</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">s_xx</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">s_yy</span> <span class="o">-</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">s_xx</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">s_xy</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">s_xy</span><span class="p">)</span>
 <span class="n">intercept</span> <span class="o">=</span> <span class="n">mean_y</span> <span class="o">-</span> <span class="n">slope</span>  <span class="o">*</span> <span class="n">mean_x</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Using Deming regression, the relationship between $x$ and $y$ is modeled as</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In [10]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">&#39;y = </span><span class="si">%f</span><span class="s1"> + </span><span class="si">%f</span><span class="s1">*x&#39;</span>  <span class="o">%</span> <span class="p">(</span><span class="n">intercept</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">'y = </span><span class="si">%f</span><span class="s1"> + </span><span class="si">%f</span><span class="s1">*x'</span>  <span class="o">%</span> <span class="p">(</span><span class="n">intercept</span><span class="p">,</span> <span class="n">slope</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
+<div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>y = 19.575797 + 3.391855*x
 </pre>
 </div>
 </div>
-
 </div>
 </div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;linear regression with &amp; without accounting for $x$ error measurements&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">lr_predicted_y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ignoring errors in $x$&#39;</span><span class="p">)</span>
-<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">X</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;accounting for errors in $x$&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="s1">'y'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'linear regression with & without accounting for $x$ error measurements'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">],</span> <span class="n">lr_predicted_y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'ignoring errors in $x$'</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="p">[</span><span class="s1">'x'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">X</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">'accounting for errors in $x$'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 <div class="output_wrapper">
 <div class="output">
-
-
 <div class="output_area">
-
-    <div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
+<div class="prompt output_prompt">Out[11]:</div>
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0xb961278&gt;</pre>
+<pre><matplotlib.legend.Legend at 0xb961278></pre>
 </div>
-
 </div>
-
 <div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
+<div class="prompt"></div>
+<div class="output_png output_subarea">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbcAAAEbCAYAAABZScp+AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAALEgAACxIB0t1+/AAAIABJREFUeJzsnXd4VFX6+D8HSCAICS0oNaELqAhIcW2JgqiAK+JioqJo
 RBRR3K8NdFX2ZwNc14KiCKjoUkQBKSIikggWTJZmIRRLQidxwagQSHt/f8wkmZlMTSYzk8n7eZ55
@@ -3155,33 +2966,26 @@ eCDrLEnzVDxgdyB3LrO28h1KzGoi6QVgTlqOR8SWzJHMWsuDm1lNJM2kuGH1GeDu8H8+s57xYUmz
 +iwE5gNXAldkzmLWat5zM6uJpJ3AOxRPQrg2IjZkjmTWWn3xsFKzfifpEeCPiNguaQbwqaT7ImJv
 5mhmreQ9NzMzax2fczMzs9bx4GZmZq3jwc3MzFrHg5uZmbWOBzczM2sdD25mZtY6HtzMzKx1PLiZ
 mVnr/A0YmrpxvtBkmgAAAABJRU5ErkJggg==
-"
->
-</div>
-
-</div>
-
+"/>
 </div>
 </div>
-
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<hr>
+<hr/>
 <p>We fit two models: one is a simple linear regression model, and the other is a linear regression model accounting for the $x$ measurement errors.</p>
 <p>The more simple one may be enough if our purpose is to calculate $y$ given a new $x$ where the new $x$ also has measurement error (resulting from the same distribution as the measurement errors used when training the model).</p>
 <p>If we want to state the true relationship for $y$ as a function of $x$ in a world without measurement errors, we should go with the second model.</p>
-<hr>
+<hr/>
 <p>This was a great interview question, since I got to learn a new kind of model, which is pretty nice :)</p>
 <p>Although this isn't really an example for <em>linear regression in the wild</em> as the title suggests (ok, I lied), this post does demonstrate an important concept many people don't deal with: the dependant variables in many cases are measured in an inaccurate way, which might need to be accounted for (depending on the application).</p>
 <p>Regress with care!</p>
-
 </div>
 </div>
 </div>
- 
-
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');

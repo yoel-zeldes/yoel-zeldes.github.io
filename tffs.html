@@ -1222,45 +1222,7 @@ h6:hover .anchor-link {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
-.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style>
-<style type="text/css">
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-</style>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+.highlight .il { color: #666666 } /* Literal.Number.Integer.Long */</style><div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Tensorflow is great. Really, I mean it. The problem is it’s great up to a point. Sometimes you want to do very simple things, but tensorflow is giving you a hard time. The motivation I had behind writing <a href="https://github.com/yoel-zeldes/tffs">TFFS</a> (TensorFlow File System) can be shared by anyone who has used tensorflow, including you.</p>
@@ -1269,24 +1231,22 @@ h6:hover .anchor-link {
 <p><strong>So why not load the graph inside a python shell and examine it?</strong> That’s doable, but writing these lines of code every time I want to do that task? Having to remember how to load a graph, how to look for a tensor, how to get its inputs... Sure, it’s only a couple of lines of code, but once you repeat the same task over and over again, it’s time to write a script!</p>
 <p><strong>So why not write an interactive script?</strong> You mean a script that given the path to your model loads it for you, and provides utility functions to ease your pain of writing tensorflow code? Well, we could do that, but that’s not gonna be as awesome as what I’m gonna show you!</p>
 <p>Disclaimer: if you want a solution that makes sense, stop reading here and just use the interactive script approach. Continue reading only if you want to learn something a bit different ;)</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Filesystem-to-the-Rescue!">Filesystem to the Rescue!<a class="anchor-link" href="#Filesystem-to-the-Rescue!">&#182;</a></h1><p>The names of tensors have slashes — a big resemblance with the UNIX filesystem. Imagine a world with a tensorflow filesystem, where directories are analogous to tensorflow scopes, and files  -  to tensors. Given such a filesystem, we could use good old bash to do what we want. For instance, we could list all available scopes and tensors by running <code>find ~/tf</code> - assuming <code>~/tf</code> is where the tensorflow filesystem mounted. Want to list only tensors? No problem, just use <code>find ~/tf -type f</code>.</p>
+<h1 id="Filesystem-to-the-Rescue!">Filesystem to the Rescue!<a class="anchor-link" href="#Filesystem-to-the-Rescue!">¶</a></h1><p>The names of tensors have slashes — a big resemblance with the UNIX filesystem. Imagine a world with a tensorflow filesystem, where directories are analogous to tensorflow scopes, and files  -  to tensors. Given such a filesystem, we could use good old bash to do what we want. For instance, we could list all available scopes and tensors by running <code>find ~/tf</code> - assuming <code>~/tf</code> is where the tensorflow filesystem mounted. Want to list only tensors? No problem, just use <code>find ~/tf -type f</code>.</p>
 <p>Hey, we’ve got files, right? What should their content be? Let’s run <code>cat ~/tf/.../tensor_name</code>. Wow! We got the tensor’s value  - nice... This will work only if the tensor doesn’t depend on placeholders, for obvious reasons.</p>
 <p>What about getting the inputs to a tensor? Well, you can run <code>~/tf/bin/inputs -d 3 ~/tf/.../tensor_name</code>. This special script will print a tree view of the inputs with recursion depth of 3. Nice...</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><img src="../images/tffs/lets_do_it.jpg" alt=""></p>
+<p><img alt="" src="../images/tffs/lets_do_it.jpg"/></p>
 <p><strong>OK, I’m in. How do we implement it?</strong> That’s a fine question. We can use Filesystem in Userspace (FUSE). It’s a technology that allows us to implement a filesystem in user space. It saves us the trouble of going into the <em>low level</em> realm, which is really hard if you’ve never done it before (and slow to implement). It includes writing code in C  - the horror! We’ll use a python binding called <a href="https://github.com/fusepy/fusepy">fusepy</a>.</p>
 <p>In this post I’ll explain only the interesting parts of the implementation. The entire code can be found <a href="https://github.com/yoel-zeldes/tffs">here</a>. Including documentation, it’s only 345 lines of code.</p>
 <p>First we need to load a tensorflow model:</p>
@@ -1294,29 +1254,28 @@ h6:hover .anchor-link {
 <li>Import the graph structure using <code>tf.train.import_meta_graph</code>.</li>
 <li>If the model was trained, load the weights using <code>saver.restore</code>.</li>
 </ol>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
+    <span class="sd">"""</span>
 <span class="sd">    Load a tensorflow model from the given path.</span>
-<span class="sd">    It&#39;s assumed the path is either a directory containing a .meta file, or the .meta file itself.</span>
-<span class="sd">    If there&#39;s also a file containing the weights with the same name as the .meta file</span>
-<span class="sd">    (without the .meta extension), it&#39;ll be loaded as well.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    It's assumed the path is either a directory containing a .meta file, or the .meta file itself.</span>
+<span class="sd">    If there's also a file containing the weights with the same name as the .meta file</span>
+<span class="sd">    (without the .meta extension), it'll be loaded as well.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
-        <span class="n">meta_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.meta&#39;</span><span class="p">)]</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta_filename</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;expecting to get a .meta file or a directory containing a .meta file&#39;</span>
+        <span class="n">meta_filename</span> <span class="o">=</span> <span class="p">[</span><span class="n">filename</span> <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.meta'</span><span class="p">)]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta_filename</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'expecting to get a .meta file or a directory containing a .meta file'</span>
         <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">meta_filename</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">model_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.meta&#39;</span><span class="p">),</span> <span class="s1">&#39;expecting to get a .meta file or a directory containing a .meta file&#39;</span>
-    <span class="n">weights_path</span> <span class="o">=</span> <span class="n">model_path</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;.meta&#39;</span><span class="p">)]</span>
+        <span class="k">assert</span> <span class="n">model_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.meta'</span><span class="p">),</span> <span class="s1">'expecting to get a .meta file or a directory containing a .meta file'</span>
+    <span class="n">weights_path</span> <span class="o">=</span> <span class="n">model_path</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s1">'.meta'</span><span class="p">)]</span>
 
     <span class="n">graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
     <span class="k">with</span> <span class="n">graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
@@ -1328,76 +1287,70 @@ h6:hover .anchor-link {
             <span class="n">session</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">session</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Mapping-Tensors-to-Files">Mapping Tensors to Files<a class="anchor-link" href="#Mapping-Tensors-to-Files">&#182;</a></h1><p>Next, I’ll describe the main class. There are several interesting things in the constructor. First, we call <code>_load_model</code>. Then, we map each tensor in the graph into a path in the filesystem. Say a tensor has the name <code>a/b/c:0</code> - it will be mapped to the path <code>~/tf/a/b/c:0</code>, assuming the mount point is <code>~/tf</code>.</p>
+<h1 id="Mapping-Tensors-to-Files">Mapping Tensors to Files<a class="anchor-link" href="#Mapping-Tensors-to-Files">¶</a></h1><p>Next, I’ll describe the main class. There are several interesting things in the constructor. First, we call <code>_load_model</code>. Then, we map each tensor in the graph into a path in the filesystem. Say a tensor has the name <code>a/b/c:0</code> - it will be mapped to the path <code>~/tf/a/b/c:0</code>, assuming the mount point is <code>~/tf</code>.</p>
 <p>Each directory and file is created using the <code>_create_dir</code> and <code>_create_tensor_file</code> functions. These functions return a simple python dict with metadata about the directory or file.</p>
 <p>We also call <code>_populate_bin</code>, which I'll touch on later.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">TfFs</span><span class="p">(</span><span class="n">fuse</span><span class="o">.</span><span class="n">Operations</span><span class="p">):</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="k">class</span> <span class="nc">TfFs</span><span class="p">(</span><span class="n">fuse</span><span class="o">.</span><span class="n">Operations</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mount_point</span><span class="p">,</span> <span class="n">model_path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">_load_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_files</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bin_scripts</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">&#39;/&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_dir</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">&#39;/bin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_dir</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">'/'</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_dir</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">'/bin'</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_dir</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_populate_bin</span><span class="p">(</span><span class="n">mount_point</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">get_operations</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">tensor</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span>
                 <span class="n">next_slash_index</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="n">next_slash_index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">next_slash_index</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">next_slash_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">next_slash_index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="n">next_slash_index</span><span class="p">]</span>
+                <span class="k">while</span> <span class="n">next_slash_index</span> <span class="o">>=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">next_slash_index</span> <span class="o">=</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">next_slash_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">next_slash_index</span> <span class="o">>=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s1">'/'</span> <span class="o">+</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="p">[:</span><span class="n">next_slash_index</span><span class="p">]</span>
                         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_dir</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_tensor_file</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_files</span><span class="p">[</span><span class="s1">'/'</span> <span class="o">+</span> <span class="n">tensor</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_create_tensor_file</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
 
     <span class="c1"># ...</span>
 </pre></div>
-
-    </div>
 </div>
 </div>
-
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Working-with-fusepy">Working with <code>fusepy</code><a class="anchor-link" href="#Working-with-fusepy">&#182;</a></h1><p>fusepy requires you to implement a class that extends <code>fuse.Operations</code>. This class implements the operations the filesystem supports. In our case, we want to support reading files, so we'll implement the <code>read</code> function. when called, this function will evaluate the tensor associated with the given path.</p>
-
+<h1 id="Working-with-fusepy">Working with <code>fusepy</code><a class="anchor-link" href="#Working-with-fusepy">¶</a></h1><p>fusepy requires you to implement a class that extends <code>fuse.Operations</code>. This class implements the operations the filesystem supports. In our case, we want to support reading files, so we'll implement the <code>read</code> function. when called, this function will evaluate the tensor associated with the given path.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In [ ]:</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># ...</span>
+<div class="input_area">
+<div class="highlight hl-ipython2"><pre><span></span><span class="c1"># ...</span>
 
 <span class="k">def</span> <span class="nf">_eval_tensor_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">"""</span>
 <span class="sd">    Given a path to a tensor file, evaluate the tensor and cache the result in self._tensor_values.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span><span class="p">:</span>
@@ -1405,40 +1358,35 @@ h6:hover .anchor-link {
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span><span class="p">[</span><span class="n">path</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">fh</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/bin/&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'/bin/'</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_scripts</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
 
     <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tensor_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                      <span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="n">_fixed_val_length</span><span class="p">},</span>
+                      <span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">'all'</span><span class="p">:</span> <span class="n">_fixed_val_length</span><span class="p">},</span>
                       <span class="n">threshold</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">maxint</span><span class="p">,</span>
                       <span class="n">linewidth</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">maxint</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
 
 <span class="c1"># ...</span>
 </pre></div>
-
-    </div>
 </div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Worried about the <code>printoptions</code> part? When implementing a filesystem you need to know the size of the files. We could evaluate all tensors in order to know the sizes, but this would take time and memory. Instead, we can examine each tensor’s shape. Given its shape, and given we use a formatter that outputs a fixed amount of characters per entry in the result (this is where <code>_fixed_val_length</code> comes in), we can calculate the size.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Getting-Inputs-and-Outputs">Getting Inputs and Outputs<a class="anchor-link" href="#Getting-Inputs-and-Outputs">&#182;</a></h1><p>While tensorflow scopes have a structure that resembles a filesystem, tensor inputs and outputs don’t. So instead of using a filesystem to get inputs and outputs, we can write a script that can be executed as follows:</p>
-
+<p>Worried about the <code>printoptions</code> part? When implementing a filesystem you need to know the size of the files. We could evaluate all tensors in order to know the sizes, but this would take time and memory. Instead, we can examine each tensor’s shape. Given its shape, and given we use a formatter that outputs a fixed amount of characters per entry in the result (this is where <code>_fixed_val_length</code> comes in), we can calculate the size.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Getting-Inputs-and-Outputs">Getting Inputs and Outputs<a class="anchor-link" href="#Getting-Inputs-and-Outputs">¶</a></h1><p>While tensorflow scopes have a structure that resembles a filesystem, tensor inputs and outputs don’t. So instead of using a filesystem to get inputs and outputs, we can write a script that can be executed as follows:</p>
 <pre><code>~/tf/bin/outputs --depth 3 ~/tf/a:0</code></pre>
 <p>The result will look like this:</p>
-
 <pre><code>~/tf/a:0
 ├── ~/tf/b:0
 └── ~/tf/c:0
@@ -1452,24 +1400,19 @@ h6:hover .anchor-link {
 </ol>
 <p>There's one challenge though... The <code>outputs</code> script is gonna be executed inside a new process - this is how UNIX works. It means it won't have access to the tensorflow graph, which was loaded in the main process.</p>
 <p>So how is it going to access all the inputs/outputs of a tensor? I could have implemented interprocess communication between the two processes, which is a lot of work. But I chose a different approach. I created a template python file that contained the following line:</p>
-
 <pre><code>_TENSOR_TO_DEPENDENCIES = {{TENSOR_TO_TENSORS_PLACEHOLDER}}</code></pre>
 <p>This is illegal python code. The <code>_populate_bin</code> function which we saw earlier reads this python file, and replaces <code>{{TENSOR_TO_TENSORS_PLACEHOLDER}}</code> with the dictionary of tensor to outputs (or inputs). The result file is then mapped to a path in our filesystem - <code>~/tf/bin/outputs</code> (or <code>~/tf/bin/inputs</code>). It means that if you run <code>cat ~/tf/bin/outputs</code>, you'll be able to see the (potentially) huge mapping inside the file.</p>
-
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="cat-./final_thoughts">cat ./final_thoughts<a class="anchor-link" href="#cat-./final_thoughts">&#182;</a></h1><p>We did it! We mapped a tensorflow model to a filesystem. TFFS was a fun small project, and I learned about FUSE while doing so, which is neat.</p>
+<h1 id="cat-./final_thoughts">cat ./final_thoughts<a class="anchor-link" href="#cat-./final_thoughts">¶</a></h1><p>We did it! We mapped a tensorflow model to a filesystem. TFFS was a fun small project, and I learned about FUSE while doing so, which is neat.</p>
 <p>TFFS is a cute tool, but it's not a replacement for good old python shell. With python, you can easily import a tensorflow model and inspect the tensors manually. I just wish I could remember how to do so, even after doing it hundreds of times...</p>
-
 </div>
 </div>
 </div>
- 
-
 
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var mathjaxscript = document.createElement('script');
