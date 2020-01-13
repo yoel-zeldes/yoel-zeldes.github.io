@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = 'Yoel Zeldes'
 SITENAME = 'Another Datum'
 SITESUBTITLE = 'A blog by Yoel Zeldes'
-SITEURL = 'http://localhost:8000'
+SITEURL = 'https://localhost:8000'
 
 PATH = 'content'
 IGNORE_FILES = ['.ipynb_checkpoints']
