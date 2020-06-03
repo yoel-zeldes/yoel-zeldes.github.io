@@ -5,7 +5,7 @@ Tags: deep learning, NLP, NLG, GPT-3
 Summary: Can intelligence emerge simply by training a big enough language model using lots of data? GPT-3 tries to do so, using 175 billion parameters.
 header_cover: images/gpt-3/cover.jpg
 
-A few days ago, OpenAI announced a new successor to their Language Model (LM) - GPT-3. This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know the important points of this work.
+A few days ago, OpenAI announced a new successor to their Language Model (LM) - GPT-3. This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know (most of) the important points of this work.
 
 
 #What’s in a Language Model?
