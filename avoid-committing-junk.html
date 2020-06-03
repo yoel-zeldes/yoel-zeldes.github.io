@@ -125,7 +125,7 @@ as a function name, you name it. A few usage examples:</p>
 <p>The way I implemented it is using git hooks, which is git's mechanism to fire off custom scripts when certain important actions occur.
 I used the pre-commit hook for validating the commit's content.</p>
 <p>Just create a file with the name <code>.git/hooks/pre-commit</code> with the following content:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">marks</span><span class="o">=</span>xxx,aaa,asd
 <span class="nv">marksRegex</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="s2">&quot;(</span><span class="nv">$marks</span><span class="s2">)&quot;</span> <span class="p">|</span> sed -r <span class="s1">&#39;s/,/|/g&#39;</span><span class="sb">`</span>
@@ -134,7 +134,7 @@ I used the pre-commit hook for validating the commit's content.</p>
         <span class="nb">echo</span> <span class="s2">&quot;You forgot to remove a line containing </span><span class="nv">$marksMessage</span><span class="s2">. You can forecully commit using \&quot;commit -n\&quot;&quot;</span>
         <span class="nb">exit</span> <span class="m">1</span>
 <span class="k">fi</span>
-</pre></div>
+</code></pre></div>
 
 
 <ol>

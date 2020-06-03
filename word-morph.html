@@ -1260,7 +1260,7 @@ h6:hover .anchor-link {
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">gensim</span>
 <span class="kn">import</span> <span class="nn">astar</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
@@ -1275,12 +1275,12 @@ h6:hover .anchor-link {
     <span class="n">drive_url</span> <span class="o">=</span> <span class="s1">'https://docs.google.com/uc?export=download'</span>
 
     <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">file_id</span><span class="p">},</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">file_id</span><span class="p">},</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">token</span> <span class="o">=</span> <span class="n">get_confirm_token</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s1">'confirm'</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">drive_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     
     <span class="n">save_response_content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">destination</span><span class="p">)</span>    
 
@@ -1315,7 +1315,7 @@ h6:hover .anchor-link {
 <span class="n">word2vec_filename</span> <span class="o">=</span> <span class="s1">'word2vec.bin'</span>
 <span class="n">download_word2vec_if_needed</span><span class="p">(</span><span class="n">word2vec_filename</span><span class="p">)</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="n">word2vec_filename</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gensim</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">KeyedVectors</span><span class="o">.</span><span class="n">load_word2vec_format</span><span class="p">(</span><span class="n">word2vec_filename</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1356,7 +1356,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">init_sims</span><span class="p">(</span><span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># normalize the word embeddings to have length 1</span>
 </pre></div>
 </div>
 </div>
@@ -1408,9 +1408,9 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'tooth'</span><span class="p">,</span> <span class="s1">'light'</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'John'</span><span class="p">,</span>  <span class="s1">'perfect'</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'pillow'</span><span class="p">,</span> <span class="s1">'car'</span><span class="p">)</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="nb">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'tooth'</span><span class="p">,</span> <span class="s1">'light'</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'John'</span><span class="p">,</span>  <span class="s1">'perfect'</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">morph</span><span class="p">(</span><span class="s1">'pillow'</span><span class="p">,</span> <span class="s1">'car'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

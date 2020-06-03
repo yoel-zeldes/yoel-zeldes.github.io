@@ -1242,10 +1242,10 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rcParams</span>
 <span class="kn">from</span> <span class="nn">mpl_toolkits.basemap</span> <span class="kn">import</span> <span class="n">Basemap</span>
 
@@ -1372,7 +1372,7 @@ h6:hover .anchor-link {
 <div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s1">'available data:'</span><span class="p">,</span> <span class="s1">' to '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()),</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="nb">print</span> <span class="s1">'available data:'</span><span class="p">,</span> <span class="s1">' to '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()),</span>
                                          <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">timestampMs</span><span class="o">.</span><span class="n">max</span><span class="p">()]))</span>
 </pre></div>
 </div>
@@ -1397,7 +1397,7 @@ h6:hover .anchor-link {
 <div class="input_area">
 <div class="highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'longitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">longitudeE7</span> <span class="o">/</span> <span class="mi">10000000</span>
 <span class="n">data</span><span class="p">[</span><span class="s1">'latitude'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">latitudeE7</span> <span class="o">/</span> <span class="mi">10000000</span>
-<span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'longitudeE7'</span><span class="p">,</span> <span class="s1">'latitudeE7'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">'longitudeE7'</span><span class="p">,</span> <span class="s1">'latitudeE7'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -5419,10 +5419,10 @@ AAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAADJfEDAAAAMFASPwAAAAAD9f8Bl2v3H3DN
     <span class="c1"># put NAN in the non-marked days, and 1 in the marked days</span>
     <span class="n">marked_data</span> <span class="o">=</span> <span class="n">marked_data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">d</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
     <span class="c1"># multiply each marked day by the day's index</span>
-    <span class="n">marked_data</span> <span class="o">*=</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">marked_data</span><span class="p">))</span>
+    <span class="n">marked_data</span> <span class="o">*=</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">marked_data</span><span class="p">))</span>
     <span class="c1"># 'ffill' will propagate last non-NAN value forward to NAN values.</span>
     <span class="c1"># This way, every entry will contain the index of the last non-NAN entry</span>
-    <span class="n">marked_data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'ffill'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">marked_data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">'ffill'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># translate indices to dates</span>
     <span class="n">marked_data</span> <span class="o">=</span> <span class="n">marked_data</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">marked_data</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
     <span class="c1"># calculate the time delta between every day to its most recent marked day</span>
@@ -6421,8 +6421,8 @@ RK5CYII=
 <div class="prompt input_prompt">In [13]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class="highlight hl-ipython2"><pre><span></span><span class="n">data_availability_shifted</span> <span class="o">=</span> <span class="n">data_availability</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">availability_on_switch</span> <span class="o">=</span> <span class="p">((</span><span class="n">data_availability_shifted</span> <span class="o">==</span> <span class="bp">False</span><span class="p">)</span> <span class="o">&</span> <span class="p">(</span><span class="n">data_availability</span> <span class="o">==</span> <span class="bp">True</span><span class="p">))</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span> <span class="o">==</span> <span class="bp">True</span><span class="p">]</span>
+<div class="highlight hl-ipython2"><pre><span></span><span class="n">data_availability_shifted</span> <span class="o">=</span> <span class="n">data_availability</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">availability_on_switch</span> <span class="o">=</span> <span class="p">((</span><span class="n">data_availability_shifted</span> <span class="o">==</span> <span class="kc">False</span><span class="p">)</span> <span class="o">&</span> <span class="p">(</span><span class="n">data_availability</span> <span class="o">==</span> <span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>
 <span class="n">availability_on_switch</span>
 </pre></div>
 </div>

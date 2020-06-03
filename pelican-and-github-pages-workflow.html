@@ -142,7 +142,7 @@ will be presented with the goodness of my blog.</p>
 I'd like the <code>master</code> branch to get updated with the new contents of <code>output</code>. This can be done using the pre-push hook, which is executed -
 you guessed it - just before a push occurs.</p>
 <p>All you have to do is create a file named <code>.git/hooks/pre-push</code> with the following content:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 <span class="k">while</span> <span class="nb">read</span> local_ref local_sha remote_ref remote_sha
 <span class="k">do</span>
         <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$remote_ref</span><span class="s2">&quot;</span> <span class="o">=</span> <span class="s2">&quot;refs/heads/source&quot;</span> <span class="o">]</span>
@@ -157,7 +157,7 @@ you guessed it - just before a push occurs.</p>
 <span class="k">done</span>
 
 <span class="nb">exit</span> <span class="m">0</span>
-</pre></div>
+</code></pre></div>
 
 
 <ol>

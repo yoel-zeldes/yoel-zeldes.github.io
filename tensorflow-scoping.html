@@ -136,10 +136,10 @@ model would automatically be constructed in a way that the name of the tensor
 would be <code>g/f/x</code>?</p>
 <p>Come to think of it, it’s pretty simple to do. All you have to do is go over all
 your functions and add a single line of code:</p>
-<div class="highlight"><pre><span></span><span class="n">def</span> <span class="n">f</span><span class="p">():</span>
-    <span class="k">with</span> <span class="n">tensorflow</span><span class="p">.</span><span class="n">name_scope</span><span class="p">(</span><span class="err">‘</span><span class="n">f</span><span class="err">’</span><span class="p">):</span>
-        <span class="o">#</span> <span class="n">define</span> <span class="n">tensors</span>
-</pre></div>
+<div class="highlight"><pre><span></span><code><span class="err">def f():</span>
+<span class="err">    with tensorflow.name_scope(‘f’):</span>
+<span class="err">        # define tensors</span>
+</code></pre></div>
 
 
 <p>So what’s wrong with that approach?</p>
@@ -156,7 +156,7 @@ indentation level of 4!</li>
 </ol>
 <p>We can bypass these disadvantages using simple metaprogramming — Python’s
 decorators to the rescue!</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">re</span>
 
 <span class="k">def</span> <span class="nf">name_scope</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -168,16 +168,16 @@ decorators to the rescue!</p>
 <span class="nd">@name_scope</span>
 <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
     <span class="c1"># define tensors</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>How does it work? The <code>@</code> is a syntactic sugar. It’s equivalent to the
 following:</p>
-<div class="highlight"><pre><span></span><span class="n">def</span> <span class="n">foo</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><code><span class="n">def</span> <span class="n">foo</span><span class="p">():</span>
     <span class="o">#</span> <span class="n">define</span> <span class="n">tensors</span>
 
 <span class="n">foo</span> <span class="o">=</span> <span class="n">name_scope</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p><code>name_scope</code> gets a function as an argument (<code>f</code>) and returns a new function

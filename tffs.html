@@ -1284,7 +1284,7 @@ h6:hover .anchor-link {
             <span class="n">session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="n">graph</span><span class="p">)</span>
             <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">session</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">graph</span><span class="p">,</span> <span class="n">session</span>
 </pre></div>
 </div>
@@ -1351,8 +1351,8 @@ h6:hover .anchor-link {
     <span class="sd">"""</span>
 <span class="sd">    Given a path to a tensor file, evaluate the tensor and cache the result in self._tensor_values.</span>
 <span class="sd">    """</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tensor_values</span><span class="p">[</span><span class="n">path</span><span class="p">]</span>
@@ -1362,7 +1362,7 @@ h6:hover .anchor-link {
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_scripts</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
 
     <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eval_tensor_if_needed</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="k">with</span> <span class="n">printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                       <span class="n">formatter</span><span class="o">=</span><span class="p">{</span><span class="s1">'all'</span><span class="p">:</span> <span class="n">_fixed_val_length</span><span class="p">},</span>
                       <span class="n">threshold</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">maxint</span><span class="p">,</span>
                       <span class="n">linewidth</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">maxint</span><span class="p">):</span>

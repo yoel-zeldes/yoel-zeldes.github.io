@@ -177,8 +177,8 @@ probability of getting a row from a specific component is proportional to the
 component’s size. Therefore, the test set ended up with a small number of big
 components. It may be counterintuitive, but here’s a code snippet you can try to
 experience it yourself:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="k">def</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="n">component_sizes</span><span class="p">,</span> <span class="n">test_size</span><span class="p">):</span>
   <span class="n">train</span> <span class="o">=</span> <span class="n">component_sizes</span>
@@ -198,7 +198,7 @@ experience it yourself:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Distribution of sizes of components&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;component size&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p><img alt="" src="images/train-test/sizes-distribution.png"></p>

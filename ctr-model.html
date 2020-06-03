@@ -172,17 +172,17 @@ uncertainty.</p>
 loss function is MSE — Mean Squared Error. We like this loss because it’s
 intuitive, right? You want to minimize the errors... But it turns out that when
 you minimize MSE, you implicitly maximize the likelihood of the data — assuming
-the label is distributed normally with a fixed standard deviation $\sigma$. This $\sigma$ is
+the label is distributed normally with a fixed standard deviation <span class="math">\(\sigma\)</span>. This <span class="math">\(\sigma\)</span> is
 the noise inherent in the data.</p>
 <p><img alt="" src="images/uncertainty_paper/model/likelihood.png"></p>
 <p>One thing we can do is explicitly maximize the likelihood by introducing a new
-node which we’ll call $\sigma$. Plugging it into the likelihood equation and letting
+node which we’ll call <span class="math">\(\sigma\)</span>. Plugging it into the likelihood equation and letting
 the gradients propagate enable this node to learn to output the data noise.</p>
 <p>We didn’t achieve anything different, right? We got an equivalent result to the
 initial MSE based model. However, now we can introduce a link from the last
-layer to $\sigma$:</p>
+layer to <span class="math">\(\sigma\)</span>:</p>
 <p><img alt="" src="images/uncertainty_paper/model/likelihood2.png"></p>
-<p>Now we’re getting into something interesting! $\sigma$ is now a function of the input.
+<p>Now we’re getting into something interesting! <span class="math">\(\sigma\)</span> is now a function of the input.
 It means the model can learn to associate different levels of data uncertainty
 with different inputs.</p>
 <p>We can make the model even more powerful. Instead of estimating a Gaussian
@@ -207,17 +207,17 @@ shopping compared to sports.</p>
 <p>This one is a bit more tricky. In <a href="https://engineering.taboola.com/using-uncertainty-interpret-model/">the first
 post</a> we
 explained that sometimes measurement can be noisy. This might result in noisy
-features or even noisy labels. In our case, our label $y$ is the empiric CTR of an
+features or even noisy labels. In our case, our label <span class="math">\(y\)</span> is the empiric CTR of an
 item — the number of times it was clicked so far, divided by the number of times
 it was shown.</p>
-<p>Let’s say the true CTR of an item is $y^*$ — that is, without measurement noise.
+<p>Let’s say the true CTR of an item is <span class="math">\(y^*\)</span> — that is, without measurement noise.
 This would be the CTR had we shown the item infinite amount of times in the
 context. But time is finite (at least the time we’ve got), so we showed it only
-a finite amount of times. We measured an observed CTR $y$. This $y$ has measurement
-noise — which we denote by $\epsilon$.</p>
-<p>Next, we assume $\epsilon$ is distributed normally with a $\sigma_\epsilon$ as the standard
-deviation. $\sigma_\epsilon$ function of $r$ — the number of times we showed the item. The
-bigger $r$ is, the smaller $\sigma_\epsilon$ gets, which makes $y$ more similar to $y^*$.</p>
+a finite amount of times. We measured an observed CTR <span class="math">\(y\)</span>. This <span class="math">\(y\)</span> has measurement
+noise — which we denote by <span class="math">\(\epsilon\)</span>.</p>
+<p>Next, we assume <span class="math">\(\epsilon\)</span> is distributed normally with a <span class="math">\(\sigma_\epsilon\)</span> as the standard
+deviation. <span class="math">\(\sigma_\epsilon\)</span> function of <span class="math">\(r\)</span> — the number of times we showed the item. The
+bigger <span class="math">\(r\)</span> is, the smaller <span class="math">\(\sigma_\epsilon\)</span> gets, which makes <span class="math">\(y\)</span> more similar to <span class="math">\(y^*\)</span>.</p>
 <p>At the end of the day, after we spare you from the mathematical details (which
 you can find <a href="https://arxiv.org/abs/1711.02487">in our paper</a>), we get this
 likelihood equation:</p>
@@ -225,8 +225,8 @@ likelihood equation:</p>
 <p>This is the same as the likelihood we have in the MDN architecture of a mixture
 of Gaussians, with one difference — the error term is split to two:</p>
 <ul>
-<li>data uncertainty ($\sigma_i$)</li>
-<li>measurement uncertainty ($\sigma_\epsilon$)</li>
+<li>data uncertainty (<span class="math">\(\sigma_i\)</span>)</li>
+<li>measurement uncertainty (<span class="math">\(\sigma_\epsilon\)</span>)</li>
 </ul>
 <p>Now that the model is able to explain each uncertainty using a different term,
 the data uncertainty is not polluted by the measurement uncertainty.</p>
@@ -280,6 +280,63 @@ might be able to improve.</p>
 <p><em>Originally published at
 <a href="https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify">engineering.taboola.com</a>
 by me and <a href="https://medium.com/@inbarnaor">Inbar Naor</a>.</em></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' && location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' }, Macros: {} }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
     </article>
 
         <div class="tags">
