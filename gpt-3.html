@@ -114,12 +114,12 @@
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
     <!-- Post Content -->
     <article>
-        <p>A few days ago, OpenAI announced a new successor to their Language Model (LM) - GPT-3. This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know the important points of this work.</p>
+        <p>A few days ago, OpenAI announced a new successor to their Language Model (LM) - <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>. This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know (most of) the important points of this work.</p>
 <h1>What’s in a Language Model?</h1>
 <blockquote>
 <p>"The diversity of tasks the model is able to perform in a zero-shot setting suggests that high-capacity models trained to maximize the likelihood of a sufficiently varied text corpus begin to learn how to perform a surprising amount of tasks without the need for explicit supervision"</p>
 </blockquote>
-<p>This is an excerpt from the paper accompanying GPT-2. GPT-3 is taking another step in this avenue.</p>
+<p>This is an excerpt from <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">the paper accompanying GPT-2</a>. GPT-3 is taking another step in this avenue.</p>
 <p>More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.
 - Getting these datasets is difficult.
 - Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.
@@ -141,7 +141,7 @@
 - They added known high-quality corpora to the training mix.</p>
 <p><img alt="" src="images/gpt-3/dataset.png"></p>
 <h1>Show me the numbers</h1>
-<p>In the next figure we can see that the power-law of LMs still holds:</p>
+<p>In the next figure we can see that the <a href="https://arxiv.org/abs/2001.08361">power-law</a> of LMs still holds:</p>
 <p><img alt="" src="images/gpt-3/power-law.png"></p>
 <p>To test if the pretrained validation loss is correlated with downstream task performance, the authors evaluated an exhaustive list of known NLP benchmarks by feeding K examples from the training set in-context to evaluate an example from the test set. In the paper they detail all the benchmarks, but here I chose to describe only a small sample:</p>
 <h2>Language Modeling</h2>
