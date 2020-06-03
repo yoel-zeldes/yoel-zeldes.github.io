@@ -14,9 +14,12 @@ A few days ago, OpenAI announced a new successor to their Language Model (LM) - 
 This is an excerpt from [the paper accompanying GPT-2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf). GPT-3 is taking another step in this avenue.
 
 More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.
-- Getting these datasets is difficult.
-- Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.
-- A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.
+
+* Getting these datasets is difficult.
+
+* Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.
+
+* A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.
 
 The route the authors chose to take is "in-context learning” - feeding the model a task specification (prompt) and/or a few demonstrations of the task as a prefix, priming it towards a subspace in the latent space that adheres to the given task. Translation, for instance, would look like "Q: What is the {language} translation of {sentence} A: {translation}”.
 
@@ -41,9 +44,12 @@ The authors trained several model sizes, varying from 125 million parameters to 
 
 #Show me your data and I'll show you your future
 The authors took three steps to improve the average quality of the datasets:
-- They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.
-- They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.
-- They added known high-quality corpora to the training mix.
+
+* They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.
+
+* They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.
+
+* They added known high-quality corpora to the training mix.
 
 ![](images/gpt-3/dataset.png)
 
