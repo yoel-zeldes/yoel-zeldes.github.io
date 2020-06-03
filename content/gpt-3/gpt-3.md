@@ -5,13 +5,13 @@ Tags: deep learning, NLP, NLG, GPT-3
 Summary: Can intelligence emerge simply by training a big enough language model using lots of data? GPT-3 tries to do so, using 175 billion parameters.
 header_cover: images/gpt-3/cover.jpg
 
-A few days ago, OpenAI announced a new successor to their Language Model (LM) - GPT-3. This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know (most of) the important points of this work.
+A few days ago, OpenAI announced a new successor to their Language Model (LM) - [GPT-3](https://arxiv.org/abs/2005.14165). This is the largest model trained so far, with 175 billion parameters. While training this large model has its merits, reading a large portion of 72 pages can be tiresome. In this blog post I’ll highlight the parts that I find interesting for people familiar with LMs, who merely wish to know (most of) the important points of this work.
 
 
 #What’s in a Language Model?
 > "The diversity of tasks the model is able to perform in a zero-shot setting suggests that high-capacity models trained to maximize the likelihood of a sufficiently varied text corpus begin to learn how to perform a surprising amount of tasks without the need for explicit supervision"
 
-This is an excerpt from the paper accompanying GPT-2. GPT-3 is taking another step in this avenue.
+This is an excerpt from [the paper accompanying GPT-2](https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf). GPT-3 is taking another step in this avenue.
 
 More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.
 - Getting these datasets is difficult.
@@ -49,7 +49,7 @@ The authors took three steps to improve the average quality of the datasets:
 
 
 #Show me the numbers
-In the next figure we can see that the power-law of LMs still holds:
+In the next figure we can see that the [power-law](https://arxiv.org/abs/2001.08361) of LMs still holds:
 
 ![](images/gpt-3/power-law.png)
 
