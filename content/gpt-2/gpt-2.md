@@ -1,4 +1,4 @@
-Title: The accessibility of GPT-2 - text generation and fine-tuning
+Title: The Accessibility of GPT-2 - Text Generation and Fine-tuning
 Slug: gpt-2
 Date: 2019-11-28 23:00
 Tags: deep learning, NLP, NLG, GPT-2

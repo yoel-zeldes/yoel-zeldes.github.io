@@ -1,4 +1,4 @@
-Title: GPT-3 for the people
+Title: GPT-3 for the People
 Slug: gpt-3
 Date: 2020-06-03 23:00
 Tags: deep learning, NLP, NLG, GPT-3
@@ -42,7 +42,7 @@ The authors trained several model sizes, varying from 125 million parameters to 
 ![](images/gpt-3/model-sizes.png)
 
 
-#Show me your data and I'll show you your future
+#Show Me Your Data and I'll Show You Your Future
 The authors took three steps to improve the average quality of the datasets:
 
 * They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.
@@ -54,7 +54,7 @@ The authors took three steps to improve the average quality of the datasets:
 ![](images/gpt-3/dataset.png)
 
 
-#Show me the numbers
+#Show Me the Numbers
 In the next figure we can see that the [power-law](https://arxiv.org/abs/2001.08361) of LMs still holds:
 
 ![](images/gpt-3/power-law.png)
@@ -83,7 +83,7 @@ The authors asked human evaluators to distinguish between human and machine gene
 ![](images/gpt-3/generated-news.png)
 
 
-#There's a lot of memorization that goes on in school
+#There's a Lot of Memorization That Goes on in School
 Accurately detecting test contamination from internet-scale datasets is a new area of research without established best practices. As model capacity increases, the risk of memorization increases. At large, the authors removed documents that have overlap with the test set. However, due to a bug, this process had leftovers. They tried to assess the damage, and it seems like the model doesn’t memorize, and (most of) the results are valid.
 
 (My own note: maybe it is time for more rigorous testing in the ML field as a whole, like what’s customary in other fields.)
