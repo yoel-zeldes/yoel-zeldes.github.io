@@ -120,10 +120,18 @@
 <p>"The diversity of tasks the model is able to perform in a zero-shot setting suggests that high-capacity models trained to maximize the likelihood of a sufficiently varied text corpus begin to learn how to perform a surprising amount of tasks without the need for explicit supervision"</p>
 </blockquote>
 <p>This is an excerpt from <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">the paper accompanying GPT-2</a>. GPT-3 is taking another step in this avenue.</p>
-<p>More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.
-- Getting these datasets is difficult.
-- Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.
-- A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.</p>
+<p>More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.</p>
+<ul>
+<li>
+<p>Getting these datasets is difficult.</p>
+</li>
+<li>
+<p>Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.</p>
+</li>
+<li>
+<p>A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.</p>
+</li>
+</ul>
 <p>The route the authors chose to take is "in-context learning” - feeding the model a task specification (prompt) and/or a few demonstrations of the task as a prefix, priming it towards a subspace in the latent space that adheres to the given task. Translation, for instance, would look like "Q: What is the {language} translation of {sentence} A: {translation}”.</p>
 <p>This is based on the assumption that the model develops a broad set of skills and pattern recognition abilities at training time, and then uses those abilities at inference time to rapidly adapt to or recognize the desired task.</p>
 <p>It’s a common wisdom that low perplexity is correlated with performance on downstream tasks, so one can hope that bigger models will yield better in-context capabilities. And indeed, this holds true, as can be seen in the next figure, where a simple task requiring the model to remove random symbols from a word is tested:</p>
@@ -135,10 +143,18 @@
 <p>The authors trained several model sizes, varying from 125 million parameters to 175 billion parameters, in order to measure correlation between model size and benchmark performance.</p>
 <p><img alt="" src="images/gpt-3/model-sizes.png"></p>
 <h1>Show me your data and I'll show you your future</h1>
-<p>The authors took three steps to improve the average quality of the datasets:
-- They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.
-- They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.
-- They added known high-quality corpora to the training mix.</p>
+<p>The authors took three steps to improve the average quality of the datasets:</p>
+<ul>
+<li>
+<p>They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.</p>
+</li>
+<li>
+<p>They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.</p>
+</li>
+<li>
+<p>They added known high-quality corpora to the training mix.</p>
+</li>
+</ul>
 <p><img alt="" src="images/gpt-3/dataset.png"></p>
 <h1>Show me the numbers</h1>
 <p>In the next figure we can see that the <a href="https://arxiv.org/abs/2001.08361">power-law</a> of LMs still holds:</p>

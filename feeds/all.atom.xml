@@ -5,10 +5,18 @@
 &lt;p&gt;"The diversity of tasks the model is able to perform in a zero-shot setting suggests that high-capacity models trained to maximize the likelihood of a sufficiently varied text corpus begin to learn how to perform a surprising amount of tasks without the need for explicit supervision"&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;This is an excerpt from &lt;a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf"&gt;the paper accompanying GPT-2&lt;/a&gt;. GPT-3 is taking another step in this avenue.&lt;/p&gt;
-&lt;p&gt;More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.
-- Getting these datasets is difficult.
-- Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.
-- A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.&lt;/p&gt;
+&lt;p&gt;More specifically, the authors pinpoint the drawbacks of fine-tuning using task specific datasets.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Getting these datasets is difficult.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fine-tuning allows the model to exploit spurious correlations, which lead to bad out-of-distribution performance.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A brief directive in natural language is usually enough for humans to understand a given task. This adaptability is a desired property of NLP systems.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;The route the authors chose to take is "in-context learning” - feeding the model a task specification (prompt) and/or a few demonstrations of the task as a prefix, priming it towards a subspace in the latent space that adheres to the given task. Translation, for instance, would look like "Q: What is the {language} translation of {sentence} A: {translation}”.&lt;/p&gt;
 &lt;p&gt;This is based on the assumption that the model develops a broad set of skills and pattern recognition abilities at training time, and then uses those abilities at inference time to rapidly adapt to or recognize the desired task.&lt;/p&gt;
 &lt;p&gt;It’s a common wisdom that low perplexity is correlated with performance on downstream tasks, so one can hope that bigger models will yield better in-context capabilities. And indeed, this holds true, as can be seen in the next figure, where a simple task requiring the model to remove random symbols from a word is tested:&lt;/p&gt;
@@ -20,10 +28,18 @@
 &lt;p&gt;The authors trained several model sizes, varying from 125 million parameters to 175 billion parameters, in order to measure correlation between model size and benchmark performance.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="images/gpt-3/model-sizes.png"&gt;&lt;/p&gt;
 &lt;h1&gt;Show me your data and I'll show you your future&lt;/h1&gt;
-&lt;p&gt;The authors took three steps to improve the average quality of the datasets:
-- They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.
-- They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.
-- They added known high-quality corpora to the training mix.&lt;/p&gt;
+&lt;p&gt;The authors took three steps to improve the average quality of the datasets:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;They downloaded and filtered a version of CommonCrawl based on similarity to a range of high-quality reference corpora.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;They performed fuzzy deduplication to prevent redundancy and preserve the integrity of the held-out validation set.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;They added known high-quality corpora to the training mix.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;&lt;img alt="" src="images/gpt-3/dataset.png"&gt;&lt;/p&gt;
 &lt;h1&gt;Show me the numbers&lt;/h1&gt;
 &lt;p&gt;In the next figure we can see that the &lt;a href="https://arxiv.org/abs/2001.08361"&gt;power-law&lt;/a&gt; of LMs still holds:&lt;/p&gt;
