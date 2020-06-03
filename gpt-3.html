@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-        <title>GPT-3 for the people</title>
+        <title>GPT-3 for the People</title>
 
             <link href="https://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
         <!-- Bootstrap Core CSS -->
@@ -51,14 +51,14 @@
 	<meta property="og:type" content="article">
             <meta property="article:author" content="https://anotherdatum.com/author/yoel-zeldes.html">
 	<meta property="og:url" content="https://anotherdatum.com/gpt-3.html">
-	<meta property="og:title" content="GPT-3 for the people">
+	<meta property="og:title" content="GPT-3 for the People">
 	<meta property="article:published_time" content="2020-06-03 23:00:00+03:00">
             <meta property="og:description" content="Can intelligence emerge simply by training a big enough language model using lots of data? GPT-3 tries to do so, using 175 billion parameters.">
 
             <meta property="og:image" content="https://anotherdatum.com/images/gpt-3/cover.jpg">
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:site" content="@YZeldes">
-        <meta name="twitter:title" content="GPT-3 for the people">
+        <meta name="twitter:title" content="GPT-3 for the People">
 
             <meta name="twitter:image" content="https://anotherdatum.com/images/gpt-3/cover.jpg">
 
@@ -99,7 +99,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1>GPT-3 for the people</h1>
+                        <h1>GPT-3 for the People</h1>
                         <span class="meta">Posted on 03 June 2020</span>
                         
                     </div>
@@ -142,7 +142,7 @@
 <p>GPT-3 is made up of a Transformers-based architecture similarly to GPT-2, including the modified initialization, pre-normalization, and reversible tokenization described therein, with the exception that it uses alternating dense and locally banded sparse attention patterns in the layers of the transformer, similar to the Sparse Transformer.</p>
 <p>The authors trained several model sizes, varying from 125 million parameters to 175 billion parameters, in order to measure correlation between model size and benchmark performance.</p>
 <p><img alt="" src="images/gpt-3/model-sizes.png"></p>
-<h1>Show me your data and I'll show you your future</h1>
+<h1>Show Me Your Data and I'll Show You Your Future</h1>
 <p>The authors took three steps to improve the average quality of the datasets:</p>
 <ul>
 <li>
@@ -156,7 +156,7 @@
 </li>
 </ul>
 <p><img alt="" src="images/gpt-3/dataset.png"></p>
-<h1>Show me the numbers</h1>
+<h1>Show Me the Numbers</h1>
 <p>In the next figure we can see that the <a href="https://arxiv.org/abs/2001.08361">power-law</a> of LMs still holds:</p>
 <p><img alt="" src="images/gpt-3/power-law.png"></p>
 <p>To test if the pretrained validation loss is correlated with downstream task performance, the authors evaluated an exhaustive list of known NLP benchmarks by feeding K examples from the training set in-context to evaluate an example from the test set. In the paper they detail all the benchmarks, but here I chose to describe only a small sample:</p>
@@ -173,7 +173,7 @@
 <h2>News Article Generation</h2>
 <p>The authors asked human evaluators to distinguish between human and machine generated news articles. As model size increases, participants got lower accuracy scores despite increased time investment per news article. This supports the finding that larger models generate harder-to-distinguish news articles.</p>
 <p><img alt="" src="images/gpt-3/generated-news.png"></p>
-<h1>There's a lot of memorization that goes on in school</h1>
+<h1>There's a Lot of Memorization That Goes on in School</h1>
 <p>Accurately detecting test contamination from internet-scale datasets is a new area of research without established best practices. As model capacity increases, the risk of memorization increases. At large, the authors removed documents that have overlap with the test set. However, due to a bug, this process had leftovers. They tried to assess the damage, and it seems like the model doesn’t memorize, and (most of) the results are valid.</p>
 <p>(My own note: maybe it is time for more rigorous testing in the ML field as a whole, like what’s customary in other fields.)</p>
 <h1>Limitations</h1>
