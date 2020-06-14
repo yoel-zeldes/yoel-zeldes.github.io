@@ -1,4 +1,4 @@
-Title: GPT-3, a Giant Step for Deep Learning And NLP
+Title: GPT-3, a Giant Step for Deep Learning and NLP
 Slug: gpt-3
 Date: 2020-06-03 23:00
 Tags: deep learning, NLP, NLG, GPT-3
