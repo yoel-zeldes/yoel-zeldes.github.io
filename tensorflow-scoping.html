@@ -141,7 +141,6 @@ your functions and add a single line of code:</p>
 <span class="err">        # define tensors</span>
 </code></pre></div>
 
-
 <p>So what’s wrong with that approach?</p>
 <ol>
 <li>The name of the function <code>f</code> appears twice — both in the function declaration
@@ -170,7 +169,6 @@ decorators to the rescue!</p>
     <span class="c1"># define tensors</span>
 </code></pre></div>
 
-
 <p>How does it work? The <code>@</code> is a syntactic sugar. It’s equivalent to the
 following:</p>
 <div class="highlight"><pre><span></span><code><span class="n">def</span> <span class="n">foo</span><span class="p">():</span>
@@ -178,7 +176,6 @@ following:</p>
 
 <span class="n">foo</span> <span class="o">=</span> <span class="n">name_scope</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p><code>name_scope</code> gets a function as an argument (<code>f</code>) and returns a new function
 (<code>func</code>). <code>func</code> creates a named scope, and then calls <code>f</code>.</p>

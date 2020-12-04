@@ -119,6 +119,210 @@
 <p>Doing all of these is easy - it’s only a matter of pip installing the relevant packages and launching a python script. However, to save you the trouble, you could use one of the available platforms such as <a href="https://spell.run">Spell</a> - you just specify what you want to run, and Spell will take care of the rest (download the code, install the packages, allocate compute resources, manage results).</p>
 <p>While not being a Spell advocate (I haven’t even tried other features of the platform, or tried other platforms at all), I decided to write a tutorial that details the process I’ve just described. To find out more, you can find the tutorial <a href="https://community.spell.run/hc/en-us/articles/360038909713-GPT-2-text-generation-is-not-something-to-joke-about">here</a>.</p>
 <p>If you also like to play around with machine generated text, feel free to leave a comment with interesting texts you got. :)</p>
+<hr>
+<p><em>UPDATE</em>: it seems the tutorial is no longer available in the aforementioned link. Although it’s a bit outdated (the hugging face API has changed a lot since then), here is the full text:</p>
+<p><br /></p>
+<p>Natural Language Generation (NLG) is a well studied subject among the NLP community. One approach to tackle the challenge of text generation is to factorize the probability of a sequence of tokens (e.g. words or <a href="https://arxiv.org/abs/1508.07909">Byte Pair Encoding</a>) <span class="math">\(P(x_1, \ldots, x_n)\)</span> into the multiplication of the probabilities of getting each of the tokens <span class="math">\(x_1\)</span>, …, <span class="math">\(x_n\)</span> conditioned on the tokens preceding it: <span class="math">\(\prod_{t=1}^{n}P(x_t|x_{&lt;t})\)</span>. Given a training dataset, one could train such a model to maximize the probability of the next token at each time step. Once the model has been trained, you could generate text by sampling from the distribution one token at a time. Easy as a breeze.</p>
+<p>With the rise of deep learning methods, NLG has become better and better. Recently, OpenAI have pushed the limits, with the release of <a href="https://openai.com/blog/better-language-models">GPT-2</a>. This model uses the well known <a href="https://arxiv.org/abs/1706.03762">Transformers architecture</a>: in order to calculate the distribution over the next token, the model simultaneously uses the previous tokens using a self-attention mechanism.</p>
+<p>Recently, HuggingFace have <a href="https://huggingface.co/transformers">released an API</a> easing the access to GPT-2. One of its features is generating text using the pre-trained model:</p>
+<div class="highlight"><pre><span></span><code>spell run --github-url https://github.com/huggingface/transformers.git <span class="se">\</span>
+  --pip tqdm <span class="se">\</span>
+  --pip boto3 <span class="se">\</span>
+  --pip requests <span class="se">\</span>
+  --pip regex <span class="se">\</span>
+  --pip sacremoses <span class="se">\</span>
+  <span class="s2">&quot;python examples/run_generation.py \</span>
+<span class="s2">    --model_type=gpt2 \</span>
+<span class="s2">    --length=70 \</span>
+<span class="s2">    --prompt=&#39; &#39; \</span>
+<span class="s2">    --model_name_or_path=gpt2&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>💫 Casting spell #1…
+✨ Stop viewing logs with ^C
+✨ Machine_Requested… done
+✨ Building… done
+✨ Run is running
+…
+…
+…
+$5.30-$10.00
+
+FREE SHIPPING
+
+Items without a shipping address will be delivered to your confirmation email when you purchase your product.
+
+Use &quot;POOL&quot; when ordering; deliveries to POOL addresses are completely separate from shipping.&lt;|endoftext|&gt;Earth&#39;s spin to new low the closer Earth takes to the Sun&#39;s
+✨ Saving… done
+✨ Pushing… done
+🎉 Total run time: 1m7.057677s
+🎉 Run 1 complete
+</code></pre></div>
+
+<p>That was easy! OpenAI have used diverse data found on the web for training the model, so the generated text can be pretty much any natural looking text. But what if instead of diversity, we’d like to generate a specific kind of text? Let’s try to generate jokes! To do so, we’ll have to train the model using a dataset of jokes. Unfortunately, getting such a dataset would be ridiculously hard! To train GPT-2, which has 124M weights to be learned (and this is merely the smaller version of the architecture), we need a huge amount of data! But how are we going to get that many jokes? The short answer is: we won’t.</p>
+<p>Learning to generate jokes involves learning how to generate natural-looking text, as well as making sure this text is funny. The first part is where most of the learning happens. Using the pre-trained version of GPT-2 as a starting point, the model won’t have to learn how to generate natural-looking text from scratch. All it’ll have to learn is to concentrate the distribution over text that is funny. A relatively small dataset will do for the task.</p>
+<p>Don’t get me wrong, the dataset we’ll be using isn’t big enough to meaningfully learn anything useful. Moreover, training a model to generalize the concept of humor is a hard problem. However, for the purpose of this post - learning how to use and fine-tune a model such as GPT-2 - this will do: we’ll witness how the dataset shifts the model’s distribution towards text that looks, to some extent, like jokes.</p>
+<p>We’ll use one-liner jokes from <a href="https://raw.githubusercontent.com/amoudgl/short-jokes-dataset/master/data/onelinefun.csv">short-jokes-dataset</a> to fine-tune GPT-2. Being shorter than the average joke, it’ll be easier for the model to learn their distribution. So first thing’s first, let’s get the data:</p>
+<div class="highlight"><pre><span></span><code>spell run <span class="s2">&quot;wget -O data.csv https://raw.githubusercontent.com/amoudgl/short-jokes-dataset/master/data/onelinefun.csv &amp;&amp; python -c \&quot;import csv; f_in = open(&#39;data.csv&#39;, &#39;r&#39;); f_out = open(&#39;data.txt&#39;, &#39;w&#39;); f_out.write(&#39;\n&#39;.join(row[&#39;Joke&#39;] for row in csv.DictReader(f_in)))\&quot;&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>💫 Casting spell #2…
+✨ Stop viewing logs with ^C
+✨ Building… done
+✨ Machine_Requested… done
+✨ Run is running
+--2019-11-09 21:36:14--  https://raw.githubusercontent.com/amoudgl/short-jokes-dataset/master/data/onelinefun.csv
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.0.133, 151.101.64.133, 151.101.128.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.0.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 253462 (248K) [text/plain]
+Saving to: ‘data.csv’
+
+     0K .......... .......... .......... .......... .......... 20% 3.34M 0s
+    50K .......... .......... .......... .......... .......... 40% 6.72M 0s
+   100K .......... .......... .......... .......... .......... 60%  167M 0s
+   150K .......... .......... .......... .......... .......... 80%  122M 0s
+   200K .......... .......... .......... .......... .......   100% 6.55M=0.03s
+
+2019-11-09 21:36:14 (8.14 MB/s) - ‘data.csv’ saved [253462/253462]
+
+✨ Saving… done
+✨ Pushing… done
+🎉 Total run time: 13.07418s
+🎉 Run 2 complete
+</code></pre></div>
+
+<p>HuggingFace have already provided us with a script to fine-tune GPT-2:</p>
+<div class="highlight"><pre><span></span><code>spell run --github-url https://github.com/huggingface/transformers.git <span class="se">\</span>
+  --pip tqdm <span class="se">\</span>
+  --pip boto3 <span class="se">\</span>
+  --pip requests <span class="se">\</span>
+  --pip regex <span class="se">\</span>
+  --pip sacremoses <span class="se">\</span>
+  -m runs/2/data.txt <span class="se">\</span>
+  <span class="s2">&quot;python examples/run_lm_finetuning.py \</span>
+<span class="s2">    --output_dir=output \</span>
+<span class="s2">    --model_type=gpt2 \</span>
+<span class="s2">    --model_name_or_path=gpt2 \</span>
+<span class="s2">    --per_gpu_train_batch_size=2 \</span>
+<span class="s2">    --num_train_epochs=10 \</span>
+<span class="s2">    --do_train \</span>
+<span class="s2">    --train_data_file=data.txt&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>💫 Casting spell #3…
+✨ Stop viewing logs with ^C
+✨ Machine_Requested… done
+✨ Building… done
+✨ Mounting… done
+✨ Run is running
+…
+…
+…
+🎉 Total run time: 44h36m34.553059s
+🎉 Run 3 complete
+</code></pre></div>
+
+<p>Note that the downloaded data from the previous run is mounted using the <code>-m</code> flag.
+Even though we’ve used a small dataset (3K examples), running 10 epochs on a CPU took about 44 hours. It only shows how big the model is. This is why you should use a GPU if you want to use a bigger dataset or run many experiments (e.g. tune hyper parameters).</p>
+<p>Let’s try to generate a joke, after mounting the result of the previous run:</p>
+<div class="highlight"><pre><span></span><code>spell run --github-url https://github.com/huggingface/transformers.git <span class="se">\</span>
+  --pip tqdm <span class="se">\</span>
+  --pip boto3 <span class="se">\</span>
+  --pip requests <span class="se">\</span>
+  --pip regex <span class="se">\</span>
+  --pip sacremoses <span class="se">\</span>
+  -m runs/3/output <span class="se">\</span>
+  <span class="s2">&quot;python examples/run_generation.py \</span>
+<span class="s2">    --model_type=gpt2 \</span>
+<span class="s2">    --length=70 \</span>
+<span class="s2">    --prompt=&#39; &#39; \</span>
+<span class="s2">    --model_name_or_path=output&quot;</span>
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code>💫 Casting spell #4…
+✨ Stop viewing logs with ^C
+✨ Machine_Requested… done
+✨ Building… done
+✨ Run is running
+…
+…
+…
+&quot;I&#39;ve got seven fingers! But I don&#39;t have those!&quot;
+Your childhood might be difficult, but at least it doesn&#39;t taste like your grandfather&#39;s.
+Funny things never happen, in life.
+Friends, We&#39;ve met on the beach. What&#39;s wrong with you?
+If I&#39;m speaking honestly, I could use some
+✨ Saving… done
+✨ Pushing… done
+🎉 Total run time: 51.047054s
+🎉 Run 4 complete
+</code></pre></div>
+
+<p>The model has learned to generate short sentences, which is typical for our dataset. This relatively easy to grasp data statistic was well learned! Regarding how funny the model is - well… I’ll leave you to judge!</p>
+<p><img alt="" src="images/gpt-2/joke.jpg"></p>
+<script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width < 768) ? "left" : align;
+        indent = (screen.width < 768) ? "0em" : indent;
+        linebreak = (screen.width < 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'Loading awesomeness...'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        availableFonts: ['STIX', 'TeX']," +
+        "        preferredFont: 'STIX'," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+</script>
     </article>
 
         <div class="tags">
