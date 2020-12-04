@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+from pelican_jupyter import markup as nb_markup
 
 AUTHOR = 'Yoel Zeldes'
 SITENAME = 'Another Datum'
@@ -44,7 +45,7 @@ DEFAULT_PAGINATION = 10
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATHS = ['./plugins']
-PLUGINS = ['ipynb.markup', 'render_math']
+PLUGINS = [nb_markup, 'render_math']
 
 DISQUS_SITENAME = 'anotherdatum'
 

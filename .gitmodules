@@ -1,9 +1,3 @@
-[submodule "plugins/ipynb"]
-	path = plugins/ipynb
-	url = git://github.com/danielfrg/pelican-ipynb.git
 [submodule "theme"]
 	path = theme
 	url = https://github.com/yoel-zeldes/pelican-clean-blog
-[submodule "plugins/render_math"]
-	path = plugins/render_math
-	url = https://github.com/barrysteyn/pelican_plugin-render_math
