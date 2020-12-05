@@ -3,7 +3,7 @@ Slug: gpt-2
 Date: 2019-11-28 23:00
 Tags: deep learning, NLP, NLG, GPT-2
 Summary: Text generation using GPT-2 is quite easy, using the right tools. Learn how to do it, as well as how to fine-tune the model on your own dataset.
-header_cover: images/gpt-2/cover.jpg
+cover: images/gpt-2/cover.jpg
 
 Natural Language Generation (NLG) is a well studied subject among the NLP community. With the rise of deep learning methods, NLG has become better and better. Recently, OpenAI has pushed the limits, with the release of [GPT-2](https://openai.com/blog/better-language-models) - a [Transformers](https://arxiv.org/abs/1706.03762) based model that predicts the next [token](https://arxiv.org/abs/1508.07909) at each time space.
 

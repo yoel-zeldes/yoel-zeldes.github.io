@@ -3,7 +3,7 @@ Slug: pelican-and-github-pages-workflow
 Date: 2016-11-08 21:00
 Tags: pelican, git
 Summary: A simple workflow for writing blog posts using Pelican and GitHub Pages.
-header_cover: images/pelican-and-github-pages-workflow/cover.png
+cover: images/pelican-and-github-pages-workflow/cover.png
 
 This blog is powered by [Pelican](http://docs.getpelican.com/en/stable) and hosted through GitHub using [GitHub Pages](https://pages.github.com/).
 In this post I'll describe the workflow I use when deploying new posts.

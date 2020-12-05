@@ -3,7 +3,7 @@ Slug: ctr-model
 Date: 2018-08-21 21:00
 Tags: deep learning, uncertainty, recommender systems
 Summary: Learn how to handle uncertainty in recommender systems in a principled way using one unified model.
-header_cover: images/uncertainty_paper/model/cover.jpg
+cover: images/uncertainty_paper/model/cover.jpg
 
 *This is a joint post with [Inbar Naor](https://medium.com/@inbarnaor). Originally published at [engineering.taboola.com](https://engineering.taboola.com/uncertainty-ctr-prediction-one-model-clarify/).*
 

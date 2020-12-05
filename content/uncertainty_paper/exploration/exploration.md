@@ -3,7 +3,7 @@ Slug: exploration-exploitation
 Date: 2018-08-14 21:00
 Tags: deep learning, uncertainty, recommender systems
 Summary: Learn what the exploration-exploitation tradeoff is, and how to use your model's uncertainty to explore new items in a wise manner.
-header_cover: images/uncertainty_paper/exploration/cover.jpg
+cover: images/uncertainty_paper/exploration/cover.jpg
 
 *This is a joint post with [Inbar Naor](https://medium.com/@inbarnaor). Originally published at [engineering.taboola.com](https://engineering.taboola.com/recommender-systems-exploring-the-unknown-using-uncertainty).*
 

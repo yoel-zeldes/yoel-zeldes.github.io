@@ -4,5 +4,5 @@ Date: 2019-04-01 23:00
 Category: posts
 Tags: deep-learning, generative, unsupervised
 Summary: An unsupervised approach to digit classification and generation.
-header_cover: images/vae-moe/cover.png
+cover: images/vae-moe/cover.png
 

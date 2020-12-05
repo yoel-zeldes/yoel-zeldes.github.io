@@ -3,7 +3,7 @@ Slug: bnn
 Date: 2018-08-06 21:00
 Tags: deep learning, uncertainty
 Summary: Learn how to estimate model uncertainty in neural networks.
-header_cover: images/uncertainty_paper/BNN/cover.jpg
+cover: images/uncertainty_paper/BNN/cover.jpg
 
 *This is a joint post with [Inbar Naor](https://medium.com/@inbarnaor). Originally published at [engineering.taboola.com](https://engineering.taboola.com/neural-networks-bayesian-perspective).*
 

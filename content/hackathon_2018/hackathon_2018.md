@@ -3,7 +3,7 @@ Slug: taboola-hackathon-2018
 Date: 2018-10-10 21:00
 Tags: deep learning, web, hackathon, augmented reality
 Summary: How to create an Augmented Reality app that allows a user to get content recommendations.
-header_cover: images/hackathon_2018/cover.png
+cover: images/hackathon_2018/cover.png
 
 Imagine you’re walking down the street and you see a nice car you’re thinking of
 buying. Just by pointing your phone camera, you can see relevant content about

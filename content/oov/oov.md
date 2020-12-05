@@ -3,7 +3,7 @@ Slug: preparing-for-the-unexpected
 Date: 2019-01-27 23:00
 Tags: deep learning
 Summary: How to apply your model to input it has never seen before.
-header_cover: images/oov/cover.jpg
+cover: images/oov/cover.jpg
 
 Some of the problems we tackle using machine learning involve categorical
 features that represent real world objects, such as words, items and categories.

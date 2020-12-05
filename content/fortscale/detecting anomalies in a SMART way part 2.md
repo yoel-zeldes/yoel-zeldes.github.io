@@ -3,7 +3,7 @@ Slug: detecting-anomalies-in-a-SMART-Way-part-two
 Date: 2016-09-24 21:00
 Tags: statistics, data-science, anomalies
 Summary: Second part of a posts series about finding anomalous users.
-header_cover: images/detecting-anomalies-in-a-SMART-Way/cover.png
+cover: images/detecting-anomalies-in-a-SMART-Way/cover.png
 
 *This post was originally published by me at the [Fortscale blog](https://blog.fortscale.com/detecting-anomalies-in-a-smart-way-part-2).*  
 *Fortscale's product helps organizations eliminate insider threats by detecting anomalous user behavior.*

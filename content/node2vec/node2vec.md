@@ -3,7 +3,7 @@ Slug: node2vec
 Date: 2019-01-21 23:00
 Tags: deep learning, word2vec, node2vec
 Summary: Learn how node2vec works, and what kind of information it captures that word2vec doesn’t — includes case study.
-header_cover: images/node2vec/cover.png
+cover: images/node2vec/cover.png
 
 In the last couple of years deep learning (DL) has become a main enabler for
 applications in many domains such as vision, NLP, audio, click stream data etc.

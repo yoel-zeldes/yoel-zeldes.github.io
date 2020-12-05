@@ -4,5 +4,5 @@ Date: 2018-11-11 23:00
 Category: posts
 Tags: deep-learning, generative, unsupervised
 Summary: Learn all the details needed to implement a variational autoencoder, code included.
-header_cover: images/vae2/cover.jpg
+cover: images/vae2/cover.jpg
 

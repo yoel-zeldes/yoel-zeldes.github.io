@@ -1,6 +1,6 @@
 Title: about me
 Slug: about
-header_cover: images/about_cover.jpg
+cover: images/about_cover.jpg
 
 My name is Yoel Zeldes. I am an algorithm engineer @ [AI21 Labs](https://www.ai21.com).
 

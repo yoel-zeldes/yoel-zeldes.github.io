@@ -1,6 +1,6 @@
 Title: Resources
 Slug: resources
-header_cover: images/resources_cover.jpg
+cover: images/resources_cover.jpg
 
 Every good blog should reference other good blogs. It's the way of nature.
 Following is a random-ordered list of blogs, videos and other resources I've consumed while evolving as a data scientist.

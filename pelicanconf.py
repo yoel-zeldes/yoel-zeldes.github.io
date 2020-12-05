@@ -49,10 +49,10 @@ PLUGINS = [nb_markup, 'render_math']
 
 DISQUS_SITENAME = 'anotherdatum'
 
-THEME = './theme'
+THEME = './theme2'
 COLOR_SCHEME_CSS = 'tomorrow.css'
-CSS_OVERRIDE = 'css/overrides.css'
-HEADER_COVER = 'images/home-bg.jpg'
+CSS_OVERRIDE = ['css/overrides.css']
+HOME_COVER = 'images/home-bg.jpg'
 
 SUMMARY = True
 STATIC_PATHS = ['pages', 'images', 'css']

@@ -3,7 +3,7 @@ Slug: using-uncertainty-to-interpret-your-model
 Date: 2018-07-31 21:00
 Tags: deep learning, uncertainty
 Summary: Interpreting deep learning models is hard. Learn how to use uncertainty estimates to get insights about what the model has learned.
-header_cover: images/uncertainty_paper/interpretability/cover.jpg
+cover: images/uncertainty_paper/interpretability/cover.jpg
 
 *This is a joint post with [Inbar Naor](https://medium.com/@inbarnaor). Originally published at [engineering.taboola.com](https://engineering.taboola.com/using-uncertainty-interpret-model).*
 

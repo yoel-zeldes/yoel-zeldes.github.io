@@ -3,7 +3,7 @@ Slug: branding
 Date: 2018-12-31 23:00
 Tags: blogging
 Summary: A couple of months ago I embarked on a journey to build my personal brand as a data scientist, and I want to share how I did it with you.
-header_cover: images/branding/cover.jpg
+cover: images/branding/cover.jpg
 
 Personal branding is a thing now. It always has been, but I believe it’s been
 getting more and more attention recently. More people are aware of its

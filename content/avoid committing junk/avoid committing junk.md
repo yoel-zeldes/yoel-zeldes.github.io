@@ -3,7 +3,7 @@ Slug: avoid-committing-junk
 Date: 2016-11-10 21:00
 Tags: git
 Summary: Have you ever accidentaly pushed temporary stuff to the remote git server? Then keep reading.
-header_cover: images/avoid-committing-junk/cover.png
+cover: images/avoid-committing-junk/cover.png
 
 In the development process every developer writes stuff he doesn't intend to commit and push to the remote server,
 e.g. debug prints. It happens to all of us every now and then: we forget to remove this temporary stuff before committing...

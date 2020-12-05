@@ -3,7 +3,7 @@ Slug: embark
 Date: 2018-10-28 23:00
 Tags: deep learning, architecture
 Summary: So you just finished designing that great neural network architecture. But how do you handle the fact it is slow?
-header_cover: images/embark/cover.jpg
+cover: images/embark/cover.jpg
 
 So you just finished designing that great neural network architecture of yours.
 It has a blazing number of 300 fully connected layers interleaved with 200

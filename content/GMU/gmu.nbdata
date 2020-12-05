@@ -4,5 +4,5 @@ Date: 2018-03-22 23:00
 Category: posts
 Tags: deep-learning
 Summary: Learn how to train a neural network to use inputs from multiple different modalities using the GMU block.
-header_cover: images/gmu/cover.png
+cover: images/gmu/cover.png
 

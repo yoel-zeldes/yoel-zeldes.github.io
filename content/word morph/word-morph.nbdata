@@ -4,5 +4,5 @@ Date: 2018-04-08 10:00
 Category: posts
 Tags: deep-learning, search
 Summary: How to employ word2vec's embeddings and A* search algorithm to morph between words.
-header_cover: images/word-morph/cover.jpg
+cover: images/word-morph/cover.jpg
 

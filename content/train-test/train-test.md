@@ -3,7 +3,7 @@ Slug: train-test
 Date: 2018-12-16 23:00
 Tags: machine learning
 Summary: Splitting your dataset to train-test sets can sometimes be more complicated than one might expect.
-header_cover: images/train-test/cover.jpg
+cover: images/train-test/cover.jpg
 
 About a year ago we incorporated a new type of feature into one of our models
 used for recommending content items to our users. I’m talking about the

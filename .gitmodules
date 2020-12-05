@@ -1,3 +1,6 @@
 [submodule "theme"]
 	path = theme
 	url = https://github.com/yoel-zeldes/pelican-clean-blog
+[submodule "theme2"]
+	path = theme2
+	url = git://github.com/yoel-zeldes/attila.git

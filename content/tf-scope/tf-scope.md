@@ -3,7 +3,7 @@ Slug: tensorflow-scoping
 Date: 2019-02-05 23:00
 Tags: tensorflow, software engineering
 Summary: How to structure your TensorFlow graph like a software engineer.
-header_cover: images/tf-scope/cover.png
+cover: images/tf-scope/cover.png
 
 So you’ve finished training your model, and it’s time to get some insights as to
 what it has learned. You decide which tensor should be interesting, and go look

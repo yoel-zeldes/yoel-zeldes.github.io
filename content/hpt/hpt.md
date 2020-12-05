@@ -3,7 +3,7 @@ Slug: hpt
 Date: 2018-06-14 23:00
 Tags: deep learning, machine learning
 Summary: Our implementation and usage of hyperparameter tuning at Taboola.
-header_cover: images/hpt/cover.jpg
+cover: images/hpt/cover.jpg
 
 *This post was originally published by me at the [Taboola engineering blog](https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/).*
 
