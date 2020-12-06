@@ -67,3 +67,9 @@ img {
 .blog-cover {
     animation: 0.5s ease-in fadein;
 }
+
+pre code,
+pre tt {
+    margin: 0;
+    padding: 0;
+}
