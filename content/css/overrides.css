@@ -7,7 +7,7 @@
 }
 
 .prompt {
-	min-width: 10ex !important;
+	display: none;
 }
 
 .MathJax_Display {
