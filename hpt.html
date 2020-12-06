@@ -2,117 +2,156 @@
 <html lang="en">
 
 <head>
-            <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 
-        <title>The Hitchhiker's Guide to Hyperparameter Tuning</title>
-
-            <link href="https://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
-        <!-- Bootstrap Core CSS -->
-        <link href="https://anotherdatum.com/theme/css/bootstrap.min.css" rel="stylesheet">
-
-        <!-- Custom CSS -->
-        <link href="https://anotherdatum.com/theme/css/clean-blog.min.css" rel="stylesheet">
-
-        <!-- Code highlight color scheme -->
-            <link href="https://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
-
-            <!-- CSS specified by the user -->
-            <link href="https://anotherdatum.com/css/overrides.css" rel="stylesheet">
-
-        <!-- Custom Fonts -->
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
-
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+  <title>The Hitchhiker's Guide to Hyperparameter Tuning</title>
 
 
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="origin" />
+  <meta name="generator" content="Pelican" />
+<link href="https://anotherdatum.com/hpt.html" rel="canonical" />
+  <!-- Feed -->
+        <link href="https://anotherdatum.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Another Datum Full Atom Feed" />
 
-        <meta name="description" content="Our implementation and usage of hyperparameter tuning at Taboola.">
+  <link href="https://anotherdatum.com/theme/css/style.css" type="text/css" rel="stylesheet" />
 
-        <meta name="author" content="Yoel Zeldes">
+  <!-- Code highlight color scheme -->
+      <link href="https://anotherdatum.com/theme/css/code_blocks/tomorrow.css" rel="stylesheet">
 
-        <meta name="tags" content="deep learning">
-        <meta name="tags" content="machine learning">
+    <!-- CSS specified by the user -->
 
-	                <meta property="og:locale" content="en">
-		<meta property="og:site_name" content="Another Datum">
 
-	<meta property="og:type" content="article">
-            <meta property="article:author" content="https://anotherdatum.com/author/yoel-zeldes.html">
-	<meta property="og:url" content="https://anotherdatum.com/hpt.html">
-	<meta property="og:title" content="The Hitchhiker's Guide to Hyperparameter Tuning">
-	<meta property="article:published_time" content="2018-06-14 23:00:00+03:00">
-            <meta property="og:description" content="Our implementation and usage of hyperparameter tuning at Taboola.">
+    <link href="https://anotherdatum.com/css/overrides.css" type="text/css" rel="stylesheet" />
 
-            <meta property="og:image" content="https://anotherdatum.com/images/hpt/cover.jpg">
-        <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:site" content="@YZeldes">
-        <meta name="twitter:title" content="The Hitchhiker's Guide to Hyperparameter Tuning">
+  <!-- Custom fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Montserrat:400,300' rel='stylesheet' type='text/css' />
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
 
-            <meta name="twitter:image" content="https://anotherdatum.com/images/hpt/cover.jpg">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
-            <meta name="twitter:description" content="Our implementation and usage of hyperparameter tuning at Taboola.">
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+
+
+    <meta name="description" content="Our implementation and usage of hyperparameter tuning at Taboola.">
+
+    <meta name="author" content="Yoel Zeldes">
+
+    <meta name="tags" content="deep learning">
+    <meta name="tags" content="machine learning">
+
+
+
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="Another Datum"/>
+<meta property="og:title" content="The Hitchhiker's Guide to Hyperparameter Tuning"/>
+<meta property="og:description" content="Our implementation and usage of hyperparameter tuning at Taboola."/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://anotherdatum.com/hpt.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-06-14 23:00:00+03:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://anotherdatum.com/author/yoel-zeldes.html">
+  <meta property="article:publisher" content="https://www.facebook.com/yoel.zeldes" />
+<meta property="article:section" content="hpt"/>
+<meta property="article:tag" content="deep learning"/>
+<meta property="article:tag" content="machine learning"/>
+<meta property="og:image" content="https://anotherdatum.com/images/hpt/cover.jpg">
+
+<!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@YZeldes">
+    <meta name="twitter:title" content="The Hitchhiker's Guide to Hyperparameter Tuning">
+    <meta name="twitter:url" content="https://anotherdatum.com/hpt.html">
+
+        <meta name="twitter:image:src" content="https://anotherdatum.com/images/hpt/cover.jpg">
+
+      <meta name="twitter:description" content="Our implementation and usage of hyperparameter tuning at Taboola.">
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "name": "The Hitchhiker's Guide to Hyperparameter Tuning",
+  "headline": "The Hitchhiker's Guide to Hyperparameter Tuning",
+  "datePublished": "2018-06-14 23:00:00+03:00",
+  "dateModified": "",
+  "author": {
+    "@type": "Person",
+    "name": "Yoel Zeldes",
+    "url": "https://anotherdatum.com/author/yoel-zeldes.html"
+  },
+  "image": "https://anotherdatum.com/images/hpt/cover.jpg",
+  "url": "https://anotherdatum.com/hpt.html",
+  "description": "Our implementation and usage of hyperparameter tuning at Taboola."
+}
+</script>
 </head>
+<!-- TODO : Body class -->
+<body class="home-template">
 
-<body>
+<nav id="menu">
+  <a class="close-button">Close</a>
+  <div class="nav-wrapper">
+    <p class="nav-label">Menu</p>
+    <ul>
+          <li><a href="https://anotherdatum.com" role="presentation">Posts</a></li>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="https://anotherdatum.com/">Another Datum</a>
-            </div>
+              <li role="presentation"><a href="https://anotherdatum.com/pages/about.html">about me</a></li>
+              <li role="presentation"><a href="https://anotherdatum.com/pages/resources.html">Resources</a></li>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                        <li><a href="https://anotherdatum.com">Posts</a></li>
-
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+    </ul>
+  </div>
+</nav>
+    <!-- Progressbar -->
+    <div class="progress-container">
+        <span class="progress-bar"></span>
+    </div>
 
     <!-- Page Header -->
-        <header class="intro-header" style="background-image: url('images/hpt/cover.jpg')">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="post-heading">
-                        <h1>The Hitchhiker's Guide to Hyperparameter Tuning</h1>
-                        <span class="meta">Posted on 14 June 2018</span>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Set your background image for this header on the line below. -->
+    <header id="post-header" class="has-cover">
+      <div class="inner">
+        <nav id="navigation">
+            <span id="home-button" class="nav-button">
+                <a class="home-button" href="https://anotherdatum.com/" title="Home"><i class="ic ic-arrow-left"></i> Home</a>
+            </span>
+          <span id="menu-button" class="nav-button">
+            <a class="menu-button"><i class="ic ic-menu"></i> Menu</a>
+          </span>
+        </nav>
+        <h1 class="post-title">The Hitchhiker's Guide to Hyperparameter Tuning</h1>
+        <!-- TODO : Proper class for headline -->
+        <span class="post-meta">
+            <time datetime="14 June 2018">14 June 2018</time>
+        </span>
+        <!-- TODO : Modified check -->
+            <div class="post-cover cover" style="background-image: url('https://anotherdatum.com/images/hpt/cover.jpg')">
+      </div>
     </header>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-    <!-- Post Content -->
-    <article>
-        <p><em>This post was originally published by me at the <a href="https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/">Taboola engineering blog</a>.</em></p>
+  <section id="wrapper">
+    <a class="hidden-close"></a>
+
+    <!-- Post content -->
+    <main class="content" role="main">
+        <article class="post">
+        <div class="inner">
+            <section class="post-content">
+                <p><em>This post was originally published by me at the <a href="https://engineering.taboola.com/hitchhikers-guide-hyperparameter-tuning/">Taboola engineering blog</a>.</em></p>
 <p>Now that more than a year has passed since our <a href="http://engineering.taboola.com/deep-learning-from-prototype-to-production">first deep learning project</a> emerged, we have had to keep moving forward and delivering the best models we can.</p>
 <p>Doing so has involved a lot of research, trying out different models, from as simple as <a href="https://en.wikipedia.org/wiki/Bag-of-words_model">bag-of-words</a>, <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM</a> and <a href="https://en.wikipedia.org/wiki/Convolutional_neural_network">CNN</a>, to the more advanced <a href="https://distill.pub/2016/augmented-rnns/">attention</a>, <a href="http://publications.aston.ac.uk/373/1/NCRG_94_004.pdf">MDN</a> and <a href="http://ruder.io/multi-task/index.html">multi-task learning</a>.</p>
 <p>Even the simplest model we tried has many hyperparameters, and tuning these might be even more important than the actual architecture we ended up using - in terms of the model's accuracy.</p>
@@ -196,13 +235,26 @@ We started with the learning rate related hyperparameters: initial learning rate
 <p>Since we had already gained intuition on what values work better, it was time to implement random search. Doing so helped the script find better hyperparameters.</p>
 <h1>Some final thoughts</h1>
 <p>In the research phase of any machine learning project, hyperparameter tuning can be done manually. However, when you want to take the project to the next level, it's highly effective to automate the process. In this post I described some of the small touches we implemented into the automation process. Some might be useful for you, some might not. Drop a line in the comments if you found any other exciting things to be helpful.</p>
-    </article>
+            </section>
 
-        <div class="tags">
-            <p>tags: <a href="https://anotherdatum.com/tag/deep-learning.html">deep learning</a>, <a href="https://anotherdatum.com/tag/machine-learning.html">machine learning</a></p>
-        </div>
+            <section class="post-info">
+                <div class="post-share">
+                    <a class="twitter" href="https://twitter.com/share?text=The Hitchhiker's Guide to Hyperparameter Tuning&amp;url=https://anotherdatum.com/hpt.html" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <i class="ic ic-twitter"></i><span class="hidden">Twitter</span>
+                    </a>
+                    <a class="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://anotherdatum.com/hpt.html" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <i class="ic ic-facebook"></i><span class="hidden">Facebook</span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
 
-    <hr>
+                <aside class="post-tags">
+<a href="https://anotherdatum.com/tag/deep-learning.html">deep learning</a><a href="https://anotherdatum.com/tag/machine-learning.html">machine learning</a>                </aside>
+
+                <div class="clear"></div>
+
+
+                </section>
 
 <!-- Begin MailChimp Signup Form -->
 <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
@@ -232,94 +284,78 @@ We started with the learning rate related hyperparameters: initial learning rate
 <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 <!--End mc_embed_signup-->
 <hr />
-        <div class="comments">
-            <h2>Comments !</h2>
-            <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'anotherdatum';
-                var disqus_identifier = 'hpt.html';
-                var disqus_url = 'https://anotherdatum.com/hpt.html';
-                (function() {
-                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = '//anotherdatum.disqus.com/embed.js';
-                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
-            <noscript>Please enable JavaScript to view the comments.</noscript>
-        </div>
-            </div>
-        </div>
-    </div>
+                <div class="comments">
+                    <h2>Comments !</h2>
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+                        var disqus_shortname = 'anotherdatum';
+                        var disqus_identifier = 'hpt.html';
+                        var disqus_url = 'https://anotherdatum.com/hpt.html';
+                        (function() {
+                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                            dsq.src = '//anotherdatum.disqus.com/embed.js';
+                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                        })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the comments.</noscript>
+                </div>
 
-    <hr>
+                <aside class="post-nav">
+                    <div class="clear"></div>
+                </aside>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                            <li>
-                                <a href="https://il.linkedin.com/in/yoelzeldes">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://github.com/yoel-zeldes">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://www.facebook.com/yoel.zeldes">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://twitter.com/YZeldes">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </a>
-                            </li>
-                    </ul>
-<p class="copyright text-muted">
-    Blog powered by <a href="http://getpelican.com">Pelican</a>,
-    which takes great advantage of <a href="http://python.org">Python</a>.
-    <br />
-    Blog sources can be found <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io">here</a>.
-</p>                </div>
             </div>
-        </div>
+        </article>
+    </main>
+      <!-- TODO : Body class -->
+    <div id="body-class" style="display: none;" class=""></div>
+
+    <footer id="footer">
+            <div class="social">
+                <a href="https://il.linkedin.com/in/yoelzeldes">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="https://github.com/yoel-zeldes">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="https://www.facebook.com/yoel.zeldes">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a href="https://twitter.com/YZeldes">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </div>
+
+      <div class="inner">
+        <section class="credits">
+          <span class="credits-theme">Have a look at <a href="https://github.com/yoel-zeldes/yoel-zeldes.github.io/tree/source">the source code</a> of this blog.</span>
+        </section>
+      </div>
     </footer>
+  </section>
 
-    <!-- jQuery -->
-    <script src="https://anotherdatum.com/theme/js/jquery.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://anotherdatum.com/theme/js/script.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://anotherdatum.com/theme/js/bootstrap.min.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-        <script src="https://anotherdatum.com/theme/js/clean-blog.min.js"></script>
-
-    <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-83684090-1']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-83684090-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-83684090-1', { 'anonymize_ip': true });
     </script>
 <script type="text/javascript">
     var disqus_shortname = 'anotherdatum';
@@ -331,5 +367,4 @@ We started with the learning rate related hyperparameters: initial learning rate
     }());
 </script>
 </body>
-
 </html>
