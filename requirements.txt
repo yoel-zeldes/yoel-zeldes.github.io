@@ -8,3 +8,4 @@ ghp-import==1.0.0
 matplotlib==3.3.3
 pelican-jupyter==0.10.0
 pelican-render-math==1.0.3
+pelican-neighbors==1.1.0

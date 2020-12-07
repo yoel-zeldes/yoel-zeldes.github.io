@@ -45,7 +45,7 @@ DEFAULT_PAGINATION = 10
 MARKUP = ('md', 'ipynb')
 
 PLUGIN_PATHS = ['./plugins']
-PLUGINS = [nb_markup, 'render_math']
+PLUGINS = [nb_markup, 'render_math', 'neighbors']
 
 DISQUS_SITENAME = 'anotherdatum'
 
